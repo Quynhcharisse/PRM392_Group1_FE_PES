@@ -1,7 +1,7 @@
 import '../styles/ui/SiteHeader.css'
 import {Link, NavLink, useLocation, useNavigate} from 'react-router-dom'
 import {useEffect, useMemo, useState} from 'react'
-import {Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Typography} from '@mui/material'
+import {Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Typography, Button, Chip} from '@mui/material'
 import {
     Dashboard as DashboardIcon,
     Home as HomeIcon,
@@ -9,22 +9,17 @@ import {
     Person as PersonIcon,
     Storefront as StorefrontIcon,
     AccountCircle as AccountCircleIcon,
-    FavoriteBorder as FavoriteBorderIcon,
-    LocalGroceryStore as LocalGroceryStoreIcon,
-    NotificationsActive as NotificationsActiveIcon,
     Phone as PhoneIcon,
     ArrowForward as ArrowForwardIcon,
     PersonAdd as PersonAddIcon,
     School as SchoolIcon,
     Event as EventIcon,
     Groups as GroupsIcon,
-    Info as InfoIcon
+    Info as InfoIcon,
+    KeyboardArrowDown as KeyboardArrowDownIcon,
+    Language as LanguageIcon
 } from '@mui/icons-material'
 import {enqueueSnackbar} from 'notistack'
-import {getCookie} from '../utils/CookieUtil.jsx'
-import {jwtDecode} from 'jwt-decode'
-import {signOut} from '../services/AccountService.jsx'
-import { NotificationDisplay } from '../services/NotificationService.jsx';
 
 export default function SiteHeader() {
     const navigate = useNavigate()
@@ -50,16 +45,7 @@ export default function SiteHeader() {
         }
     }, [location.pathname])
 
-    const role = useMemo(() => {
-        try {
-            const access = getCookie('access')
-            if (!access) return null
-            const decoded = jwtDecode(access)
-            return decoded?.role || null
-        } catch (error) {
-            return null
-        }
-    }, [currentUser])
+    const role = useMemo(() => currentUser?.role || null, [currentUser])
 
     const displayName = currentUser?.name || currentUser?.fullName || currentUser?.displayName || 'Tài khoản'
     const avatarUrl = currentUser?.avatar || currentUser?.avatarUrl || currentUser?.photoURL || currentUser?.picture || ''
@@ -69,12 +55,10 @@ export default function SiteHeader() {
 
     const handleLogout = async () => {
         try {
-            await signOut()
             localStorage.clear()
             enqueueSnackbar('Đã đăng xuất', {variant: 'success'})
             handleCloseMenu()
             navigate('/', {replace: true})
-            // Reload to refresh header state derived from storage/cookies
             setTimeout(() => window.location.reload(), 300)
         } catch (error) {
             enqueueSnackbar('Không thể đăng xuất. Vui lòng thử lại', {variant: 'error'})
@@ -83,48 +67,80 @@ export default function SiteHeader() {
 
     return (
         <div className="site-header" id="siteHeader">
-            {/* Top Tier - Utility Bar */}
-            <div className="header__top-tier">
-                <div className="container header__top-content">
-                    {/* Left Side - Logo and Name */}
+            {/* Single Tier Header - MerryStar Style */}
+            <div className="header__main-tier">
+                <div className="container header__content">
+                    {/* Left Side - Logo */}
                     <div className="header__brand-section">
                         <Link className="brand" to="/">
-                            <span className="brand__logo" aria-hidden>
-                                <img src="/SUNSHINE.png" alt="SUNSHINE"/>
-                            </span>
+                            <div className="brand__logo">
+                                <img src="/logo.png" alt="MerryStar Kindergarten Logo" />
+                            </div>
                             <div className="brand__text">
-                                <div className="brand__name">SUNSHINE</div>
-                                <div className="brand__subtitle">SUNSHINE PRESCHOOL</div>
+                                <div className="brand__name">MerryStar</div>
+                                <div className="brand__subtitle">KINDERGARTEN</div>
                             </div>
                         </Link>
                     </div>
 
-                    {/* Right Side - Utility and Auth */}
+                    {/* Center - Navigation Menu */}
+                    <nav className="header__navigation">
+                        <NavLink to="/gioi-thieu" className="nav__item">
+                            <span>GIỚI THIỆU</span>
+                            <KeyboardArrowDownIcon fontSize="small" />
+                        </NavLink>
+                        <NavLink to="/doi-ngu" className="nav__item">
+                            <span>ĐỘI NGŨ</span>
+                            <KeyboardArrowDownIcon fontSize="small" />
+                        </NavLink>
+                        <NavLink to="/chuong-trinh-giao-duc" className="nav__item">
+                            <span>CHƯƠNG TRÌNH GIÁO DỤC</span>
+                            <KeyboardArrowDownIcon fontSize="small" />
+                        </NavLink>
+                        <NavLink to="/tuyen-sinh" className="nav__item">
+                            <span>TUYỂN SINH</span>
+                            <KeyboardArrowDownIcon fontSize="small" />
+                        </NavLink>
+                        <NavLink to="/cham-soc-ket-noi" className="nav__item">
+                            <span>CHĂM SÓC - KẾT NỐI</span>
+                            <KeyboardArrowDownIcon fontSize="small" />
+                        </NavLink>
+                        <NavLink to="/tin-tuc-su-kien" className="nav__item">
+                            <span>TIN TỨC & SỰ KIỆN</span>
+                            <KeyboardArrowDownIcon fontSize="small" />
+                        </NavLink>
+                        <NavLink to="/lien-he" className="nav__item">
+                            <span>LIÊN HỆ</span>
+                        </NavLink>
+                    </nav>
+
+                    {/* Right Side - Language & CTA */}
                     <div className="header__right-section">
-                        <div className="header__utilities">
-                            <div className="hotline">
-                                <PhoneIcon />
-                                <span>Hotline: 1900-1234</span>
-                            </div>
-                        </div>
+                        {/* CTA Button */}
+                        <Button 
+                            component={Link} 
+                            to="/admission" 
+                            variant="contained"
+                            sx={{
+                                background: 'linear-gradient(45deg, #FF6B35, #F7931E)',
+                                borderRadius: '25px',
+                                px: 3,
+                                py: 1,
+                                fontWeight: 700,
+                                textTransform: 'none',
+                                fontSize: '14px',
+                                '&:hover': {
+                                    background: 'linear-gradient(45deg, #E55A2B, #E0841A)',
+                                }
+                            }}
+                        >
+                            ĐĂNG KÝ
+                        </Button>
 
                         {/* User Authentication */}
-                        <div className="header__auth">
-                        {!currentUser ? (
-                            <>
-                                <Link to="/login" className="auth__link">
-                                    <span>Sign In</span>
-                                    <ArrowForwardIcon />
-                                </Link>
-                                <Link to="/register" className="auth__link auth__link--signup">
-                                    <PersonAddIcon />
-                                    <span>Sign Up</span>
-                                </Link>
-                            </>
-                        ) : (
-                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                        {currentUser && (
+                            <Box sx={{display: 'flex', alignItems: 'center', ml: 2}}>
                                 <IconButton
-                                    className="header__icon"
                                     onClick={handleOpenMenu}
                                     title={displayName}
                                     sx={{p: 0}}
@@ -133,22 +149,23 @@ export default function SiteHeader() {
                                         <Avatar 
                                             src={avatarUrl} 
                                             sx={{
-                                                width: 44, 
-                                                height: 44, 
+                                                width: 36, 
+                                                height: 36, 
                                                 borderRadius: '50%',
-                                                border: '1px solid #e0e0e0',
-                                                backgroundColor: '#fff'
+                                                border: '2px solid #fff',
+                                                boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
                                             }}
                                         />
                                     ) : (
                                         <AccountCircleIcon 
                                             sx={{
-                                                width: 44,
-                                                height: 44,
+                                                width: 36,
+                                                height: 36,
                                                 color: '#666',
                                                 backgroundColor: '#f5f5f5',
                                                 borderRadius: '50%',
-                                                border: '1px solid rgba(0, 0, 0, 0.12)'
+                                                border: '2px solid #fff',
+                                                boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
                                             }}
                                         />
                                     )}
@@ -165,9 +182,8 @@ export default function SiteHeader() {
                                     anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                                 >
                                     <Box sx={{px: 2, pt: 1, pb: 1}}>
-                                        <Typography variant="subtitle2"
-                                                    sx={{fontWeight: 700}}>{displayName}</Typography>
-                                        <Typography variant="caption" className="muted">
+                                        <Typography variant="subtitle2" sx={{fontWeight: 700}}>{displayName}</Typography>
+                                        <Typography variant="caption" color="text.secondary">
                                             {currentUser?.email || 'Đã đăng nhập'}
                                         </Typography>
                                     </Box>
@@ -186,12 +202,6 @@ export default function SiteHeader() {
                                         <ListItemIcon><PersonIcon fontSize="small"/></ListItemIcon>
                                         Hồ sơ của tôi
                                     </MenuItem>
-                                    {role === 'BUYER' && (
-                                        <MenuItem onClick={() => navigate('/')}>
-                                            <ListItemIcon><HomeIcon fontSize="small"/></ListItemIcon>
-                                            Trang sản phẩm
-                                        </MenuItem>
-                                    )}
                                     {role === 'ADMIN' && (
                                         <MenuItem onClick={() => navigate('/admin/dashboard')}>
                                             <ListItemIcon><DashboardIcon fontSize="small"/></ListItemIcon>
@@ -204,46 +214,14 @@ export default function SiteHeader() {
                                             Kênh người bán
                                         </MenuItem>
                                     )}
-
                                     <MenuItem onClick={handleLogout}>
-                                        <ListItemIcon>
-                                            <LogoutIcon fontSize="small"/>
-                                        </ListItemIcon>
+                                        <ListItemIcon><LogoutIcon fontSize="small"/></ListItemIcon>
                                         Đăng xuất
                                     </MenuItem>
                                 </Menu>
                             </Box>
                         )}
-                        </div>
                     </div>
-                </div>
-            </div>
-
-            {/* Bottom Tier - Main Navigation Bar */}
-            <div className="header__bottom-tier">
-                <div className="container">
-                    <nav className="main-nav" aria-label="Điều hướng chính">
-                        <NavLink to="/" end className="nav__item">
-                            <HomeIcon />
-                            <span>HOME</span>
-                        </NavLink>
-                        <NavLink to="/admission" className="nav__item">
-                            <SchoolIcon />
-                            <span>ADMISSION</span>
-                        </NavLink>
-                        <NavLink to="/events" className="nav__item">
-                            <EventIcon />
-                            <span>EVENTS</span>
-                        </NavLink>
-                        <NavLink to="/classes" className="nav__item">
-                            <GroupsIcon />
-                            <span>CLASSES</span>
-                        </NavLink>
-                        <NavLink to="/about" className="nav__item">
-                            <InfoIcon />
-                            <span>ABOUT US</span>
-                        </NavLink>
-                    </nav>
                 </div>
             </div>
         </div>

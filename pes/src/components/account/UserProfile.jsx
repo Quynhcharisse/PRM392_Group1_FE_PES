@@ -61,7 +61,6 @@ const VALIDATION_RULES = {
 };
 
 const UserProfile = () => {
-  //   console.log("🔍 UserProfile component rendered");
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);

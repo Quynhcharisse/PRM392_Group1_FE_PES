@@ -1,49 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    Box,
-    Drawer,
+    alpha,
     AppBar,
-    Toolbar,
-    Typography,
-    IconButton,
     Avatar,
-    Menu,
-    MenuItem,
-    ListItemIcon,
-    ListItemText,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Chip,
     Divider,
+    Drawer,
+    Grid,
+    IconButton,
     List,
     ListItem,
     ListItemButton,
-    useTheme,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Stack,
+    Toolbar,
+    Typography,
     useMediaQuery,
-    Grid,
-    Button,
-    Chip,
-    Card,
-    CardContent,
-    Badge,
-    alpha,
-    Stack
+    useTheme
 } from '@mui/material';
 import {
-    Menu as MenuIcon,
+    AccountCircle as AccountCircleIcon,
+    Add as AddIcon,
+    Assessment as AssessmentIcon,
     Dashboard as DashboardIcon,
     Inventory as InventoryIcon,
-    ShoppingCart as ShoppingCartIcon,
-    Assessment as AssessmentIcon,
-    Settings as SettingsIcon,
-    AccountCircle as AccountCircleIcon,
+    LocalShipping as LocalShippingIcon,
     Logout as LogoutIcon,
-    Notifications as NotificationsIcon,
-    TrendingUp as TrendingUpIcon,
-    Add as AddIcon,
-    Visibility as VisibilityIcon,
+    Menu as MenuIcon,
+    Settings as SettingsIcon,
+    ShoppingCart as ShoppingCartIcon,
     Store as StoreIcon,
-    LocalShipping as LocalShippingIcon
+    TrendingUp as TrendingUpIcon,
+    Visibility as VisibilityIcon
 } from '@mui/icons-material';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import {NotificationDisplay} from '../services/NotificationService.jsx';
+import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 
 const DRAWER_WIDTH = 280;
 
@@ -67,30 +64,30 @@ const NAVIGATION = [
     {
         segment: 'dashboard',
         title: 'Dashboard',
-        icon: <DashboardIcon />,
+        icon: <DashboardIcon/>,
         path: '/seller/dashboard'
     },
     {
         segment: 'analytics',
         title: 'Báo cáo & Thống kê',
-        icon: <AssessmentIcon />,
+        icon: <AssessmentIcon/>,
         path: '/seller/analytics'
     },
     {
         segment: 'store',
         title: 'Cửa hàng của tôi',
-        icon: <StoreIcon />,
+        icon: <StoreIcon/>,
         path: '/seller/store'
     },
     {
         segment: 'settings',
         title: 'Cài đặt',
-        icon: <SettingsIcon />,
+        icon: <SettingsIcon/>,
         path: '/seller/settings'
     }
 ];
 
-function SellerDashboardContent({ session }) {
+function SellerDashboardContent({session}) {
     const navigate = useNavigate();
     const [stats, setStats] = useState({
         todayOrders: 18,
@@ -126,7 +123,7 @@ function SellerDashboardContent({ session }) {
         }
     }
 
-    const StatCard = ({ title, value, icon, color, trend, suffix }) => (
+    const StatCard = ({title, value, icon, color, trend, suffix}) => (
         <Card sx={{
             background: `linear-gradient(135deg, ${color} 0%, ${alpha(color, 0.8)} 100%)`,
             color: 'white',
@@ -149,7 +146,7 @@ function SellerDashboardContent({ session }) {
                 transform: 'translate(30px, -30px)',
             }
         }}>
-            <CardContent sx={{ p: 3, position: 'relative', zIndex: 1 }}>
+            <CardContent sx={{p: 3, position: 'relative', zIndex: 1}}>
                 <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={2}>
                     <Box sx={{
                         backgroundColor: alpha('#ffffff', 0.2),
@@ -162,26 +159,26 @@ function SellerDashboardContent({ session }) {
                         {icon}
                     </Box>
                     {trend && (
-                        <Chip 
-                            size="small" 
-                            label={trend} 
-                            sx={{ 
+                        <Chip
+                            size="small"
+                            label={trend}
+                            sx={{
                                 backgroundColor: alpha('#ffffff', 0.2),
                                 color: 'white',
                                 fontWeight: 600
-                            }} 
+                            }}
                         />
                     )}
                 </Stack>
-                <Typography variant="body2" sx={{ opacity: 0.9, mb: 1, fontSize: '0.875rem' }}>
+                <Typography variant="body2" sx={{opacity: 0.9, mb: 1, fontSize: '0.875rem'}}>
                     {title}
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography variant="h4" sx={{ fontWeight: 700, lineHeight: 1 }}>
+                <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                    <Typography variant="h4" sx={{fontWeight: 700, lineHeight: 1}}>
                         {value}
                     </Typography>
                     {suffix && (
-                        <Chip 
+                        <Chip
                             size="small"
                             label={suffix}
                             sx={{
@@ -197,31 +194,31 @@ function SellerDashboardContent({ session }) {
     );
 
     return (
-        <Box sx={{ px: 4, py: 5 }}>
+        <Box sx={{px: 4, py: 5}}>
             {/* Header */}
-            <Box sx={{ mb: 5 }}>
-                <Typography variant="h3" sx={{ 
-                    fontWeight: 800, 
+            <Box sx={{mb: 5}}>
+                <Typography variant="h3" sx={{
+                    fontWeight: 800,
                     background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     mb: 1
                 }}>
-                        {session.user.role || 'User'} Dashboard
-                    </Typography>
-                <Typography variant="body1" sx={{ color: 'text.secondary', fontSize: '1.1rem' }}>
+                    {session.user.role || 'User'} Dashboard
+                </Typography>
+                <Typography variant="body1" sx={{color: 'text.secondary', fontSize: '1.1rem'}}>
                     Tổng quan hiệu suất cửa hàng của bạn hôm nay
-                    </Typography>
+                </Typography>
             </Box>
 
             {/* Stats Cards */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid container spacing={3} sx={{mb: 4}}>
                 <Grid item xs={12} sm={6} lg={3}>
                     <StatCard
                         title="Đơn hàng hôm nay"
                         value={stats.todayOrders}
-                        icon={<ShoppingCartIcon sx={{ fontSize: 28 }} />}
+                        icon={<ShoppingCartIcon sx={{fontSize: 28}}/>}
                         color={colors.primary}
                         trend="+15%"
                     />
@@ -230,7 +227,7 @@ function SellerDashboardContent({ session }) {
                     <StatCard
                         title="Doanh thu hôm nay"
                         value={formatCurrencyVnd(stats.revenueVnd)}
-                        icon={<TrendingUpIcon sx={{ fontSize: 28 }} />}
+                        icon={<TrendingUpIcon sx={{fontSize: 28}}/>}
                         color={colors.success}
                         trend="+12%"
                     />
@@ -239,7 +236,7 @@ function SellerDashboardContent({ session }) {
                     <StatCard
                         title="Sản phẩm đang bán"
                         value={stats.totalProducts}
-                        icon={<InventoryIcon sx={{ fontSize: 28 }} />}
+                        icon={<InventoryIcon sx={{fontSize: 28}}/>}
                         color={colors.info}
                         trend="+3"
                     />
@@ -248,12 +245,12 @@ function SellerDashboardContent({ session }) {
                     <StatCard
                         title="Sắp hết hàng"
                         value={stats.lowStock}
-                        icon={<LocalShippingIcon sx={{ fontSize: 28 }} />}
+                        icon={<LocalShippingIcon sx={{fontSize: 28}}/>}
                         color={stats.lowStock > 0 ? colors.warning : colors.success}
                         suffix={stats.lowStock > 0 ? 'Kiểm tra' : 'Ổn định'}
                     />
                 </Grid>
-                </Grid>
+            </Grid>
 
             {/* Main Content Grid */}
             <Grid container spacing={3}>
@@ -266,9 +263,9 @@ function SellerDashboardContent({ session }) {
                         boxShadow: `0 4px 20px ${alpha(colors.primary, 0.1)}`,
                         mb: 3
                     }}>
-                        <CardContent sx={{ p: 4 }}>
-                            <Typography variant="h5" sx={{ 
-                                fontWeight: 700, 
+                        <CardContent sx={{p: 4}}>
+                            <Typography variant="h5" sx={{
+                                fontWeight: 700,
                                 mb: 3,
                                 color: colors.primary,
                                 display: 'flex',
@@ -280,27 +277,27 @@ function SellerDashboardContent({ session }) {
                                     height: 24,
                                     backgroundColor: colors.primary,
                                     borderRadius: 1
-                                }} />
+                                }}/>
                                 Tác vụ nhanh
                             </Typography>
-                            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} flexWrap="wrap">
+                            <Stack direction={{xs: 'column', sm: 'row'}} spacing={2} flexWrap="wrap">
                                 <Button
                                     variant="contained"
-                                    startIcon={<AddIcon />}
+                                    startIcon={<AddIcon/>}
                                     onClick={() => navigate('/seller/succulent')}
                                     sx={{
                                         borderRadius: 3,
                                         px: 3,
                                         py: 1.5,
                                         backgroundColor: colors.primary,
-                                        '&:hover': { backgroundColor: colors.primaryDark }
+                                        '&:hover': {backgroundColor: colors.primaryDark}
                                     }}
                                 >
                                     Tạo sản phẩm sen đá
                                 </Button>
                                 <Button
                                     variant="outlined"
-                                    startIcon={<VisibilityIcon />}
+                                    startIcon={<VisibilityIcon/>}
                                     onClick={() => navigate('/seller/orders')}
                                     sx={{
                                         borderRadius: 3,
@@ -308,14 +305,14 @@ function SellerDashboardContent({ session }) {
                                         py: 1.5,
                                         borderColor: colors.primary,
                                         color: colors.primary,
-                                        '&:hover': { borderColor: colors.primaryDark }
+                                        '&:hover': {borderColor: colors.primaryDark}
                                     }}
                                 >
                                     Xem đơn hàng
                                 </Button>
                                 <Button
                                     variant="outlined"
-                                    startIcon={<InventoryIcon />}
+                                    startIcon={<InventoryIcon/>}
                                     onClick={() => navigate('/seller/succulent')}
                                     sx={{
                                         borderRadius: 3,
@@ -323,7 +320,7 @@ function SellerDashboardContent({ session }) {
                                         py: 1.5,
                                         borderColor: colors.primary,
                                         color: colors.primary,
-                                        '&:hover': { borderColor: colors.primaryDark }
+                                        '&:hover': {borderColor: colors.primaryDark}
                                     }}
                                 >
                                     Quản lý sen đá
@@ -342,21 +339,21 @@ function SellerDashboardContent({ session }) {
                         boxShadow: `0 4px 20px ${alpha(colors.primary, 0.1)}`,
                         height: 'fit-content'
                     }}>
-                        <CardContent sx={{ p: 3 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                                <Typography variant="h6" sx={{ fontWeight: 700, color: colors.primary }}>
+                        <CardContent sx={{p: 3}}>
+                            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3}}>
+                                <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary}}>
                                     Đơn gần đây
                                 </Typography>
-                                <Button 
-                                    size="small" 
-                                    sx={{ color: colors.primary }}
+                                <Button
+                                    size="small"
+                                    sx={{color: colors.primary}}
                                     onClick={() => navigate('/seller/orders')}
                                 >
                                     Xem tất cả
                                 </Button>
-                        </Box>
-                            <Divider sx={{ mb: 2 }} />
-                            
+                            </Box>
+                            <Divider sx={{mb: 2}}/>
+
                             <Stack spacing={2}>
                                 {recentOrders.map(order => (
                                     <Box key={order.id} sx={{
@@ -370,24 +367,30 @@ function SellerDashboardContent({ session }) {
                                             transform: 'translateX(4px)'
                                         }
                                     }}>
-                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                                            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: colors.primary }}>
+                                        <Box sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'flex-start',
+                                            mb: 1
+                                        }}>
+                                            <Typography variant="subtitle2"
+                                                        sx={{fontWeight: 600, color: colors.primary}}>
                                                 #{order.code}
                                             </Typography>
-                                            <Chip 
-                                                size="small" 
-                                                label={order.statusLabel} 
-                                                sx={{ 
+                                            <Chip
+                                                size="small"
+                                                label={order.statusLabel}
+                                                sx={{
                                                     backgroundColor: order.statusLabel === 'Mới' ? colors.success : colors.warning,
                                                     color: 'white',
                                                     fontSize: '0.75rem'
                                                 }}
                                             />
                                         </Box>
-                                        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+                                        <Typography variant="body2" sx={{color: 'text.secondary', mb: 1}}>
                                             {order.customerName}
                                         </Typography>
-                                        <Typography variant="body2" sx={{ fontWeight: 600, color: colors.primary }}>
+                                        <Typography variant="body2" sx={{fontWeight: 600, color: colors.primary}}>
                                             {formatCurrencyVnd(order.total)}
                                         </Typography>
                                     </Box>
@@ -406,7 +409,7 @@ export default function EducationDashboard() {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     const [mobileOpen, setMobileOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [session, setSession] = useState({
@@ -420,14 +423,14 @@ export default function EducationDashboard() {
 
     useEffect(() => {
         document.title = 'Kênh người bán | Lá Nhỏ Bên Thềm';
-        
+
         // Lấy thông tin user từ localStorage
         try {
             const userData = localStorage.getItem('user');
-            
+
             if (userData) {
                 const parsedUser = JSON.parse(userData);
-                
+
                 const sessionData = {
                     user: {
                         name: parsedUser.user?.name || parsedUser.name || 'User',
@@ -436,7 +439,7 @@ export default function EducationDashboard() {
                         role: parsedUser.role || ''
                     }
                 };
-                
+
                 setSession(sessionData);
             } else {
                 console.warn('⚠️ No user data found in localStorage');
@@ -463,8 +466,8 @@ export default function EducationDashboard() {
         // Clear user data from localStorage
         localStorage.removeItem('user');
         // Clear cookies if any
-        document.cookie.split(";").forEach(function(c) { 
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        document.cookie.split(";").forEach(function (c) {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
         });
         // Navigate to home page
         navigate('/');
@@ -480,14 +483,14 @@ export default function EducationDashboard() {
     };
 
     const drawer = (
-        <Box sx={{ 
+        <Box sx={{
             height: '100%',
             background: `linear-gradient(180deg, ${colors.primary} 0%, ${colors.primaryDark} 100%)`,
             color: 'white',
             overflow: 'hidden'
         }}>
             {/* Logo Section */}
-            <Toolbar sx={{ 
+            <Toolbar sx={{
                 background: `linear-gradient(135deg, ${colors.primaryDark} 0%, ${colors.primary} 100%)`,
                 borderBottom: `1px solid ${alpha('#ffffff', 0.1)}`,
                 position: 'relative',
@@ -501,7 +504,7 @@ export default function EducationDashboard() {
                     background: `linear-gradient(90deg, transparent 0%, ${alpha('#ffffff', 0.3)} 50%, transparent 100%)`
                 }
             }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
                     <Box sx={{
                         width: 40,
                         height: 40,
@@ -514,8 +517,8 @@ export default function EducationDashboard() {
                         backdropFilter: 'blur(10px)',
                         border: `1px solid ${alpha('#ffffff', 0.2)}`
                     }}>
-                        <img 
-                            src="/LaNhoBenThemLogo.png" 
+                        <img
+                            src="/LaNhoBenThemLogo.png"
                             alt="Lá Nhỏ Bên Thềm Logo"
                             style={{
                                 width: '100%',
@@ -525,7 +528,7 @@ export default function EducationDashboard() {
                             }}
                         />
                     </Box>
-                    <Typography variant="h6" noWrap component="div" sx={{ 
+                    <Typography variant="h6" noWrap component="div" sx={{
                         fontWeight: 700,
                         background: `linear-gradient(135deg, #ffffff 0%, ${alpha('#ffffff', 0.8)} 100%)`,
                         backgroundClip: 'text',
@@ -538,19 +541,19 @@ export default function EducationDashboard() {
             </Toolbar>
 
             {/* Navigation */}
-            <Box sx={{ p: 2, pt: 3 }}>
-                <Typography variant="caption" sx={{ 
-                    px: 2, 
-                    opacity: 0.7, 
+            <Box sx={{p: 2, pt: 3}}>
+                <Typography variant="caption" sx={{
+                    px: 2,
+                    opacity: 0.7,
                     fontWeight: 600,
                     letterSpacing: 1,
                     textTransform: 'uppercase'
                 }}>
                     Kênh {session.user.role?.toLowerCase() || 'người dùng'}
                 </Typography>
-                <List sx={{ mt: 1 }}>
+                <List sx={{mt: 1}}>
                     {NAVIGATION.map((item) => (
-                        <ListItem key={item.segment} disablePadding sx={{ mb: 0.5 }}>
+                        <ListItem key={item.segment} disablePadding sx={{mb: 0.5}}>
                             <ListItemButton
                                 selected={isActiveRoute(item.path)}
                                 onClick={() => navigate(item.path)}
@@ -592,14 +595,14 @@ export default function EducationDashboard() {
                                     }
                                 }}
                             >
-                                <ListItemIcon sx={{ 
+                                <ListItemIcon sx={{
                                     color: isActiveRoute(item.path) ? colors.accent : alpha('#ffffff', 0.8),
                                     minWidth: 40,
                                     transition: 'all 0.3s ease'
                                 }}>
                                     {item.icon}
                                 </ListItemIcon>
-                                        <ListItemText
+                                <ListItemText
                                     primary={item.title}
                                     primaryTypographyProps={{
                                         fontWeight: isActiveRoute(item.path) ? 600 : 500,
@@ -607,9 +610,9 @@ export default function EducationDashboard() {
                                     }}
                                 />
                             </ListItemButton>
-                                    </ListItem>
-                                ))}
-                            </List>
+                        </ListItem>
+                    ))}
+                </List>
             </Box>
 
             {/* Bottom decoration */}
@@ -621,54 +624,54 @@ export default function EducationDashboard() {
                 height: '120px',
                 background: `linear-gradient(180deg, transparent 0%, ${alpha('#000000', 0.1)} 100%)`,
                 pointerEvents: 'none'
-            }} />
+            }}/>
         </Box>
     );
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{display: 'flex'}}>
             {/* App Bar */}
             <AppBar
                 position="fixed"
                 elevation={0}
                 sx={{
-                    width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
-                    ml: { md: `${DRAWER_WIDTH}px` },
+                    width: {md: `calc(100% - ${DRAWER_WIDTH}px)`},
+                    ml: {md: `${DRAWER_WIDTH}px`},
                     background: `linear-gradient(135deg, ${alpha('#ffffff', 0.95)} 0%, ${alpha(colors.surface, 0.9)} 100%)`,
                     backdropFilter: 'blur(10px)',
                     borderBottom: `1px solid ${alpha(colors.primary, 0.1)}`,
                     color: colors.primary,
                 }}
             >
-                <Toolbar sx={{ px: 3 }}>
+                <Toolbar sx={{px: 3}}>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
                         edge="start"
                         onClick={handleDrawerToggle}
-                        sx={{ 
-                            mr: 2, 
-                            display: { md: 'none' },
+                        sx={{
+                            mr: 2,
+                            display: {md: 'none'},
                             backgroundColor: alpha(colors.primary, 0.1),
                             '&:hover': {
                                 backgroundColor: alpha(colors.primary, 0.2),
                             }
                         }}
                     >
-                        <MenuIcon />
+                        <MenuIcon/>
                     </IconButton>
-                    
-                    <Typography variant="h6" noWrap component="div" sx={{ 
+
+                    <Typography variant="h6" noWrap component="div" sx={{
                         flexGrow: 1,
                         fontWeight: 600,
                         color: colors.primary
                     }}>
-                        {location.pathname === '/seller/dashboard' ? 'Dashboard' : 
-                         NAVIGATION.find(nav => nav.path === location.pathname)?.title || `Kênh ${session.user.role?.toLowerCase() || 'người dùng'}`}
+                        {location.pathname === '/seller/dashboard' ? 'Dashboard' :
+                            NAVIGATION.find(nav => nav.path === location.pathname)?.title || `Kênh ${session.user.role?.toLowerCase() || 'người dùng'}`}
                     </Typography>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <IconButton 
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                        <IconButton
                             color="inherit"
                             sx={{
                                 backgroundColor: alpha(colors.primary, 0.1),
@@ -682,11 +685,11 @@ export default function EducationDashboard() {
                         >
                             <NotificationDisplay/>
                         </IconButton>
-                        
+
                         <IconButton
                             onClick={handleMenuOpen}
                             size="small"
-                            sx={{ 
+                            sx={{
                                 ml: 1,
                                 transition: 'all 0.2s ease',
                                 '&:hover': {
@@ -697,9 +700,9 @@ export default function EducationDashboard() {
                             aria-haspopup="true"
                             aria-expanded={anchorEl ? 'true' : undefined}
                         >
-                            <Avatar 
-                                sx={{ 
-                                    width: 36, 
+                            <Avatar
+                                sx={{
+                                    width: 36,
                                     height: 36,
                                     background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
                                     fontWeight: 600,
@@ -721,8 +724,8 @@ export default function EducationDashboard() {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
                 onClick={handleMenuClose}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                transformOrigin={{horizontal: 'right', vertical: 'top'}}
+                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                 slotProps={{
                     paper: {
                         elevation: 8,
@@ -754,16 +757,16 @@ export default function EducationDashboard() {
                     },
                 }}
             >
-                <Box sx={{ 
-                    px: 3, 
+                <Box sx={{
+                    px: 3,
                     py: 2,
                     background: `linear-gradient(135deg, ${alpha(colors.primary, 0.05)} 0%, ${alpha(colors.surface, 0.8)} 100%)`,
                     borderBottom: `1px solid ${alpha(colors.primary, 0.1)}`
                 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                        <Avatar 
-                            sx={{ 
-                                width: 40, 
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 2, mb: 1}}>
+                        <Avatar
+                            sx={{
+                                width: 40,
                                 height: 40,
                                 background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
                             }}
@@ -772,7 +775,7 @@ export default function EducationDashboard() {
                             {session.user.name.charAt(0)}
                         </Avatar>
                         <Box>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 600, color: colors.primary }}>
+                            <Typography variant="subtitle1" sx={{fontWeight: 600, color: colors.primary}}>
                                 {session.user.name}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
@@ -780,19 +783,19 @@ export default function EducationDashboard() {
                             </Typography>
                         </Box>
                     </Box>
-                    <Chip 
-                        size="small" 
-                        label={session.user.role || 'User'} 
-                        sx={{ 
+                    <Chip
+                        size="small"
+                        label={session.user.role || 'User'}
+                        sx={{
                             backgroundColor: alpha(colors.primary, 0.1),
                             color: colors.primary,
                             fontWeight: 600,
                             fontSize: '0.75rem'
-                        }} 
+                        }}
                     />
-        </Box>
-                <Box sx={{ py: 1 }}>
-                    <MenuItem 
+                </Box>
+                <Box sx={{py: 1}}>
+                    <MenuItem
                         onClick={handleProfileClick}
                         sx={{
                             mx: 1,
@@ -805,13 +808,13 @@ export default function EducationDashboard() {
                         }}
                     >
                         <ListItemIcon>
-                            <AccountCircleIcon fontSize="small" sx={{ color: colors.primary }} />
+                            <AccountCircleIcon fontSize="small" sx={{color: colors.primary}}/>
                         </ListItemIcon>
-                        <ListItemText 
+                        <ListItemText
                             primary="Hồ sơ cá nhân"
                         />
                     </MenuItem>
-                    <MenuItem 
+                    <MenuItem
                         onClick={handleLogout}
                         sx={{
                             mx: 1,
@@ -825,9 +828,9 @@ export default function EducationDashboard() {
                         }}
                     >
                         <ListItemIcon>
-                            <LogoutIcon fontSize="small" sx={{ color: colors.error }} />
+                            <LogoutIcon fontSize="small" sx={{color: colors.error}}/>
                         </ListItemIcon>
-                        <ListItemText 
+                        <ListItemText
                             primary="Đăng xuất"
                         />
                     </MenuItem>
@@ -837,7 +840,7 @@ export default function EducationDashboard() {
             {/* Navigation Drawer */}
             <Box
                 component="nav"
-                sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}
+                sx={{width: {md: DRAWER_WIDTH}, flexShrink: {md: 0}}}
             >
                 {/* Mobile drawer */}
                 <Drawer
@@ -848,19 +851,19 @@ export default function EducationDashboard() {
                         keepMounted: true,
                     }}
                     sx={{
-                        display: { xs: 'block', md: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: DRAWER_WIDTH },
+                        display: {xs: 'block', md: 'none'},
+                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: DRAWER_WIDTH},
                     }}
                 >
                     {drawer}
                 </Drawer>
-                
+
                 {/* Desktop drawer */}
                 <Drawer
                     variant="permanent"
                     sx={{
-                        display: { xs: 'none', md: 'block' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: DRAWER_WIDTH },
+                        display: {xs: 'none', md: 'block'},
+                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: DRAWER_WIDTH},
                     }}
                     open
                 >
@@ -873,7 +876,7 @@ export default function EducationDashboard() {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
+                    width: {md: `calc(100% - ${DRAWER_WIDTH}px)`},
                     mt: '64px',
                     minHeight: 'calc(100vh - 64px)',
                     background: `linear-gradient(135deg, ${alpha(colors.surface, 0.3)} 0%, ${alpha(colors.surfaceVariant, 0.1)} 100%)`,
@@ -883,7 +886,7 @@ export default function EducationDashboard() {
                         content: '""',
                         position: 'fixed',
                         top: 0,
-                        left: { md: DRAWER_WIDTH },
+                        left: {md: DRAWER_WIDTH},
                         right: 0,
                         height: '100vh',
                         background: `radial-gradient(ellipse at top right, ${alpha(colors.primary, 0.05)} 0%, transparent 50%), radial-gradient(ellipse at bottom left, ${alpha(colors.secondary, 0.03)} 0%, transparent 50%)`,
@@ -892,12 +895,12 @@ export default function EducationDashboard() {
                     }
                 }}
             >
-                                 {/* Dashboard content or nested routes */}
-                 {location.pathname === '/seller/dashboard' ? (
-                     <SellerDashboardContent session={session} />
-                 ) : (
-                    <Box sx={{ p: 4 }}>
-                        <Outlet />
+                {/* Dashboard content or nested routes */}
+                {location.pathname === '/seller/dashboard' ? (
+                    <SellerDashboardContent session={session}/>
+                ) : (
+                    <Box sx={{p: 4}}>
+                        <Outlet/>
                     </Box>
                 )}
             </Box>
