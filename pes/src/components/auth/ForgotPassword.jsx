@@ -26,8 +26,6 @@ import {
   Refresh
 } from "@mui/icons-material";
 import { useSnackbar } from 'notistack';
-import authService from "@services/authService";
-import { AUTH_ROUTES } from "@/constants/routes";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -59,13 +57,14 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      await authService.requestPasswordReset(email);
-      setSuccess(true);
-      enqueueSnackbar("Password reset email sent successfully!", { variant: "success" });
+      // Mock API: simulate request
+      await new Promise(res => setTimeout(res, 800))
+      setSuccess(true)
+      enqueueSnackbar("Password reset email sent successfully!", { variant: "success" })
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Something went wrong. Please try again later.";
-      setError(errorMessage);
-      enqueueSnackbar(errorMessage, { variant: "error" });
+      const errorMessage = "Something went wrong. Please try again later."
+      setError(errorMessage)
+      enqueueSnackbar(errorMessage, { variant: "error" })
     } finally {
       setLoading(false);
     }
@@ -78,7 +77,7 @@ const ForgotPassword = () => {
   };
 
   const handleBackToLogin = () => {
-    navigate(AUTH_ROUTES.LOGIN);
+    navigate('/login');
   };
 
   // Success state

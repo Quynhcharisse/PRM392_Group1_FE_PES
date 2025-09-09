@@ -1,133 +1,64 @@
-import {Box, Button, Link, Paper, Typography} from "@mui/material";
-import {jwtDecode} from "jwt-decode";
-import {enqueueSnackbar} from "notistack";
-import axios from "axios";
-import {useEffect, useState} from "react";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import {
+  Box,
+  Button,
+  Link,
+  Paper,
+  Typography,
+  TextField,
+  InputAdornment,
+  IconButton,
+  CircularProgress
+} from '@mui/material'
+import { Email, Lock, Visibility, VisibilityOff } from '@mui/icons-material'
+import { useSnackbar } from 'notistack'
 
 export default function SignIn() {
-    const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
-    const {search} = useLocation();
-    const redirectTo = new URLSearchParams(search).get('redirectTo');
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const { enqueueSnackbar } = useSnackbar()
+  const navigate = useNavigate()
+  const { search } = useLocation()
+  const redirectTo = new URLSearchParams(search).get('redirectTo')
 
-    async function HandleLogin(userInfo) {
-        try {
-            setIsLoading(true);
-
-            const loginResponse = await signIn(userInfo.data.email, userInfo.data.name, userInfo.data.picture);
-
-            if (loginResponse && loginResponse.status === 200) {
-                const userDataToStore = loginResponse.data.data;
-                
-                // Đảm bảo avatar từ Google được lưu
-                if (userInfo.data.picture && !userDataToStore.avatar && !userDataToStore.avatarUrl) {
-                    userDataToStore.avatar = userInfo.data.picture;
-                    userDataToStore.avatarUrl = userInfo.data.picture;
-                }
-                
-                localStorage.setItem('user', JSON.stringify(userDataToStore));
-                
-                const access = getCookie('access');
-                const role = jwtDecode(access)?.role;
-
-                enqueueSnackbar(loginResponse.data.message, {variant: 'success', autoHideDuration: 1000});
-
-                setTimeout(() => {
-                    switch (role) {
-                        case 'ADMIN':
-                            navigate('/admin/dashboard', {replace: true});
-                            break;
-                        case 'SELLER':
-                            navigate('/seller/dashboard', {replace: true});
-                            break;
-                        case 'BUYER': {
-                            const target = redirectTo || '/';
-                            navigate(target, {replace: true});
-                            break;
-                        }
-                        default:
-                            navigate('/', {replace: true});
-                            break;
-                    }
-                }, 1000)
-            }
-        } catch (error) {
-            console.error('HandleLogin error:', error);
-            if (error.response) {
-                console.error('Error response:', error.response);
-                enqueueSnackbar(error.response.data.message || "Đăng nhập thất bại", {variant: "error"});
-            } else if (error.request) {
-                console.error('Network error:', error.request);
-                enqueueSnackbar("Không thể kết nối đến máy chủ", {variant: "error"});
-            } else {
-                console.error('Other error:', error);
-                enqueueSnackbar("Đăng nhập thất bại", {variant: "error"});
-            }
-        } finally {
-            setIsLoading(false);
-        }
+  // If already logged in -> redirect
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('user')
+      if (raw) {
+        navigate(redirectTo || '/', { replace: true })
+      }
+    } catch {
+      /* noop */
     }
+  }, [navigate, redirectTo])
 
-    async function HandleSuccess(tokenResponse) {
-        try {
-            const userInfo = await axios.get(
-                'https://www.googleapis.com/oauth2/v3/userinfo',
-                {
-                    headers: {
-                        Authorization: `Bearer ${tokenResponse.access_token}`,
-                    },
-                }
-            );
-
-            if (userInfo) {
-                await HandleLogin(userInfo);
-            } else {
-                throw new Error('No user info in response');
-            }
-        } catch (e) {
-            enqueueSnackbar("Không thể lấy thông tin người dùng", {variant: "error"});
-            setIsLoading(false);
-        }
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    try {
+      await new Promise(res => setTimeout(res, 700))
+      const mockUser = {
+        id: 1,
+        email,
+        name: email.split('@')[0] || 'Người dùng',
+        role: 'BUYER',
+        avatar: ''
+      }
+      localStorage.setItem('user', JSON.stringify(mockUser))
+      enqueueSnackbar('Đăng nhập thành công!', { variant: 'success' })
+      navigate(redirectTo || '/', { replace: true })
+    } catch (err) {
+      enqueueSnackbar('Đăng nhập thất bại', { variant: 'error' })
+    } finally {
+      setIsLoading(false)
     }
+  }
 
-    function HandleError() {
-        enqueueSnackbar("Đăng nhập thất bại", {variant: "error"});
-        setIsLoading(false);
-    }
-
-    const login = useGoogleLogin({
-        onSuccess: HandleSuccess,
-        onError: HandleError,
-        scope: 'openid email profile'
-    });
-
-    // Check if already logged in
-    useEffect(() => {
-        try {
-            const access = getCookie('access')
-            if (access) {
-                const role = jwtDecode(access)?.role
-                switch (role) {
-                    case 'ADMIN':
-                        navigate('/admin/dashboard', {replace: true})
-                        break
-                    case 'SELLER':
-                        navigate('/seller/dashboard', {replace: true})
-                        break
-                    case 'BUYER':
-                        navigate('/login', {replace: true})
-                        break
-                    default:
-                        navigate('/', {replace: true})
-                }
-            }
-        } catch (error) {
-            localStorage.clear()
-        }
-    }, [navigate]);
-
-    document.title = "Đăng nhập | Lá Nhỏ Bên Thềm"
+    document.title = "Đăng nhập | Sunshine"
 
     return (
         <Box
@@ -297,61 +228,54 @@ export default function SignIn() {
                     </Typography>
                 </Box>
 
-                {/* Google Login Button */}
-                <Box sx={{mb: 4}}>
-                    <Button
-                        variant="contained"
-                        size="large"
-                        startIcon={isLoading ? null : <GoogleIcon sx={{fontSize: 20}}/>}
-                        onClick={() => !isLoading && login()}
-                        disabled={isLoading}
-                        sx={{
-                            background: isLoading
-                                ? "linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%)"
-                                : "linear-gradient(135deg, #2D6A4F 0%, #1B4332 100%)",
-                            color: 'white',
-                            fontWeight: 600,
-                            px: 5,
-                            py: 1.5,
-                            fontSize: "1rem",
-                            borderRadius: 3,
-                            boxShadow: isLoading
-                                ? "0 4px 15px rgba(149, 165, 166, 0.4)"
-                                : "0 8px 25px rgba(45, 106, 79, 0.4)",
-                            textTransform: "none",
-                            width: "100%",
-                            maxWidth: 300,
-                            position: "relative",
-                            overflow: "hidden",
-                            "&::before": {
-                                content: '""',
-                                position: "absolute",
-                                top: 0,
-                                left: "-100%",
-                                width: "100%",
-                                height: "100%",
-                                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
-                                transition: "left 0.5s"
-                            },
-                            "&:hover": {
-                                background: isLoading
-                                    ? "linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%)"
-                                    : "linear-gradient(135deg, #1B4332 0%, #2D6A4F 100%)",
-                                boxShadow: isLoading
-                                    ? "0 4px 15px rgba(149, 165, 166, 0.4)"
-                                    : "0 12px 35px rgba(45, 106, 79, 0.6)",
-                                transform: isLoading ? "none" : "translateY(-2px)",
-                                "&::before": {
-                                    left: isLoading ? "-100%" : "100%"
-                                }
-                            },
-                            "&:active": {
-                                transform: "translateY(0px)"
-                            },
-                            transition: "all 0.3s ease"
+                {/* Login Form */}
+                <Box component="form" onSubmit={handleLogin} sx={{mb: 2}}>
+                    <TextField
+                        fullWidth
+                        type="email"
+                        label="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        margin="normal"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Email sx={{ color: 'text.secondary' }} />
+                                </InputAdornment>
+                            )
                         }}
+                    />
+                    <TextField
+                        fullWidth
+                        type={showPassword ? 'text' : 'password'}
+                        label="Mật khẩu"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        margin="normal"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Lock sx={{ color: 'text.secondary' }} />
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={() => setShowPassword(v => !v)} edge="end">
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disabled={isLoading}
+                        fullWidth
+                        sx={{ mt: 2 }}
+                        startIcon={isLoading ? <CircularProgress size={18} /> : null}
                     >
-                        {isLoading ? "Đang đăng nhập..." : "Đăng nhập với Google"}
+                        {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
                     </Button>
                 </Box>
 

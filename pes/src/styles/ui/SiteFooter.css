@@ -1,13 +1,9 @@
-:root {
-    --primary-green: #0D3B2E;
-    --yellow-gold: #FFD700;
-    --white: #FFFFFF;
-    --light-gray: #f5f5f5;
-}
-
+    /* Footer Styles - MerryStar Design */
 .footer {
-    background: var(--primary-green);
-    color: var(--white);
+    background-color: #F5E6D3;
+    color: #2C3E50;
+    padding: 3rem 0 1rem;
+    font-family: "Mali", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
 }
 
 .container {
@@ -16,15 +12,15 @@
     padding: 0 1rem;
 }
 
-/* Main Footer Section */
+/* Main Footer Section - Two Columns */
 .footer__main {
-    padding: 48px 0 32px;
+    margin-bottom: 2rem;
 }
 
 .footer__grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 32px;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
 }
 
 .footer__column {
@@ -33,41 +29,49 @@
 }
 
 .footer__title {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--yellow-gold);
-    margin: 0 0 16px;
+    color: #2C3E50;
+    margin-bottom: 2rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 1px;
 }
 
-.footer__desc {
-    color: var(--white);
-    line-height: 1.6;
-    margin-bottom: 20px;
-    opacity: 0.9;
+/* Contact Section */
+.contact__section {
+    margin-bottom: 2rem;
+}
+
+.contact__subtitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2C3E50;
+    margin-bottom: 1rem;
 }
 
 .footer__contact {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0.75rem;
 }
 
 .contact__item {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--white);
-    font-size: 14px;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1rem;
+    color: #2C3E50;
+    line-height: 1.5;
 }
 
 .contact__icon {
-    width: 18px;
-    height: 18px;
-    color: var(--yellow-gold);
+    font-size: 1.2rem;
+    color: #2C3E50;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
 }
 
+/* Quick Links */
 .footer__list {
     list-style: none;
     padding: 0;
@@ -75,126 +79,59 @@
 }
 
 .footer__list li {
-    margin: 8px 0;
+    margin-bottom: 0.75rem;
 }
 
 .footer__list a {
-    color: var(--white);
+    color: #2C3E50;
     text-decoration: none;
-    font-size: 14px;
-    opacity: 0.9;
-    transition: all 0.2s ease;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+    display: block;
 }
 
 .footer__list a:hover {
-    color: var(--yellow-gold);
-    text-decoration: underline;
+    color: #FF6B35;
 }
 
-
-/* Bottom Bar */
+/* Bottom Bar - Copyright */
 .footer__bottom {
-    padding: 24px 0;
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.footer__bottom-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 24px;
-}
-
-.footer__policies {
-    display: flex;
-    gap: 24px;
-}
-
-.policy__link {
-    color: var(--white);
-    text-decoration: none;
-    font-size: 14px;
-    opacity: 0.9;
-    transition: all 0.2s ease;
-}
-
-.policy__link:hover {
-    color: var(--yellow-gold);
-    text-decoration: underline;
+    border-top: 1px solid #E9ECEF;
+    padding: 1.5rem 0;
+    background-color: #F5E6D3;
 }
 
 .footer__copyright {
-    flex: 1;
-    text-align: center;
+    color: #2C3E50;
+    font-size: 0.9rem;
+    text-align: left;
 }
 
 .footer__copyright p {
-    color: var(--white);
-    font-size: 14px;
     margin: 0;
-    opacity: 0.9;
-}
-
-.footer__social {
-    display: flex;
-    gap: 16px;
-}
-
-.social__link {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--white);
-    text-decoration: none;
-    font-size: 14px;
-    opacity: 0.9;
-    transition: all 0.2s ease;
-}
-
-.social__link:hover {
-    color: var(--yellow-gold);
-    opacity: 1;
-}
-
-.social__icon {
-    width: 18px;
-    height: 18px;
+    text-align: center;
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-    .footer__grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-    }
-}
-
 @media (max-width: 768px) {
     .footer__grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 2rem;
     }
     
-    .footer__bottom-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 16px;
+    .footer__title {
+        font-size: 1.3rem;
     }
     
-    .footer__policies {
-        flex-direction: column;
-        gap: 12px;
+    .contact__subtitle {
+        font-size: 1rem;
     }
     
-    .footer__social {
-        justify-content: center;
+    .contact__item {
+        font-size: 0.9rem;
+    }
+    
+    .footer__list a {
+        font-size: 0.9rem;
     }
 }
-
-@media (max-width: 480px) {
-    .footer__main {
-        padding: 32px 0 24px;
-    }
-}
-
-
