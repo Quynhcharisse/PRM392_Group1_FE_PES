@@ -17,7 +17,8 @@ import {
     Groups as GroupsIcon,
     Info as InfoIcon,
     KeyboardArrowDown as KeyboardArrowDownIcon,
-    Language as LanguageIcon
+    Language as LanguageIcon,
+    ArrowDropDown as ArrowDropDownIcon
 } from '@mui/icons-material'
 import {enqueueSnackbar} from 'notistack'
 
@@ -25,8 +26,14 @@ export default function SiteHeader() {
     const navigate = useNavigate()
     const location = useLocation()
     const [anchorEl, setAnchorEl] = useState(null)
+    const [introMenuAnchor, setIntroMenuAnchor] = useState(null)
+    const [teamMenuAnchor, setTeamMenuAnchor] = useState(null)
+    const [educationMenuAnchor, setEducationMenuAnchor] = useState(null)
     const [currentUser, setCurrentUser] = useState(null)
     const menuOpen = Boolean(anchorEl)
+    const introMenuOpen = Boolean(introMenuAnchor)
+    const teamMenuOpen = Boolean(teamMenuAnchor)
+    const educationMenuOpen = Boolean(educationMenuAnchor)
 
     useEffect(() => {
         const raw = localStorage.getItem('user')
@@ -52,6 +59,45 @@ export default function SiteHeader() {
     
     const handleOpenMenu = (event) => setAnchorEl(event.currentTarget)
     const handleCloseMenu = () => setAnchorEl(null)
+    
+    const handleOpenIntroMenu = (event) => setIntroMenuAnchor(event.currentTarget)
+    const handleCloseIntroMenu = () => setIntroMenuAnchor(null)
+    
+    const handleOpenTeamMenu = (event) => setTeamMenuAnchor(event.currentTarget)
+    const handleCloseTeamMenu = () => setTeamMenuAnchor(null)
+    
+    const handleOpenEducationMenu = (event) => setEducationMenuAnchor(event.currentTarget)
+    const handleCloseEducationMenu = () => setEducationMenuAnchor(null)
+    
+    const handleIntroMenuClick = (tabIndex) => {
+        handleCloseIntroMenu()
+        // Navigate to home page and scroll to specific intro tab
+        navigate('/')
+        setTimeout(() => {
+            // Trigger intro tab change by dispatching a custom event
+            window.dispatchEvent(new CustomEvent('changeIntroTab', { detail: { tabIndex } }))
+        }, 100)
+    }
+    
+    const handleTeamMenuClick = (tabIndex) => {
+        handleCloseTeamMenu()
+        // Navigate to home page and scroll to specific team tab
+        navigate('/')
+        setTimeout(() => {
+            // Trigger team tab change by dispatching a custom event
+            window.dispatchEvent(new CustomEvent('changeTeamTab', { detail: { tabIndex } }))
+        }, 100)
+    }
+    
+    const handleEducationMenuClick = (tabIndex) => {
+        handleCloseEducationMenu()
+        // Navigate to home page and scroll to specific education tab
+        navigate('/')
+        setTimeout(() => {
+            // Trigger education tab change by dispatching a custom event
+            window.dispatchEvent(new CustomEvent('changeEducationTab', { detail: { tabIndex } }))
+        }, 100)
+    }
 
     const handleLogout = async () => {
         try {
@@ -85,18 +131,192 @@ export default function SiteHeader() {
 
                     {/* Center - Navigation Menu */}
                     <nav className="header__navigation">
-                        <NavLink to="/gioi-thieu" className="nav__item">
+                        <Box
+                            className="nav__item"
+                            onClick={handleOpenIntroMenu}
+                            sx={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5,
+                                px: 2,
+                                py: 1,
+                                borderRadius: 1,
+                                transition: 'all 0.3s ease',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                }
+                            }}
+                        >
                             <span>GIỚI THIỆU</span>
-                            <KeyboardArrowDownIcon fontSize="small" />
-                        </NavLink>
-                        <NavLink to="/doi-ngu" className="nav__item">
+                            <ArrowDropDownIcon fontSize="small" />
+                        </Box>
+                        
+                        {/* Introduction Dropdown Menu */}
+                        <Menu
+                            anchorEl={introMenuAnchor}
+                            open={introMenuOpen}
+                            onClose={handleCloseIntroMenu}
+                            slotProps={{
+                                paper: {
+                                    elevation: 3,
+                                    sx: {
+                                        mt: 1,
+                                        minWidth: 280,
+                                        borderRadius: 2,
+                                        '& .MuiMenuItem-root': {
+                                            px: 2,
+                                            py: 1.5,
+                                            fontSize: '14px',
+                                            fontWeight: 500,
+                                        }
+                                    }
+                                }
+                            }}
+                            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+                            anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                        >
+                            <MenuItem onClick={() => handleIntroMenuClick(0)}>
+                                <ListItemIcon>
+                                    <InfoIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                </ListItemIcon>
+                                Về chúng tôi
+                            </MenuItem>
+                            <MenuItem onClick={() => handleIntroMenuClick(1)}>
+                                <ListItemIcon>
+                                    <PersonIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                </ListItemIcon>
+                                Thông điệp Hiệu trưởng
+                            </MenuItem>
+                            <MenuItem onClick={() => handleIntroMenuClick(2)}>
+                                <ListItemIcon>
+                                    <GroupsIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                </ListItemIcon>
+                                Chân dung học sinh
+                            </MenuItem>
+                            <MenuItem onClick={() => handleIntroMenuClick(3)}>
+                                <ListItemIcon>
+                                    <SchoolIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                </ListItemIcon>
+                                Cơ sở vật chất
+                            </MenuItem>
+                            <MenuItem onClick={() => handleIntroMenuClick(4)}>
+                                <ListItemIcon>
+                                    <EventIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                </ListItemIcon>
+                                Tại sao nên chọn MerryStar Kindergarten?
+                            </MenuItem>
+                        </Menu>
+                        <Box
+                            className="nav__item"
+                            onClick={handleOpenTeamMenu}
+                            sx={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5,
+                                px: 2,
+                                py: 1,
+                                borderRadius: 1,
+                                transition: 'all 0.3s ease',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                }
+                            }}
+                        >
                             <span>ĐỘI NGŨ</span>
-                            <KeyboardArrowDownIcon fontSize="small" />
-                        </NavLink>
-                        <NavLink to="/chuong-trinh-giao-duc" className="nav__item">
+                            <ArrowDropDownIcon fontSize="small" />
+                        </Box>
+                        
+                        {/* Team Dropdown Menu */}
+                        <Menu
+                            anchorEl={teamMenuAnchor}
+                            open={teamMenuOpen}
+                            onClose={handleCloseTeamMenu}
+                            slotProps={{
+                                paper: {
+                                    elevation: 3,
+                                    sx: {
+                                        mt: 1,
+                                        minWidth: 250,
+                                        borderRadius: 2,
+                                        '& .MuiMenuItem-root': {
+                                            px: 2,
+                                            py: 1.5,
+                                            fontSize: '14px',
+                                            fontWeight: 500,
+                                        }
+                                    }
+                                }
+                            }}
+                            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+                            anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                        >
+                            <MenuItem onClick={() => handleTeamMenuClick(0)}>
+                                <ListItemIcon>
+                                    <GroupsIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                </ListItemIcon>
+                                Hội Đồng Khoa Học
+                            </MenuItem>
+                            <MenuItem onClick={() => handleTeamMenuClick(1)}>
+                                <ListItemIcon>
+                                    <SchoolIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                </ListItemIcon>
+                                Đội Ngũ Giáo Viên
+                            </MenuItem>
+                        </Menu>
+                        <Box
+                            className="nav__item"
+                            onClick={handleOpenEducationMenu}
+                            sx={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5,
+                                px: 2,
+                                py: 1,
+                                borderRadius: 1,
+                                transition: 'all 0.3s ease',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                }
+                            }}
+                        >
                             <span>CHƯƠNG TRÌNH GIÁO DỤC</span>
-                            <KeyboardArrowDownIcon fontSize="small" />
-                        </NavLink>
+                            <ArrowDropDownIcon fontSize="small" />
+                        </Box>
+                        
+                        {/* Education Dropdown Menu */}
+                        <Menu
+                            anchorEl={educationMenuAnchor}
+                            open={educationMenuOpen}
+                            onClose={handleCloseEducationMenu}
+                            slotProps={{
+                                paper: {
+                                    elevation: 3,
+                                    sx: {
+                                        mt: 1,
+                                        minWidth: 280,
+                                        borderRadius: 2,
+                                        '& .MuiMenuItem-root': {
+                                            px: 2,
+                                            py: 1.5,
+                                            fontSize: '14px',
+                                            fontWeight: 500,
+                                        }
+                                    }
+                                }
+                            }}
+                            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+                            anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                        >
+                            <MenuItem onClick={() => handleEducationMenuClick(0)}>
+                                <ListItemIcon>
+                                    <EventIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                </ListItemIcon>
+                                Chương trình học
+                            </MenuItem>
+                        </Menu>
                         <NavLink to="/tuyen-sinh" className="nav__item">
                             <span>TUYỂN SINH</span>
                             <KeyboardArrowDownIcon fontSize="small" />

@@ -992,8 +992,8 @@ function SlideBar() {
     )
 }
 
-// Navigation Tabs Component
-function NavigationTabs({ activeTab, setActiveTab }) {
+// Introduction Navigation Tabs Component
+function IntroNavigationTabs({ activeTab, setActiveTab }) {
     const tabs = [
         { id: 0, label: 'Về chúng tôi' },
         { id: 1, label: 'Thông điệp Hiệu trưởng' },
@@ -1061,9 +1061,23 @@ function NavigationTabs({ activeTab, setActiveTab }) {
     )
 }
 
-// Content Sections Component
-function ContentSections() {
+// Introduction Content Sections Component
+function IntroContentSections() {
     const [activeTab, setActiveTab] = useState(0) // Default to "Về chúng tôi"
+    
+    // Listen for custom intro tab change events from header navigation
+    useEffect(() => {
+        const handleIntroTabChange = (event) => {
+            const { tabIndex } = event.detail
+            setActiveTab(tabIndex)
+        }
+        
+        window.addEventListener('changeIntroTab', handleIntroTabChange)
+        
+        return () => {
+            window.removeEventListener('changeIntroTab', handleIntroTabChange)
+        }
+    }, [])
     
     const sections = {
         0: {
@@ -1738,7 +1752,769 @@ function ContentSections() {
 
     return (
         <Box>
-            <NavigationTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+            <IntroNavigationTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+            <Container sx={{ mt: 5 }}>
+                {sections[activeTab]?.content}
+            </Container>
+        </Box>
+    )
+}
+
+// Team Content Sections Component
+function TeamContentSections() {
+    const [activeTab, setActiveTab] = useState(0) // Default to "Hội Đồng Khoa Học"
+    
+    // Listen for custom team tab change events from header navigation
+    useEffect(() => {
+        const handleTeamTabChange = (event) => {
+            const { tabIndex } = event.detail
+            setActiveTab(tabIndex)
+        }
+        
+        window.addEventListener('changeTeamTab', handleTeamTabChange)
+        
+        return () => {
+            window.removeEventListener('changeTeamTab', handleTeamTabChange)
+        }
+    }, [])
+    
+    const sections = {
+        0: {
+            title: 'Hội Đồng Khoa Học',
+            content: (
+                <Box sx={{ py: 6 }}>
+                    {/* Main Title Section */}
+                    <Box sx={{ textAlign: 'center', mb: 6 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+                            <Typography variant="h3" fontWeight={800} color="#2C3E50" sx={{ textTransform: 'uppercase', letterSpacing: '2px' }}>
+                                HỘI ĐỒNG KHOA HỌC
+                            </Typography>
+                            <Box sx={{ ml: 2, fontSize: '32px' }}>⭐</Box>
+                        </Box>
+                        <Box sx={{ 
+                            width: 60, 
+                            height: 4, 
+                            backgroundColor: '#3498DB', 
+                            mx: 'auto',
+                            borderRadius: 2
+                        }} />
+                    </Box>
+
+                    {/* Introduction Text */}
+                    <Box sx={{ mb: 6 }}>
+                        <Typography variant="body1" sx={{ fontSize: '18px', lineHeight: 1.8, mb: 4, color: '#2C3E50', textAlign: 'center' }}>
+                            Mỗi em bé sinh ra đã là một "kỳ quan của cuộc sống", xứng đáng được lớn lên trong môi trường giáo dục 
+                            tràn đầy tình yêu thương và hạnh phúc. Đó là động lực để đội ngũ những nhà giáo dục tâm huyết sáng lập 
+                            nên Hệ thống Mầm non Song ngữ MerryStar với mục tiêu xây dựng và phát triển một môi trường học tập 
+                            theo tiêu chuẩn quốc tế, nơi con trẻ được phát triển cân bằng về Thể chất, Tâm hồn và Trí tuệ từ những năm đầu đời.
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontSize: '18px', lineHeight: 1.8, mb: 4, color: '#2C3E50', textAlign: 'center' }}>
+                            Hội đồng Khoa học của MerryStar tự hào quy tụ Đội ngũ Nhân sự chiến lược là các Chuyên gia hàng đầu 
+                            của Quốc tế và Việt Nam trong lĩnh vực Giáo dục, Dinh dưỡng và Phát triển thể chất cho trẻ Mầm non:
+                        </Typography>
+                    </Box>
+
+                    {/* Executive Board */}
+                    <Box sx={{ mb: 6 }}>
+                        <Typography variant="h4" fontWeight={700} color="#2C3E50" sx={{ mb: 4, textAlign: 'center' }}>
+                            BAN ĐIỀU HÀNH
+                        </Typography>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: {xs: '1fr', md: '1fr 1fr'}, gap: 4 }}>
+                            <Box sx={{ p: 3, border: '1px solid #E0E0E0', borderRadius: 2, textAlign: 'center' }}>
+                                <Typography variant="h6" fontWeight={600} color="#FF6B35" gutterBottom>
+                                    Cô Bùi Thanh Anh
+                                </Typography>
+                                <Typography variant="body2" color="#666">
+                                    Giám đốc Kiểm soát chất lượng
+                                </Typography>
+                            </Box>
+                            <Box sx={{ p: 3, border: '1px solid #E0E0E0', borderRadius: 2, textAlign: 'center' }}>
+                                <Typography variant="h6" fontWeight={600} color="#FF6B35" gutterBottom>
+                                    Cô Nguyễn Thị Thu
+                                </Typography>
+                                <Typography variant="body2" color="#666">
+                                    Quản lý Chương trình
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+
+                    {/* Professional Board */}
+                    <Box sx={{ mb: 6 }}>
+                        <Typography variant="h4" fontWeight={700} color="#2C3E50" sx={{ mb: 4, textAlign: 'center' }}>
+                            BAN CHUYÊN MÔN
+                        </Typography>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: {xs: '1fr', md: '1fr 1fr'}, gap: 4 }}>
+                            <Box sx={{ p: 3, border: '1px solid #E0E0E0', borderRadius: 2, textAlign: 'center' }}>
+                                <Typography variant="h6" fontWeight={600} color="#FF6B35" gutterBottom>
+                                    Cô Nguyễn Thị Hà
+                                </Typography>
+                                <Typography variant="body2" color="#666" sx={{ mb: 1 }}>
+                                    Nhà sáng lập - Chủ tịch HĐQT
+                                </Typography>
+                                <Typography variant="body2" color="#666">
+                                    Chuyên gia về giáo dục Mầm non
+                                </Typography>
+                            </Box>
+                            <Box sx={{ p: 3, border: '1px solid #E0E0E0', borderRadius: 2, textAlign: 'center' }}>
+                                <Typography variant="h6" fontWeight={600} color="#FF6B35" gutterBottom>
+                                    Ông Ngô Minh Tuấn
+                                </Typography>
+                                <Typography variant="body2" color="#666" sx={{ mb: 1 }}>
+                                    Nhà sáng lập - Phó Chủ tịch HĐQT
+                                </Typography>
+                                <Typography variant="body2" color="#666">
+                                    Chuyên gia Cố vấn Chương trình Giáo dục
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+
+                    {/* Experience Description */}
+                    <Box sx={{ mb: 6, p: 4, backgroundColor: '#F8F9FA', borderRadius: 3 }}>
+                        <Typography variant="body1" sx={{ fontSize: '16px', lineHeight: 1.8, color: '#2C3E50', textAlign: 'center' }}>
+                            Với kinh nghiệm hàng chục năm trong công tác lãnh đạo tại những Hệ thống Giáo dục Mầm non và các Cơ quan – 
+                            Tổ chức uy tín nhất tại Việt Nam và thế giới, Đội ngũ Nhân sự chiến lược tại MerryStar đã không ngừng nghiên cứu 
+                            và đúc kết những tư tưởng giáo dục tiên phong, cũng như các phương pháp tối ưu trong chăm sóc và nuôi dưỡng trẻ em 
+                            tại các quốc gia tiên tiến trên toàn cầu. Đó là nền tảng vững chắc để quá trình vận hành và quản lý chất lượng 
+                            giáo dục tại MerryStar đạt hiệu quả cao nhất, tạo nên môi trường học tập tối ưu cho các bé.
+                        </Typography>
+                    </Box>
+
+                    {/* Team Members Grid */}
+                    <Box sx={{ mb: 4 }}>
+                        <Typography variant="h5" fontWeight={700} color="#2C3E50" sx={{ mb: 4, textAlign: 'center' }}>
+                            Cùng gặp gỡ các Chuyên gia trong Hội đồng Khoa học của MerryStar
+                        </Typography>
+                        
+                        <Box sx={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: {
+                                xs: '1fr', 
+                                sm: 'repeat(2, 1fr)', 
+                                lg: 'repeat(3, 1fr)'
+                            }, 
+                            gap: 4,
+                            '& > *:nth-child(4)': {
+                                gridColumn: { lg: '2' }
+                            },
+                            '& > *:nth-child(5)': {
+                                gridColumn: { lg: '3' }
+                            }
+                        }}>
+                            {/* Nguyễn Thị Hà */}
+                            <Box sx={{ 
+                                p: 3, 
+                                border: '1px solid #E0E0E0', 
+                                borderRadius: 2,
+                                textAlign: 'center',
+                                '&:hover': { 
+                                    boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                                    transform: 'translateY(-2px)',
+                                    transition: 'all 0.3s ease'
+                                }
+                            }}>
+                                <Box sx={{ 
+                                    width: 120, 
+                                    height: 120, 
+                                    mx: 'auto', 
+                                    mb: 2,
+                                    borderRadius: '50%',
+                                    backgroundImage: 'url(/nguyenthiha.png)',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    border: '3px solid #FF6B35'
+                                }} />
+                                <Typography variant="h6" fontWeight={700} color="#2C3E50" sx={{ mb: 1, fontSize: '14px' }}>
+                                    NCS THS. NGUYỄN THỊ HÀ
+                                </Typography>
+                                <Typography variant="body2" fontWeight={600} color="#FF6B35" sx={{ mb: 1 }}>
+                                    Nhà sáng lập | Chủ tịch HĐQT
+                                </Typography>
+                                <Typography variant="body2" color="#666" sx={{ fontSize: '12px', lineHeight: 1.4, mb: 1 }}>
+                                    Chuyên gia về giáo dục Mầm non
+                                </Typography>
+                                <Typography variant="body2" color="#666" sx={{ fontSize: '11px', lineHeight: 1.3 }}>
+                                    Nguyên Giám đốc Khối Mầm non miền Bắc, Hệ thống Giáo dục Vinschool (Vingroup)
+                                </Typography>
+                            </Box>
+
+                            {/* Ngô Minh Tuấn */}
+                            <Box sx={{ 
+                                p: 3, 
+                                border: '1px solid #E0E0E0', 
+                                borderRadius: 2,
+                                textAlign: 'center',
+                                '&:hover': { 
+                                    boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                                    transform: 'translateY(-2px)',
+                                    transition: 'all 0.3s ease'
+                                }
+                            }}>
+                                <Box sx={{ 
+                                    width: 120, 
+                                    height: 120, 
+                                    mx: 'auto', 
+                                    mb: 2,
+                                    borderRadius: '50%',
+                                    backgroundImage: 'url(/ngominhtuan.png)',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    border: '3px solid #FF6B35'
+                                }} />
+                                <Typography variant="h6" fontWeight={700} color="#2C3E50" sx={{ mb: 1, fontSize: '14px' }}>
+                                    ÔNG NGÔ MINH TUẤN
+                                </Typography>
+                                <Typography variant="body2" fontWeight={600} color="#FF6B35" sx={{ mb: 1 }}>
+                                    Nhà sáng lập | Phó Chủ tịch HĐQT
+                                </Typography>
+                                <Typography variant="body2" color="#666" sx={{ fontSize: '12px', lineHeight: 1.4, mb: 1 }}>
+                                    Chuyên gia Cố vấn Chương trình Giáo dục
+                                </Typography>
+                                <Typography variant="body2" color="#666" sx={{ fontSize: '11px', lineHeight: 1.3 }}>
+                                    Chủ tịch HĐQT Tập đoàn CEO Việt Nam Holding
+                                </Typography>
+                            </Box>
+
+                            {/* Bùi Thanh Anh */}
+                            <Box sx={{ 
+                                p: 3, 
+                                border: '1px solid #E0E0E0', 
+                                borderRadius: 2,
+                                textAlign: 'center',
+                                '&:hover': { 
+                                    boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                                    transform: 'translateY(-2px)',
+                                    transition: 'all 0.3s ease'
+                                }
+                            }}>
+                                <Box sx={{ 
+                                    width: 120, 
+                                    height: 120, 
+                                    mx: 'auto', 
+                                    mb: 2,
+                                    borderRadius: '50%',
+                                    backgroundImage: 'url(/buithanhanh.png)',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    border: '3px solid #FF6B35'
+                                }} />
+                                <Typography variant="h6" fontWeight={700} color="#2C3E50" sx={{ mb: 1, fontSize: '14px' }}>
+                                    NCS THS. BÙI THANH ANH
+                                </Typography>
+                                <Typography variant="body2" fontWeight={600} color="#FF6B35" sx={{ mb: 1 }}>
+                                    Nhà đồng sáng lập | Giám đốc Kiểm soát chất lượng
+                                </Typography>
+                                <Typography variant="body2" color="#666" sx={{ fontSize: '12px', lineHeight: 1.4, mb: 1 }}>
+                                    Chuyên gia về giáo dục Mầm non
+                                </Typography>
+                                <Typography variant="body2" color="#666" sx={{ fontSize: '11px', lineHeight: 1.3 }}>
+                                    Nguyên Hiệu trưởng Trường Mầm non, Hệ thống Giáo dục Vinschool (Vingroup)
+                                </Typography>
+                            </Box>
+
+                            {/* Nguyễn Thị Thu */}
+                            <Box sx={{ 
+                                p: 3, 
+                                border: '1px solid #E0E0E0', 
+                                borderRadius: 2,
+                                textAlign: 'center',
+                                '&:hover': { 
+                                    boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                                    transform: 'translateY(-2px)',
+                                    transition: 'all 0.3s ease'
+                                }
+                            }}>
+                                <Box sx={{ 
+                                    width: 120, 
+                                    height: 120, 
+                                    mx: 'auto', 
+                                    mb: 2,
+                                    borderRadius: '50%',
+                                    backgroundImage: 'url(/nguyenthithu.png)',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    border: '3px solid #FF6B35'
+                                }} />
+                                <Typography variant="h6" fontWeight={700} color="#2C3E50" sx={{ mb: 1, fontSize: '14px' }}>
+                                    CÔ NGUYỄN THỊ THU
+                                </Typography>
+                                <Typography variant="body2" fontWeight={600} color="#FF6B35" sx={{ mb: 1 }}>
+                                    Quản lý Chương trình
+                                </Typography>
+                                <Typography variant="body2" color="#666" sx={{ fontSize: '12px', lineHeight: 1.4, mb: 1 }}>
+                                    Nguyên Khối trưởng Tiếng Anh, Hệ thống Giáo dục Vinschool (Vingroup)
+                                </Typography>
+                            </Box>
+
+                            {/* Nguyễn Phùng Châu */}
+                            <Box sx={{ 
+                                p: 3, 
+                                border: '1px solid #E0E0E0', 
+                                borderRadius: 2,
+                                textAlign: 'center',
+                                '&:hover': { 
+                                    boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                                    transform: 'translateY(-2px)',
+                                    transition: 'all 0.3s ease'
+                                }
+                            }}>
+                                <Box sx={{ 
+                                    width: 120, 
+                                    height: 120, 
+                                    mx: 'auto', 
+                                    mb: 2,
+                                    borderRadius: '50%',
+                                    backgroundImage: 'url(/nguyenphungchau.png)',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    border: '3px solid #FF6B35'
+                                }} />
+                                <Typography variant="h6" fontWeight={700} color="#2C3E50" sx={{ mb: 1, fontSize: '14px' }}>
+                                    NCS THS. NGUYỄN PHÙNG CHÂU
+                                </Typography>
+                                <Typography variant="body2" fontWeight={600} color="#FF6B35" sx={{ mb: 1 }}>
+                                    Nhà sáng lập | Cố vấn ban điều hành
+                                </Typography>
+                                <Typography variant="body2" color="#666" sx={{ fontSize: '12px', lineHeight: 1.4, mb: 1 }}>
+                                    Nguyên Quản lý Tuyển sinh & CSKH miền Bắc, Hệ thống Giáo dục Vinschool
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
+            )
+        },
+        1: {
+            title: 'Đội Ngũ Giáo Viên',
+            content: (
+                <Box sx={{ py: 6 }}>
+                    {/* Main Title Section */}
+                    <Box sx={{ textAlign: 'center', mb: 6 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+                            <Typography variant="h3" fontWeight={800} color="#2C3E50" sx={{ textTransform: 'uppercase', letterSpacing: '2px' }}>
+                                ĐỘI NGŨ GIÁO VIÊN MERRYSTAR
+                            </Typography>
+                            <Box sx={{ ml: 2, fontSize: '32px' }}>⭐</Box>
+                        </Box>
+                        <Box sx={{ 
+                            width: 60, 
+                            height: 4, 
+                            backgroundColor: '#3498DB', 
+                            mx: 'auto',
+                            borderRadius: 2
+                        }} />
+                    </Box>
+
+                    {/* Introduction Text */}
+                    <Box sx={{ mb: 6 }}>
+                        <Typography variant="body1" sx={{ fontSize: '18px', lineHeight: 1.8, mb: 4, color: '#2C3E50', textAlign: 'center' }}>
+                            Với mục tiêu Kiến tạo Thế hệ Công dân Toàn cầu Hạnh phúc và Thành công, MerryStar có Hệ thống tiêu chí tuyển dụng 
+                            khắt khe và Chương trình Đào tạo Giáo viên toàn diện để chiêu mộ các giáo viên có chuyên môn cao, nhiều tâm huyết 
+                            và tràn đầy tình yêu thương với trẻ. Đội ngũ giáo viên MerryStar là những nhà giáo dục dày dặn kinh nghiệm và được đào tạo bài bản.
+                        </Typography>
+                    </Box>
+
+                    {/* Recruitment Process */}
+                    <Box sx={{ mb: 6, p: 4, backgroundColor: '#F8F9FA', borderRadius: 3 }}>
+                        <Typography variant="h4" fontWeight={700} color="#2C3E50" sx={{ mb: 4, textAlign: 'center' }}>
+                            Quy trình tuyển dụng nghiêm ngặt
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontSize: '16px', lineHeight: 1.8, color: '#2C3E50', textAlign: 'center' }}>
+                            Để trở thành giáo viên của MerryStar Kindergarten, các ứng viên đều phải trải qua quy trình tuyển dụng nghiêm ngặt 
+                            bao gồm lọc hồ sơ, phỏng vấn, làm bài kiểm tra chuyên môn đầu vào và dạy thử trước Hội đồng Khoa học. Sau khi vượt qua 
+                            các vòng này, giáo viên trải qua Chương trình Đào tạo Giáo viên MerryStar và tiếp tục được kiểm tra, đánh giá trong 
+                            quá trình này trước khi chính thức trở thành giáo viên tại MerryStar.
+                        </Typography>
+                    </Box>
+
+                    {/* Work Environment & Values */}
+                    <Box sx={{ mb: 6 }}>
+                        <Typography variant="h4" fontWeight={700} color="#2C3E50" sx={{ mb: 4, textAlign: 'center' }}>
+                            Môi trường làm việc và Giá trị cốt lõi
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontSize: '16px', lineHeight: 1.8, mb: 4, color: '#2C3E50', textAlign: 'center' }}>
+                            Ngoài ra, tại MerryStar, việc xây dựng môi trường làm việc cân bằng, lan tỏa tình yêu thương luôn là ưu tiên hàng đầu. 
+                            Đây là nền tảng để bồi đắp văn hóa lan tỏa tình yêu thương giữa Gia đình – Nhà trường, thông qua sự gắn kết chặt chẽ 
+                            giữa Giáo viên, Học sinh và Phụ huynh. Qua đó, MerryStar nuôi dưỡng Tâm yêu thương cho trẻ: yêu thương bản thân, gia đình và cộng đồng.
+                        </Typography>
+                        
+                        {/* Core Values */}
+                        <Box sx={{ display: 'grid', gridTemplateColumns: {xs: '1fr', md: 'repeat(3, 1fr)'}, gap: 4, mt: 4 }}>
+                            <Box sx={{ 
+                                p: 4, 
+                                backgroundColor: '#FFF3E0', 
+                                borderRadius: 3, 
+                                textAlign: 'center',
+                                border: '2px solid #FF6B35'
+                            }}>
+                                <Typography variant="h5" fontWeight={700} color="#FF6B35" sx={{ mb: 2 }}>
+                                    YÊU THƯƠNG
+                                </Typography>
+                                <Typography variant="body2" color="#2C3E50" sx={{ fontSize: '14px', lineHeight: 1.6 }}>
+                                    Nuôi dưỡng Tâm yêu thương
+                                </Typography>
+                            </Box>
+                            <Box sx={{ 
+                                p: 4, 
+                                backgroundColor: '#E3F2FD', 
+                                borderRadius: 3, 
+                                textAlign: 'center',
+                                border: '2px solid #2196F3'
+                            }}>
+                                <Typography variant="h5" fontWeight={700} color="#2196F3" sx={{ mb: 2 }}>
+                                    TRUNG THỰC
+                                </Typography>
+                                <Typography variant="body2" color="#2C3E50" sx={{ fontSize: '14px', lineHeight: 1.6 }}>
+                                    Suy nghĩ và làm việc trung thực
+                                </Typography>
+                            </Box>
+                            <Box sx={{ 
+                                p: 4, 
+                                backgroundColor: '#E8F5E8', 
+                                borderRadius: 3, 
+                                textAlign: 'center',
+                                border: '2px solid #4CAF50'
+                            }}>
+                                <Typography variant="h5" fontWeight={700} color="#4CAF50" sx={{ mb: 2 }}>
+                                    GIÁ TRỊ
+                                </Typography>
+                                <Typography variant="body2" color="#2C3E50" sx={{ fontSize: '14px', lineHeight: 1.6 }}>
+                                    Tạo ra giá trị cho học sinh, cha mẹ và cộng đồng
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+
+                    {/* Teacher Features */}
+                    <Box sx={{ mb: 6 }}>
+                        <Typography variant="h4" fontWeight={700} color="#2C3E50" sx={{ mb: 4, textAlign: 'center' }}>
+                            Đặc điểm nổi bật của đội ngũ giáo viên
+                        </Typography>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: {xs: '1fr', md: 'repeat(2, 1fr)'}, gap: 4 }}>
+                            {[
+                                { title: 'Trình độ chuyên môn cao', desc: '100% giáo viên có bằng đại học trở lên, được đào tạo bài bản' },
+                                { title: 'Kinh nghiệm dày dặn', desc: 'Trung bình 5+ năm kinh nghiệm trong lĩnh vực mầm non' },
+                                { title: 'Tình yêu nghề', desc: 'Yêu thương và tận tâm với từng trẻ em, coi trẻ như con của mình' },
+                                { title: 'Kỹ năng giao tiếp', desc: 'Biết cách tương tác hiệu quả với trẻ và phụ huynh' },
+                                { title: 'Sáng tạo', desc: 'Luôn tìm tòi phương pháp giảng dạy mới mẻ, hấp dẫn' },
+                                { title: 'Đào tạo liên tục', desc: 'Tham gia các khóa đào tạo nâng cao định kỳ và cập nhật kiến thức' }
+                            ].map((feature, index) => (
+                                <Box key={index} sx={{ 
+                                    p: 3, 
+                                    border: '1px solid #E0E0E0', 
+                                    borderRadius: 2,
+                                    textAlign: 'center',
+                                    '&:hover': { 
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                        transform: 'translateY(-2px)',
+                                        transition: 'all 0.3s ease'
+                                    }
+                                }}>
+                                    <Typography variant="h6" fontWeight={600} color="#FF6B35" gutterBottom>
+                                        {feature.title}
+                                    </Typography>
+                                    <Typography variant="body2" color="#666">
+                                        {feature.desc}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </Box>
+                    </Box>
+
+                    {/* Call to Action */}
+                    <Box sx={{ 
+                        p: 4, 
+                        backgroundColor: '#FFF3E0', 
+                        borderRadius: 3, 
+                        textAlign: 'center',
+                        border: '2px solid #FF6B35'
+                    }}>
+                        <Typography variant="h5" fontWeight={700} color="#2C3E50" sx={{ mb: 2 }}>
+                            Hãy đến và gặp gỡ đội ngũ giáo viên của chúng tôi!
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontSize: '16px', color: '#2C3E50' }}>
+                            Đội ngũ giáo viên tận tâm và chuyên nghiệp của MerryStar sẵn sàng chào đón con bạn 
+                            đến với môi trường giáo dục tốt nhất, nơi trẻ được phát triển toàn diện về Thân - Tâm - Tuệ.
+                        </Typography>
+                    </Box>
+                </Box>
+            )
+        }
+    }
+
+    return (
+        <Box>
+            <Container sx={{ mt: 5 }}>
+                {sections[activeTab]?.content}
+            </Container>
+        </Box>
+    )
+}
+
+// Education Content Sections Component
+function EducationContentSections() {
+    const [activeTab, setActiveTab] = useState(0) // Default to "Chương trình học"
+    
+    // Listen for custom education tab change events from header navigation
+    useEffect(() => {
+        const handleEducationTabChange = (event) => {
+            const { tabIndex } = event.detail
+            setActiveTab(tabIndex)
+        }
+        
+        window.addEventListener('changeEducationTab', handleEducationTabChange)
+        
+        return () => {
+            window.removeEventListener('changeEducationTab', handleEducationTabChange)
+        }
+    }, [])
+    
+    const sections = {
+        0: {
+            title: 'Chương trình học',
+            content: (
+                <Box sx={{ py: 6 }}>
+                    {/* Main Title Section */}
+                    <Box sx={{ textAlign: 'center', mb: 6 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+                            <Typography variant="h3" fontWeight={800} color="#2C3E50" sx={{ textTransform: 'uppercase', letterSpacing: '2px' }}>
+                                CHƯƠNG TRÌNH GIÁO DỤC MERRYSTAR
+                            </Typography>
+                            <Box sx={{ ml: 2, fontSize: '32px' }}>⭐</Box>
+                        </Box>
+                        <Box sx={{ 
+                            width: 60, 
+                            height: 4, 
+                            backgroundColor: '#3498DB', 
+                            mx: 'auto',
+                            borderRadius: 2
+                        }} />
+                    </Box>
+
+                    {/* Introduction Text */}
+                    <Box sx={{ mb: 6 }}>
+                        <Typography variant="body1" sx={{ fontSize: '18px', lineHeight: 1.8, mb: 4, color: '#2C3E50', textAlign: 'center' }}>
+                            MerryStar hướng tới mô hình trường học "xuất sắc", tiên phong dẫn dắt các xu hướng giáo dục hiện đại và tiên tiến 
+                            trong nước và quốc tế nhằm mang lại giá trị vượt trội cho trẻ em. MerryStar tự hào là một trong số những cơ sở Mầm non 
+                            đầu tiên tại Việt Nam trở thành "Cambridge Early Years Centre" được Cambridge International Education chính thức công nhận, 
+                            tiên phong triển khai chương trình Mầm non Quốc tế Cambridge cho độ tuổi 3-6 tại Việt Nam.
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontSize: '18px', lineHeight: 1.8, mb: 4, color: '#2C3E50', textAlign: 'center' }}>
+                            Chương trình giáo dục tại MerryStar được thiết kế theo hướng tiếp cận chú trọng năng lực của Học sinh. 
+                            Giáo dục dựa trên năng lực (Competency based education – CBE) là cách tiếp cận giáo dục tạo ra cấu trúc linh hoạt 
+                            cho phép trẻ em tiến bộ theo tốc độ riêng của mỗi trẻ.
+                        </Typography>
+                    </Box>
+
+                    {/* Unique Features */}
+                    <Box sx={{ mb: 6 }}>
+                        <Typography variant="h4" fontWeight={700} color="#2C3E50" sx={{ mb: 4, textAlign: 'center' }}>
+                            Những điểm độc đáo trong chương trình giáo dục MerryStar
+                        </Typography>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: {xs: '1fr', md: 'repeat(2, 1fr)'}, gap: 4 }}>
+                            {[
+                                {
+                                    title: 'Phát triển cân bằng 3 giá trị',
+                                    desc: 'Tập trung phát triển cân bằng 3 giá trị "Thân – Tâm – Tuệ" dành cho thế hệ trẻ em hạnh phúc và thành công'
+                                },
+                                {
+                                    title: 'Tính kết nối chặt chẽ',
+                                    desc: 'Đảm bảo tính kết nối chặt chẽ giữa các độ tuổi nhà trẻ và mẫu giáo, liên thông với chương trình giáo dục phổ thông'
+                                },
+                                {
+                                    title: 'Lấy học sinh làm trung tâm',
+                                    desc: 'Triển khai phương pháp "lấy học sinh làm trung tâm" thông qua giảng dạy thích ứng – Adaptive teaching'
+                                },
+                                {
+                                    title: 'Bộ công cụ quan sát',
+                                    desc: 'Áp dụng sáng tạo Bộ công cụ quan sát hằng ngày và định kỳ riêng của MerryStar nhằm đánh giá chính xác năng lực'
+                                },
+                                {
+                                    title: '5 lĩnh vực học tập',
+                                    desc: 'Chương trình chú trọng phát triển với 5 lĩnh vực học tập quan trọng với 8 môn học'
+                                },
+                                {
+                                    title: 'Cá nhân hóa học tập',
+                                    desc: 'Nội dung giảng dạy được cá nhân hóa với từng trẻ, đảm bảo trẻ có cơ hội phát huy tối đa tiềm năng bản thân'
+                                }
+                            ].map((feature, index) => (
+                                <Box key={index} sx={{ 
+                                    p: 3, 
+                                    border: '1px solid #E0E0E0', 
+                                    borderRadius: 2,
+                                    '&:hover': { 
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                        transform: 'translateY(-2px)',
+                                        transition: 'all 0.3s ease'
+                                    }
+                                }}>
+                                    <Typography variant="h6" fontWeight={600} color="#FF6B35" gutterBottom>
+                                        {feature.title}
+                                    </Typography>
+                                    <Typography variant="body2" color="#666">
+                                        {feature.desc}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </Box>
+                    </Box>
+
+                    {/* 8 Subjects */}
+                    <Box sx={{ mb: 6 }}>
+                        <Typography variant="h4" fontWeight={700} color="#2C3E50" sx={{ mb: 4, textAlign: 'center' }}>
+                            8 Môn học chính trong chương trình
+                        </Typography>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: {xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)'}, gap: 3 }}>
+                            {[
+                                { name: 'Thể chất', color: '#FF6B35', icon: '🏃‍♂️' },
+                                { name: 'Toán học', color: '#2196F3', icon: '🔢' },
+                                { name: 'Khoa học', color: '#4CAF50', icon: '🔬' },
+                                { name: 'Ngôn ngữ tiếng Anh', color: '#9C27B0', icon: '🇬🇧' },
+                                { name: 'Ngôn ngữ tiếng Việt', color: '#F44336', icon: '🇻🇳' },
+                                { name: 'Âm nhạc', color: '#FF9800', icon: '🎵' },
+                                { name: 'Tạo hình', color: '#795548', icon: '🎨' },
+                                { name: 'Tình cảm và kỹ năng xã hội', color: '#607D8B', icon: '❤️' }
+                            ].map((subject, index) => (
+                                <Box key={index} sx={{ 
+                                    p: 3, 
+                                    backgroundColor: '#F8F9FA',
+                                    borderRadius: 2,
+                                    textAlign: 'center',
+                                    border: `2px solid ${subject.color}`,
+                                    '&:hover': { 
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                        transform: 'translateY(-2px)',
+                                        transition: 'all 0.3s ease'
+                                    }
+                                }}>
+                                    <Typography variant="h4" sx={{ mb: 1 }}>
+                                        {subject.icon}
+                                    </Typography>
+                                    <Typography variant="h6" fontWeight={600} color={subject.color}>
+                                        {subject.name}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </Box>
+                    </Box>
+
+                    {/* Physical Development Program */}
+                    <Box sx={{ mb: 6 }}>
+                        <Typography variant="h4" fontWeight={700} color="#2C3E50" sx={{ mb: 4, textAlign: 'center' }}>
+                            Chương trình phát triển thể chất NOVA GYM
+                        </Typography>
+                        
+                        {/* Quote Section */}
+                        <Box sx={{ textAlign: 'center', mb: 4 }}>
+                            <Typography variant="h6" fontStyle="italic" color="#666" sx={{ mb: 2 }}>
+                                "Người có sức khỏe, có hy vọng; và người có hy vọng, có tất cả mọi thứ"
+                            </Typography>
+                            <Typography variant="body2" color="#666">
+                                – Thomas Carlyle –
+                            </Typography>
+                        </Box>
+
+                        {/* Main Content with Image */}
+                        <Box sx={{ display: 'grid', gridTemplateColumns: {xs: '1fr', lg: '1fr 1fr'}, gap: 4, alignItems: 'center', mb: 4 }}>
+                            {/* Text Content */}
+                            <Box>
+                                <Typography variant="body1" sx={{ fontSize: '16px', lineHeight: 1.8, color: '#2C3E50', mb: 3 }}>
+                                    Chương trình giáo dục phát triển thể chất MerryStar được thiết kế và giám sát thực hiện bởi các chuyên gia hàng đầu 
+                                    về thể chất và dinh dưỡng với mục tiêu giúp nuôi dưỡng thế hệ học sinh MerryStar, khỏe mạnh, có sức đề kháng tốt, 
+                                    đẹp về thể hình, yêu thích thể thao, tràn đầy năng lượng.
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: '16px', lineHeight: 1.8, color: '#2C3E50', mb: 3 }}>
+                                    Tại MerryStar, Chương trình phát triển thể chất chuyên sâu NOVA GYM được xây dựng theo tiêu chuẩn Quốc tế, 
+                                    với mục tiêu hỗ trợ thế hệ trẻ em Việt Nam phát triển thể lực và tầm vóc vượt trội ngay từ giai đoạn đầu đời.
+                                </Typography>
+                                <Typography variant="body1" sx={{ fontSize: '16px', lineHeight: 1.8, color: '#2C3E50' }}>
+                                    Hiện nay, NOVA GYM là chương trình phát triển thể chất duy nhất tại Việt Nam được thiết kế theo hướng tiếp cận năng lực, 
+                                    hỗ trợ tối đa cho sự phát triển cá nhân của từng trẻ theo nhịp độ và năng lực riêng.
+                                </Typography>
+                            </Box>
+
+                            {/* Image */}
+                            <Box sx={{ 
+                                width: '100%', 
+                                height: 300,
+                                backgroundImage: 'url(/chuongtrinhgiaoduc_loinhannhu.jpg)',
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                borderRadius: 3,
+                                boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+                            }} />
+                        </Box>
+
+                        {/* Program Features */}
+                        <Box sx={{ mb: 4 }}>
+                            <Typography variant="h5" fontWeight={700} color="#2C3E50" sx={{ mb: 3, textAlign: 'center' }}>
+                                Nội dung học tập chính của chương trình
+                            </Typography>
+                            <Box sx={{ display: 'grid', gridTemplateColumns: {xs: '1fr', md: 'repeat(3, 1fr)'}, gap: 3 }}>
+                                {[
+                                    {
+                                        title: 'Phát triển vận động',
+                                        desc: 'Luyện tập và làm chủ các kỹ năng vận động cơ bản, phát triển thể lực toàn diện',
+                                        icon: '🏃‍♂️'
+                                    },
+                                    {
+                                        title: 'Giáo dục Dinh dưỡng',
+                                        desc: 'Trang bị kiến thức về sức khỏe và dinh dưỡng, hình thành thói quen ăn uống lành mạnh',
+                                        icon: '🥗'
+                                    },
+                                    {
+                                        title: 'Sức khỏe',
+                                        desc: 'Học cách bảo vệ an toàn cho bản thân, tuân thủ các nguyên tắc an toàn về dinh dưỡng và vận động',
+                                        icon: '💪'
+                                    }
+                                ].map((feature, index) => (
+                                    <Box key={index} sx={{ 
+                                        p: 3, 
+                                        backgroundColor: '#F8F9FA',
+                                        borderRadius: 2,
+                                        textAlign: 'center',
+                                        border: '1px solid #E0E0E0',
+                                        '&:hover': { 
+                                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                            transform: 'translateY(-2px)',
+                                            transition: 'all 0.3s ease'
+                                        }
+                                    }}>
+                                        <Typography variant="h4" sx={{ mb: 2 }}>
+                                            {feature.icon}
+                                        </Typography>
+                                        <Typography variant="h6" fontWeight={600} color="#FF6B35" gutterBottom>
+                                            {feature.title}
+                                        </Typography>
+                                        <Typography variant="body2" color="#666">
+                                            {feature.desc}
+                                        </Typography>
+                                    </Box>
+                                ))}
+                            </Box>
+                        </Box>
+
+                        {/* Program Benefits */}
+                        <Box sx={{ p: 4, backgroundColor: '#FFF3E0', borderRadius: 3, border: '2px solid #FF6B35' }}>
+                            <Typography variant="h5" fontWeight={700} color="#2C3E50" sx={{ mb: 3, textAlign: 'center' }}>
+                                Lợi ích cho trẻ
+                            </Typography>
+                            <Typography variant="body1" sx={{ fontSize: '16px', lineHeight: 1.8, color: '#2C3E50', textAlign: 'center' }}>
+                                Trẻ sẽ được trang bị các kiến thức về sức khỏe và dinh dưỡng, luyện tập và làm chủ các kỹ năng vận động, 
+                                có thái độ, hành vi tích cực, từ đó hình thành các thói quen sinh hoạt năng động, lành mạnh. 
+                                Trẻ cũng sẽ được học cách bảo vệ an toàn cho bản thân ở trong và ngoài trường học bằng cách tuân thủ 
+                                các nguyên tắc an toàn về dinh dưỡng, sức khoẻ và vận động.
+                            </Typography>
+                        </Box>
+                    </Box>
+                </Box>
+            )
+        }
+    }
+
+    return (
+        <Box>
             <Container sx={{ mt: 5 }}>
                 {sections[activeTab]?.content}
             </Container>
@@ -1747,10 +2523,50 @@ function ContentSections() {
 }
 
 export default function Home() {
+    const [currentSection, setCurrentSection] = useState('intro') // 'intro', 'team', or 'education'
+    
+    // Listen for section change events
+    useEffect(() => {
+        const handleIntroTabChange = () => {
+            setCurrentSection('intro')
+        }
+        
+        const handleTeamTabChange = () => {
+            setCurrentSection('team')
+        }
+        
+        const handleEducationTabChange = () => {
+            setCurrentSection('education')
+        }
+        
+        window.addEventListener('changeIntroTab', handleIntroTabChange)
+        window.addEventListener('changeTeamTab', handleTeamTabChange)
+        window.addEventListener('changeEducationTab', handleEducationTabChange)
+        
+        return () => {
+            window.removeEventListener('changeIntroTab', handleIntroTabChange)
+            window.removeEventListener('changeTeamTab', handleTeamTabChange)
+            window.removeEventListener('changeEducationTab', handleEducationTabChange)
+        }
+    }, [])
+    
+    const renderCurrentSection = () => {
+        switch (currentSection) {
+            case 'intro':
+                return <IntroContentSections />
+            case 'team':
+                return <TeamContentSections />
+            case 'education':
+                return <EducationContentSections />
+            default:
+                return <IntroContentSections />
+        }
+    }
+    
     return (
         <>
             <SlideBar/>
-            <ContentSections />
+            {renderCurrentSection()}
         </>
     )
 }
