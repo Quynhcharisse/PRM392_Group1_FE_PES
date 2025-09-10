@@ -1,4 +1,3 @@
-
 import {useEffect, useState} from "react";
 import {Navigate, useLocation} from 'react-router-dom'
 
@@ -30,12 +29,18 @@ export default function ProtectedRoute({children, allowRoles = []}) {
 
     if (checking) {
         return (
-            <div style={{display:'flex',justifyContent:'center',alignItems:'center',height:'100vh',color:'#666'}}>Đang kiểm tra...</div>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+                color: '#666'
+            }}>Checking...</div>
         )
     }
 
     if (!authorized) {
-        return <Navigate to="/login" state={{ from: location }} replace />
+        return <Navigate to="/login" state={{from: location}} replace/>
     }
 
     return children

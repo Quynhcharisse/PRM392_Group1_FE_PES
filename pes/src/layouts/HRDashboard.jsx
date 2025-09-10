@@ -1,41 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    Box,
-    Drawer,
+    alpha,
     AppBar,
-    Toolbar,
-    Typography,
-    IconButton,
     Avatar,
-    Menu,
-    MenuItem,
-    ListItemIcon,
-    ListItemText,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Chip,
+    Drawer,
+    Grid,
+    IconButton,
     List,
     ListItem,
     ListItemButton,
-    useTheme,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Toolbar,
+    Typography,
     useMediaQuery,
-    Grid,
-    Button,
-    Chip,
-    Card,
-    CardContent,
-    alpha,
+    useTheme,
 } from '@mui/material';
 import {
-    Menu as MenuIcon,
+    Business as BusinessIcon,
     Dashboard as DashboardIcon,
-    People as PeopleIcon,
     Logout as LogoutIcon,
-    Business as BusinessIcon
+    Menu as MenuIcon,
+    People as PeopleIcon
 } from '@mui/icons-material';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 
 
 const DRAWER_WIDTH = 280;
 
-// Color palette based on #0b3f31
 const colors = {
     primary: '#0b3f31',
     primaryLight: '#1a6b4e',
@@ -51,35 +50,22 @@ const colors = {
     info: '#3b82f6'
 };
 
-// Navigation configuration
 const NAVIGATION = [
     {
         segment: 'dashboard',
         title: 'Dashboard',
-        icon: <DashboardIcon />,
-        path: '/admin/dashboard'
-    },
-    {
-        segment: 'suppliers',
-        title: 'Nhà cung cấp',
-        icon: <PeopleIcon />,
-        path: '/admin/suppliers'
-    },
-    {
-        segment: 'users',
-        title: 'Quản lý người dùng',
-        icon: <PeopleIcon />,
-        path: '/admin/users'
+        icon: <DashboardIcon/>,
+        path: '/hr/dashboard'
     }
 ];
 
-function AdminDashboardContent({ session, navigate }) {
+function AdminDashboardContent({session}) {
     return (
-        <Box sx={{ px: 4, py: 5 }}>
+        <Box sx={{px: 4, py: 5}}>
             {/* Header */}
-            <Box sx={{ mb: 5 }}>
-                <Typography variant="h3" sx={{ 
-                    fontWeight: 800, 
+            <Box sx={{mb: 5}}>
+                <Typography variant="h3" sx={{
+                    fontWeight: 800,
                     background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
@@ -88,20 +74,10 @@ function AdminDashboardContent({ session, navigate }) {
                 }}>
                     {session.user.role || 'User'} Dashboard
                 </Typography>
-                <Typography variant="body1" sx={{ color: 'text.secondary', fontSize: '1.1rem' }}>
-                    Chào mừng trở lại! Đây là tổng quan về hoạt động của hệ thống
+                <Typography variant="body1" sx={{color: 'text.secondary', fontSize: '1.1rem'}}>
+                    Welcome back! This is the HR portal overview.
                 </Typography>
             </Box>
-
-            {/* Stats Cards */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12} md={6}>
-                    <BuyerStatsChart />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <SupplierStatsCard />
-                </Grid>
-            </Grid>
 
             {/* Welcome Message */}
             <Card sx={{
@@ -111,66 +87,17 @@ function AdminDashboardContent({ session, navigate }) {
                 boxShadow: `0 4px 20px ${alpha(colors.primary, 0.1)}`,
                 mb: 4
             }}>
-                <CardContent sx={{ p: 4, textAlign: 'center' }}>
-                    <Typography variant="h5" sx={{ 
-                        fontWeight: 700, 
+                <CardContent sx={{p: 4, textAlign: 'center'}}>
+                    <Typography variant="h5" sx={{
+                        fontWeight: 700,
                         mb: 2,
                         color: colors.primary
                     }}>
-                        Chào mừng đến với Admin Dashboard
+                        Welcome to the HR Dashboard
                     </Typography>
-                    <Typography variant="body1" sx={{ color: 'text.secondary', mb: 3 }}>
-                        Sử dụng menu bên trái để điều hướng đến các chức năng quản lý
+                    <Typography variant="body1" sx={{color: 'text.secondary', mb: 1}}>
+                        Use the left menu to navigate.
                     </Typography>
-                    <Box sx={{ 
-                        display: 'flex', 
-                        justifyContent: 'center', 
-                        gap: 2, 
-                        flexWrap: 'wrap' 
-                    }}>
-                        <Button
-                            variant="contained"
-                            startIcon={<BusinessIcon />}
-                            onClick={() => navigate('/admin/suppliers')}
-                            sx={{
-                                borderRadius: 3,
-                                width: 250,
-                                height: 48,
-                                textTransform: 'none',
-                                fontWeight: 600,
-                                backgroundColor: 'rgb(11, 63, 49)',
-                                '&:hover': {
-                                    backgroundColor: alpha('rgb(11, 63, 49)', 0.8),
-                                    transform: 'translateY(-2px)',
-                                    boxShadow: `0 6px 20px ${alpha('rgb(11, 63, 49)', 0.3)}`,
-                                },
-                                transition: 'all 0.3s ease'
-                            }}
-                        >
-                            Nhà cung cấp
-                        </Button>
-                        <Button
-                            variant="contained"
-                            startIcon={<PeopleIcon />}
-                            onClick={() => navigate('/admin/users')}
-                            sx={{
-                                borderRadius: 3,
-                                width: 250,
-                                height: 48,
-                                textTransform: 'none',
-                                fontWeight: 600,
-                                backgroundColor: 'rgb(11, 63, 49)',
-                                '&:hover': {
-                                    backgroundColor: alpha('rgb(11, 63, 49)', 0.8),
-                                    transform: 'translateY(-2px)',
-                                    boxShadow: `0 6px 20px ${alpha('rgb(11, 63, 49)', 0.3)}`,
-                                },
-                                transition: 'all 0.3s ease'
-                            }}
-                        >
-                            Quản lý người dùng
-                        </Button>
-                    </Box>
                 </CardContent>
             </Card>
 
@@ -183,9 +110,9 @@ function AdminDashboardContent({ session, navigate }) {
                         background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.3)} 100%)`,
                         boxShadow: `0 2px 12px ${alpha(colors.primary, 0.08)}`,
                     }}>
-                        <CardContent sx={{ p: 3 }}>
-                            <Typography variant="h6" sx={{ 
-                                fontWeight: 600, 
+                        <CardContent sx={{p: 3}}>
+                            <Typography variant="h6" sx={{
+                                fontWeight: 600,
                                 mb: 2,
                                 color: colors.primary,
                                 display: 'flex',
@@ -197,21 +124,21 @@ function AdminDashboardContent({ session, navigate }) {
                                     height: 20,
                                     backgroundColor: colors.primary,
                                     borderRadius: 1
-                                }} />
-                                Thông tin hệ thống
+                                }}/>
+                                System information
                             </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="body2" color="text.secondary">Phiên bản:</Typography>
-                                    <Chip label="v1.0.0" size="small" color="primary" variant="outlined" />
+                            <Box sx={{display: 'flex', flexDirection: 'column', gap: 1.5}}>
+                                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    <Typography variant="body2" color="text.secondary">Version:</Typography>
+                                    <Chip label="v1.0.0" size="small" color="primary" variant="outlined"/>
                                 </Box>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="body2" color="text.secondary">Trạng thái:</Typography>
-                                    <Chip label="Hoạt động" size="small" color="success" />
+                                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    <Typography variant="body2" color="text.secondary">Status:</Typography>
+                                    <Chip label="Active" size="small" color="success"/>
                                 </Box>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="body2" color="text.secondary">Cập nhật cuối:</Typography>
-                                    <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    <Typography variant="body2" color="text.secondary">Last updated:</Typography>
+                                    <Typography variant="body2" sx={{fontFamily: 'monospace'}}>
                                         {new Date().toLocaleDateString('vi-VN')}
                                     </Typography>
                                 </Box>
@@ -219,7 +146,7 @@ function AdminDashboardContent({ session, navigate }) {
                         </CardContent>
                     </Card>
                 </Grid>
-                
+
                 <Grid item xs={12} md={6}>
                     <Card sx={{
                         borderRadius: 3,
@@ -227,9 +154,9 @@ function AdminDashboardContent({ session, navigate }) {
                         background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.3)} 100%)`,
                         boxShadow: `0 2px 12px ${alpha(colors.primary, 0.08)}`,
                     }}>
-                        <CardContent sx={{ p: 3 }}>
-                            <Typography variant="h6" sx={{ 
-                                fontWeight: 600, 
+                        <CardContent sx={{p: 3}}>
+                            <Typography variant="h6" sx={{
+                                fontWeight: 600,
                                 mb: 2,
                                 color: colors.primary,
                                 display: 'flex',
@@ -241,21 +168,21 @@ function AdminDashboardContent({ session, navigate }) {
                                     height: 20,
                                     backgroundColor: colors.primary,
                                     borderRadius: 1
-                                }} />
-                                Hướng dẫn nhanh
+                                }}/>
+                                Quick guide
                             </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-                                    • Sử dụng menu bên trái để điều hướng
+                            <Box sx={{display: 'flex', flexDirection: 'column', gap: 1.5}}>
+                                <Typography variant="body2" color="text.secondary" sx={{lineHeight: 1.6}}>
+                                    • Use the left menu to navigate
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-                                    • Click "Nhà cung cấp" để quản lý danh sách nhà cung cấp
+                                <Typography variant="body2" color="text.secondary" sx={{lineHeight: 1.6}}>
+                                    • Click "Suppliers" to manage the supplier list
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-                                    • Click "Quản lý người dùng" để xem danh sách người dùng
+                                <Typography variant="body2" color="text.secondary" sx={{lineHeight: 1.6}}>
+                                    • Click "User management" to view the user list
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-                                    • Sử dụng avatar để đăng xuất hoặc xem thông tin
+                                <Typography variant="body2" color="text.secondary" sx={{lineHeight: 1.6}}>
+                                    • Use the avatar to sign out or view profile
                                 </Typography>
                             </Box>
                         </CardContent>
@@ -271,7 +198,7 @@ export default function HRDashboard() {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     const [mobileOpen, setMobileOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [session, setSession] = useState({
@@ -284,15 +211,15 @@ export default function HRDashboard() {
     });
 
     useEffect(() => {
-        document.title = 'Admin Dashboard | Lá Nhỏ Bên Thềm';
-        
+        document.title = 'Admin Dashboard | La Nho Ben Them';
+
         // Lấy thông tin user từ localStorage
         try {
             const userData = localStorage.getItem('user');
-            
+
             if (userData) {
                 const parsedUser = JSON.parse(userData);
-                
+
                 const sessionData = {
                     user: {
                         name: parsedUser.user?.name || parsedUser.name || 'Admin User',
@@ -301,7 +228,7 @@ export default function HRDashboard() {
                         role: parsedUser.role || 'ADMIN'
                     }
                 };
-                
+
                 setSession(sessionData);
             } else {
                 console.warn('⚠️ No user data found in localStorage');
@@ -329,8 +256,8 @@ export default function HRDashboard() {
         // Clear user data from localStorage
         localStorage.removeItem('user');
         // Clear cookies if any
-        document.cookie.split(";").forEach(function(c) { 
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        document.cookie.split(";").forEach(function (c) {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
         });
         // Navigate to home page
         navigate('/');
@@ -346,14 +273,14 @@ export default function HRDashboard() {
     };
 
     const drawer = (
-        <Box sx={{ 
+        <Box sx={{
             height: '100%',
             background: `linear-gradient(180deg, ${colors.primary} 0%, ${colors.primaryDark} 100%)`,
             color: 'white',
             overflow: 'hidden'
         }}>
             {/* Logo Section */}
-            <Toolbar sx={{ 
+            <Toolbar sx={{
                 background: `linear-gradient(135deg, ${colors.primaryDark} 0%, ${colors.primary} 100%)`,
                 borderBottom: `1px solid ${alpha('#ffffff', 0.1)}`,
                 position: 'relative',
@@ -367,7 +294,7 @@ export default function HRDashboard() {
                     background: `linear-gradient(90deg, transparent 0%, ${alpha('#ffffff', 0.3)} 50%, transparent 100%)`
                 }
             }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
                     <Box sx={{
                         width: 40,
                         height: 40,
@@ -380,9 +307,9 @@ export default function HRDashboard() {
                         backdropFilter: 'blur(10px)',
                         border: `1px solid ${alpha('#ffffff', 0.2)}`
                     }}>
-                        <img 
-                            src="/LaNhoBenThemLogo.png" 
-                            alt="Lá Nhỏ Bên Thềm Logo"
+                        <img
+                            src="/LaNhoBenThemLogo.png"
+                            alt="La Nho Ben Them Logo"
                             style={{
                                 width: '100%',
                                 height: '100%',
@@ -391,32 +318,32 @@ export default function HRDashboard() {
                             }}
                         />
                     </Box>
-                    <Typography variant="h6" noWrap component="div" sx={{ 
+                    <Typography variant="h6" noWrap component="div" sx={{
                         fontWeight: 700,
                         background: `linear-gradient(135deg, #ffffff 0%, ${alpha('#ffffff', 0.8)} 100%)`,
                         backgroundClip: 'text',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                     }}>
-                        Lá Nhỏ Bên Thềm
+                        La Nho Ben Them
                     </Typography>
                 </Box>
             </Toolbar>
 
             {/* Navigation */}
-            <Box sx={{ p: 2, pt: 3 }}>
-                <Typography variant="caption" sx={{ 
-                    px: 2, 
-                    opacity: 0.7, 
+            <Box sx={{p: 2, pt: 3}}>
+                <Typography variant="caption" sx={{
+                    px: 2,
+                    opacity: 0.7,
                     fontWeight: 600,
                     letterSpacing: 1,
                     textTransform: 'uppercase'
                 }}>
                     {session.user.role || 'User'} Navigation
                 </Typography>
-                <List sx={{ mt: 1 }}>
+                <List sx={{mt: 1}}>
                     {NAVIGATION.map((item, index) => (
-                        <ListItem key={item.segment} disablePadding sx={{ mb: 0.5 }}>
+                        <ListItem key={item.segment} disablePadding sx={{mb: 0.5}}>
                             <ListItemButton
                                 selected={isActiveRoute(item.path)}
                                 onClick={() => navigate(item.path)}
@@ -458,14 +385,14 @@ export default function HRDashboard() {
                                     }
                                 }}
                             >
-                                <ListItemIcon sx={{ 
+                                <ListItemIcon sx={{
                                     color: isActiveRoute(item.path) ? colors.accent : alpha('#ffffff', 0.8),
                                     minWidth: 40,
                                     transition: 'all 0.3s ease'
                                 }}>
                                     {item.icon}
                                 </ListItemIcon>
-                                <ListItemText 
+                                <ListItemText
                                     primary={item.title}
                                     primaryTypographyProps={{
                                         fontWeight: isActiveRoute(item.path) ? 600 : 500,
@@ -487,54 +414,54 @@ export default function HRDashboard() {
                 height: '120px',
                 background: `linear-gradient(180deg, transparent 0%, ${alpha('#000000', 0.1)} 100%)`,
                 pointerEvents: 'none'
-            }} />
+            }}/>
         </Box>
     );
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{display: 'flex'}}>
             {/* App Bar */}
             <AppBar
                 position="fixed"
                 elevation={0}
                 sx={{
-                    width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
-                    ml: { md: `${DRAWER_WIDTH}px` },
+                    width: {md: `calc(100% - ${DRAWER_WIDTH}px)`},
+                    ml: {md: `${DRAWER_WIDTH}px`},
                     background: `linear-gradient(135deg, ${alpha('#ffffff', 0.95)} 0%, ${alpha(colors.surface, 0.9)} 100%)`,
                     backdropFilter: 'blur(10px)',
                     borderBottom: `1px solid ${alpha(colors.primary, 0.1)}`,
                     color: colors.primary,
                 }}
             >
-                <Toolbar sx={{ px: 3 }}>
+                <Toolbar sx={{px: 3}}>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
                         edge="start"
                         onClick={handleDrawerToggle}
-                        sx={{ 
-                            mr: 2, 
-                            display: { md: 'none' },
+                        sx={{
+                            mr: 2,
+                            display: {md: 'none'},
                             backgroundColor: alpha(colors.primary, 0.1),
                             '&:hover': {
                                 backgroundColor: alpha(colors.primary, 0.2),
                             }
                         }}
                     >
-                        <MenuIcon />
+                        <MenuIcon/>
                     </IconButton>
-                    
-                    <Typography variant="h6" noWrap component="div" sx={{ 
+
+                    <Typography variant="h6" noWrap component="div" sx={{
                         flexGrow: 1,
                         fontWeight: 600,
                         color: colors.primary
                     }}>
-                        {location.pathname === '/admin/dashboard' ? 'Dashboard' : 
-                         NAVIGATION.find(nav => nav.path === location.pathname)?.title || `${session.user.role || 'User'} Panel`}
+                        {location.pathname === '/admin/dashboard' ? 'Dashboard' :
+                            NAVIGATION.find(nav => nav.path === location.pathname)?.title || `${session.user.role || 'User'} Panel`}
                     </Typography>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <IconButton 
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                        <IconButton
                             color="inherit"
                             sx={{
                                 backgroundColor: alpha(colors.primary, 0.1),
@@ -548,11 +475,11 @@ export default function HRDashboard() {
                         >
                             <NotificationDisplay/>
                         </IconButton>
-                        
+
                         <IconButton
                             onClick={handleMenuOpen}
                             size="small"
-                            sx={{ 
+                            sx={{
                                 ml: 1,
                                 transition: 'all 0.2s ease',
                                 '&:hover': {
@@ -563,9 +490,9 @@ export default function HRDashboard() {
                             aria-haspopup="true"
                             aria-expanded={anchorEl ? 'true' : undefined}
                         >
-                            <Avatar 
-                                sx={{ 
-                                    width: 36, 
+                            <Avatar
+                                sx={{
+                                    width: 36,
                                     height: 36,
                                     background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
                                     fontWeight: 600,
@@ -587,8 +514,8 @@ export default function HRDashboard() {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
                 onClick={handleMenuClose}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                transformOrigin={{horizontal: 'right', vertical: 'top'}}
+                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                 slotProps={{
                     paper: {
                         elevation: 8,
@@ -620,16 +547,16 @@ export default function HRDashboard() {
                     },
                 }}
             >
-                <Box sx={{ 
-                    px: 3, 
+                <Box sx={{
+                    px: 3,
                     py: 2,
                     background: `linear-gradient(135deg, ${alpha(colors.primary, 0.05)} 0%, ${alpha(colors.surface, 0.8)} 100%)`,
                     borderBottom: `1px solid ${alpha(colors.primary, 0.1)}`
                 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                        <Avatar 
-                            sx={{ 
-                                width: 40, 
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 2, mb: 1}}>
+                        <Avatar
+                            sx={{
+                                width: 40,
                                 height: 40,
                                 background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
                             }}
@@ -638,7 +565,7 @@ export default function HRDashboard() {
                             {session.user.name.charAt(0)}
                         </Avatar>
                         <Box>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 600, color: colors.primary }}>
+                            <Typography variant="subtitle1" sx={{fontWeight: 600, color: colors.primary}}>
                                 {session.user.name}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
@@ -646,19 +573,19 @@ export default function HRDashboard() {
                             </Typography>
                         </Box>
                     </Box>
-                    <Chip 
-                        size="small" 
-                        label={session.user.role || 'User'} 
-                        sx={{ 
+                    <Chip
+                        size="small"
+                        label={session.user.role || 'User'}
+                        sx={{
                             backgroundColor: alpha(colors.primary, 0.1),
                             color: colors.primary,
                             fontWeight: 600,
                             fontSize: '0.75rem'
-                        }} 
+                        }}
                     />
                 </Box>
-                <Box sx={{ py: 1 }}>
-                    <MenuItem 
+                <Box sx={{py: 1}}>
+                    <MenuItem
                         onClick={handleLogout}
                         sx={{
                             mx: 1,
@@ -672,11 +599,11 @@ export default function HRDashboard() {
                         }}
                     >
                         <ListItemIcon>
-                            <LogoutIcon fontSize="small" sx={{ color: colors.error }} />
+                            <LogoutIcon fontSize="small" sx={{color: colors.error}}/>
                         </ListItemIcon>
-                        <ListItemText 
-                            primary="Đăng xuất"
-                            primaryTypographyProps={{ fontWeight: 500 }}
+                        <ListItemText
+                            primary="Sign out"
+                            primaryTypographyProps={{fontWeight: 500}}
                         />
                     </MenuItem>
                 </Box>
@@ -685,7 +612,7 @@ export default function HRDashboard() {
             {/* Navigation Drawer */}
             <Box
                 component="nav"
-                sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}
+                sx={{width: {md: DRAWER_WIDTH}, flexShrink: {md: 0}}}
             >
                 {/* Mobile drawer */}
                 <Drawer
@@ -696,19 +623,19 @@ export default function HRDashboard() {
                         keepMounted: true, // Better open performance on mobile.
                     }}
                     sx={{
-                        display: { xs: 'block', md: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: DRAWER_WIDTH },
+                        display: {xs: 'block', md: 'none'},
+                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: DRAWER_WIDTH},
                     }}
                 >
                     {drawer}
                 </Drawer>
-                
+
                 {/* Desktop drawer */}
                 <Drawer
                     variant="permanent"
                     sx={{
-                        display: { xs: 'none', md: 'block' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: DRAWER_WIDTH },
+                        display: {xs: 'none', md: 'block'},
+                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: DRAWER_WIDTH},
                     }}
                     open
                 >
@@ -721,7 +648,7 @@ export default function HRDashboard() {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
+                    width: {md: `calc(100% - ${DRAWER_WIDTH}px)`},
                     mt: '64px', // Height of AppBar
                     minHeight: 'calc(100vh - 64px)',
                     background: `linear-gradient(135deg, ${alpha(colors.surface, 0.3)} 0%, ${alpha(colors.surfaceVariant, 0.1)} 100%)`,
@@ -731,7 +658,7 @@ export default function HRDashboard() {
                         content: '""',
                         position: 'fixed',
                         top: 0,
-                        left: { md: DRAWER_WIDTH },
+                        left: {md: DRAWER_WIDTH},
                         right: 0,
                         height: '100vh',
                         background: `radial-gradient(ellipse at top right, ${alpha(colors.primary, 0.05)} 0%, transparent 50%), radial-gradient(ellipse at bottom left, ${alpha(colors.secondary, 0.03)} 0%, transparent 50%)`,
@@ -740,12 +667,12 @@ export default function HRDashboard() {
                     }
                 }}
             >
-                                 {/* Dashboard content or nested routes */}
-                 {location.pathname === '/admin/dashboard' ? (
-                     <AdminDashboardContent session={session} navigate={navigate} />
-                 ) : (
-                    <Box sx={{ p: 4 }}>
-                        <Outlet />
+                {/* Dashboard content or nested routes */}
+                {location.pathname === '/admin/dashboard' ? (
+                    <AdminDashboardContent session={session} navigate={navigate}/>
+                ) : (
+                    <Box sx={{p: 4}}>
+                        <Outlet/>
                     </Box>
                 )}
             </Box>

@@ -1,25 +1,19 @@
 import '../styles/ui/SiteHeader.css'
-import {Link, NavLink, useLocation, useNavigate} from 'react-router-dom'
+import {Link, useLocation, useNavigate} from 'react-router-dom'
 import {useEffect, useMemo, useState} from 'react'
-import {Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Typography, Button, Chip} from '@mui/material'
+import {Avatar, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Typography} from '@mui/material'
 import {
-    Dashboard as DashboardIcon,
-    Home as HomeIcon,
-    Logout as LogoutIcon,
-    Person as PersonIcon,
-    Storefront as StorefrontIcon,
     AccountCircle as AccountCircleIcon,
-    Phone as PhoneIcon,
-    ArrowForward as ArrowForwardIcon,
-    PersonAdd as PersonAddIcon,
-    School as SchoolIcon,
+    ArrowDropDown as ArrowDropDownIcon,
+    Dashboard as DashboardIcon,
+    Description as DescriptionIcon,
     Event as EventIcon,
     Groups as GroupsIcon,
     Info as InfoIcon,
-    KeyboardArrowDown as KeyboardArrowDownIcon,
-    Language as LanguageIcon,
-        ArrowDropDown as ArrowDropDownIcon,
-    Description as DescriptionIcon
+    Logout as LogoutIcon,
+    Person as PersonIcon,
+    School as SchoolIcon,
+    Storefront as StorefrontIcon
 } from '@mui/icons-material'
 import {enqueueSnackbar} from 'notistack'
 
@@ -51,79 +45,79 @@ export default function SiteHeader() {
             setCurrentUser(parsed || null)
         } catch (error) {
             setCurrentUser(null)
-            localStorage.removeItem('user') // Xóa dữ liệu không hợp lệ
+            localStorage.removeItem('user') // Remove invalid data
         }
     }, [location.pathname])
 
     const role = useMemo(() => currentUser?.role || null, [currentUser])
 
-    const displayName = currentUser?.name || currentUser?.fullName || currentUser?.displayName || 'Tài khoản'
+    const displayName = currentUser?.name || currentUser?.fullName || currentUser?.displayName || 'Account'
     const avatarUrl = currentUser?.avatar || currentUser?.avatarUrl || currentUser?.photoURL || currentUser?.picture || ''
-    
+
     const handleOpenMenu = (event) => setAnchorEl(event.currentTarget)
     const handleCloseMenu = () => setAnchorEl(null)
-    
+
     const handleOpenIntroMenu = (event) => setIntroMenuAnchor(event.currentTarget)
     const handleCloseIntroMenu = () => setIntroMenuAnchor(null)
-    
+
     const handleOpenTeamMenu = (event) => setTeamMenuAnchor(event.currentTarget)
     const handleCloseTeamMenu = () => setTeamMenuAnchor(null)
-    
+
     const handleOpenEducationMenu = (event) => setEducationMenuAnchor(event.currentTarget)
     const handleCloseEducationMenu = () => setEducationMenuAnchor(null)
-    
+
     const handleOpenTuyenSinhMenu = (event) => setTuyenSinhMenuAnchor(event.currentTarget)
     const handleCloseTuyenSinhMenu = () => setTuyenSinhMenuAnchor(null)
-    
+
     const handleIntroMenuClick = (tabIndex) => {
         handleCloseIntroMenu()
         // Navigate to home page and scroll to specific intro tab
         navigate('/')
         setTimeout(() => {
             // Trigger intro tab change by dispatching a custom event
-            window.dispatchEvent(new CustomEvent('changeIntroTab', { detail: { tabIndex } }))
+            window.dispatchEvent(new CustomEvent('changeIntroTab', {detail: {tabIndex}}))
         }, 100)
     }
-    
+
     const handleTeamMenuClick = (tabIndex) => {
         handleCloseTeamMenu()
         // Navigate to home page and scroll to specific team tab
         navigate('/')
         setTimeout(() => {
             // Trigger team tab change by dispatching a custom event
-            window.dispatchEvent(new CustomEvent('changeTeamTab', { detail: { tabIndex } }))
+            window.dispatchEvent(new CustomEvent('changeTeamTab', {detail: {tabIndex}}))
         }, 100)
     }
-    
+
     const handleEducationMenuClick = (tabIndex) => {
         handleCloseEducationMenu()
         // Navigate to home page and scroll to specific education tab
         navigate('/')
         setTimeout(() => {
             // Trigger education tab change by dispatching a custom event
-            window.dispatchEvent(new CustomEvent('changeEducationTab', { detail: { tabIndex } }))
+            window.dispatchEvent(new CustomEvent('changeEducationTab', {detail: {tabIndex}}))
         }, 100)
     }
-    
+
     const handleTuyenSinhMenuClick = (tabIndex) => {
         handleCloseTuyenSinhMenu()
         // Navigate to home page and scroll to specific tuyen sinh tab
         navigate('/')
         setTimeout(() => {
             // Trigger tuyen sinh tab change by dispatching a custom event
-            window.dispatchEvent(new CustomEvent('changeTuyenSinhTab', { detail: { tabIndex } }))
+            window.dispatchEvent(new CustomEvent('changeTuyenSinhTab', {detail: {tabIndex}}))
         }, 100)
     }
 
     const handleLogout = async () => {
         try {
             localStorage.clear()
-            enqueueSnackbar('Đã đăng xuất', {variant: 'success'})
+            enqueueSnackbar('Signed out', {variant: 'success'})
             handleCloseMenu()
             navigate('/', {replace: true})
             setTimeout(() => window.location.reload(), 300)
         } catch (error) {
-            enqueueSnackbar('Không thể đăng xuất. Vui lòng thử lại', {variant: 'error'})
+            enqueueSnackbar('Sign out failed. Please try again', {variant: 'error'})
         }
     }
 
@@ -136,7 +130,7 @@ export default function SiteHeader() {
                     <div className="header__brand-section">
                         <Link className="brand" to="/">
                             <div className="brand__logo">
-                                <img src="/logo.png" alt="MerryStar Kindergarten Logo" />
+                                <img src="/logo.png" alt="MerryStar Kindergarten Logo"/>
                             </div>
                             <div className="brand__text">
                                 <div className="brand__name">MerryStar</div>
@@ -164,10 +158,10 @@ export default function SiteHeader() {
                                 }
                             }}
                         >
-                            <span>GIỚI THIỆU</span>
-                            <ArrowDropDownIcon fontSize="small" />
+                            <span>INTRODUCTION</span>
+                            <ArrowDropDownIcon fontSize="small"/>
                         </Box>
-                        
+
                         {/* Introduction Dropdown Menu */}
                         <Menu
                             anchorEl={introMenuAnchor}
@@ -189,38 +183,38 @@ export default function SiteHeader() {
                                     }
                                 }
                             }}
-                            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-                            anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                            transformOrigin={{horizontal: 'left', vertical: 'top'}}
+                            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                         >
                             <MenuItem onClick={() => handleIntroMenuClick(0)}>
                                 <ListItemIcon>
-                                    <InfoIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                    <InfoIcon fontSize="small" sx={{color: '#FF6B35'}}/>
                                 </ListItemIcon>
-                                Về chúng tôi
+                                About us
                             </MenuItem>
                             <MenuItem onClick={() => handleIntroMenuClick(1)}>
                                 <ListItemIcon>
-                                    <PersonIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                    <PersonIcon fontSize="small" sx={{color: '#FF6B35'}}/>
                                 </ListItemIcon>
-                                Thông điệp Hiệu trưởng
+                                Principal's message
                             </MenuItem>
                             <MenuItem onClick={() => handleIntroMenuClick(2)}>
                                 <ListItemIcon>
-                                    <GroupsIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                    <GroupsIcon fontSize="small" sx={{color: '#FF6B35'}}/>
                                 </ListItemIcon>
-                                Chân dung học sinh
+                                Student profile
                             </MenuItem>
                             <MenuItem onClick={() => handleIntroMenuClick(3)}>
                                 <ListItemIcon>
-                                    <SchoolIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                    <SchoolIcon fontSize="small" sx={{color: '#FF6B35'}}/>
                                 </ListItemIcon>
-                                Cơ sở vật chất
+                                Facilities
                             </MenuItem>
                             <MenuItem onClick={() => handleIntroMenuClick(4)}>
                                 <ListItemIcon>
-                                    <EventIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                    <EventIcon fontSize="small" sx={{color: '#FF6B35'}}/>
                                 </ListItemIcon>
-                                Tại sao nên chọn MerryStar Kindergarten?
+                                Why choose MerryStar Kindergarten?
                             </MenuItem>
                         </Menu>
                         <Box
@@ -240,10 +234,10 @@ export default function SiteHeader() {
                                 }
                             }}
                         >
-                            <span>ĐỘI NGŨ</span>
-                            <ArrowDropDownIcon fontSize="small" />
+                            <span>TEAM</span>
+                            <ArrowDropDownIcon fontSize="small"/>
                         </Box>
-                        
+
                         {/* Team Dropdown Menu */}
                         <Menu
                             anchorEl={teamMenuAnchor}
@@ -265,20 +259,20 @@ export default function SiteHeader() {
                                     }
                                 }
                             }}
-                            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-                            anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                            transformOrigin={{horizontal: 'left', vertical: 'top'}}
+                            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                         >
                             <MenuItem onClick={() => handleTeamMenuClick(0)}>
                                 <ListItemIcon>
-                                    <GroupsIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                    <GroupsIcon fontSize="small" sx={{color: '#FF6B35'}}/>
                                 </ListItemIcon>
-                                Hội Đồng Khoa Học
+                                Scientific Council
                             </MenuItem>
                             <MenuItem onClick={() => handleTeamMenuClick(1)}>
                                 <ListItemIcon>
-                                    <SchoolIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                    <SchoolIcon fontSize="small" sx={{color: '#FF6B35'}}/>
                                 </ListItemIcon>
-                                Đội Ngũ Giáo Viên
+                                Teaching Staff
                             </MenuItem>
                         </Menu>
                         <Box
@@ -298,10 +292,10 @@ export default function SiteHeader() {
                                 }
                             }}
                         >
-                            <span>CHƯƠNG TRÌNH GIÁO DỤC</span>
-                            <ArrowDropDownIcon fontSize="small" />
+                            <span>EDUCATION PROGRAM</span>
+                            <ArrowDropDownIcon fontSize="small"/>
                         </Box>
-                        
+
                         {/* Education Dropdown Menu */}
                         <Menu
                             anchorEl={educationMenuAnchor}
@@ -323,16 +317,16 @@ export default function SiteHeader() {
                                     }
                                 }
                             }}
-                            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-                            anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                            transformOrigin={{horizontal: 'left', vertical: 'top'}}
+                            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                         >
                             <MenuItem onClick={() => handleEducationMenuClick(0)}>
                                 <ListItemIcon>
-                                    <EventIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                    <EventIcon fontSize="small" sx={{color: '#FF6B35'}}/>
                                 </ListItemIcon>
-                                Chương trình học
+                                Curriculum
                             </MenuItem>
-                          
+
                         </Menu>
                         <Box
                             className="nav__item"
@@ -351,10 +345,10 @@ export default function SiteHeader() {
                                 }
                             }}
                         >
-                            <span>TUYỂN SINH</span>
-                            <ArrowDropDownIcon fontSize="small" />
+                            <span>ADMISSIONS</span>
+                            <ArrowDropDownIcon fontSize="small"/>
                         </Box>
-                        
+
                         {/* Tuyen Sinh Dropdown Menu */}
                         <Menu
                             anchorEl={tuyenSinhMenuAnchor}
@@ -376,14 +370,14 @@ export default function SiteHeader() {
                                     }
                                 }
                             }}
-                            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-                            anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                            transformOrigin={{horizontal: 'left', vertical: 'top'}}
+                            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                         >
                             <MenuItem onClick={() => handleTuyenSinhMenuClick(0)}>
                                 <ListItemIcon>
-                                    <DescriptionIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                    <DescriptionIcon fontSize="small" sx={{color: '#FF6B35'}}/>
                                 </ListItemIcon>
-                                Quy Chế Tuyển Sinh
+                                Admissions Policy
                             </MenuItem>
                         </Menu>
                     </nav>
@@ -391,9 +385,8 @@ export default function SiteHeader() {
                     {/* Right Side - Language & CTA */}
                     <div className="header__right-section">
                         {/* CTA Button */}
-                        <Button 
-                            component={Link} 
-                            to="/admission" 
+                        <Button
+                            onClick={() => navigate('/login')}
                             variant="contained"
                             sx={{
                                 background: 'linear-gradient(45deg, #FF6B35, #F7931E)',
@@ -408,7 +401,7 @@ export default function SiteHeader() {
                                 }
                             }}
                         >
-                            ĐĂNG KÝ
+                            REGISTER
                         </Button>
 
                         {/* User Authentication */}
@@ -420,18 +413,18 @@ export default function SiteHeader() {
                                     sx={{p: 0}}
                                 >
                                     {avatarUrl ? (
-                                        <Avatar 
-                                            src={avatarUrl} 
+                                        <Avatar
+                                            src={avatarUrl}
                                             sx={{
-                                                width: 36, 
-                                                height: 36, 
+                                                width: 36,
+                                                height: 36,
                                                 borderRadius: '50%',
                                                 border: '2px solid #fff',
                                                 boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
                                             }}
                                         />
                                     ) : (
-                                        <AccountCircleIcon 
+                                        <AccountCircleIcon
                                             sx={{
                                                 width: 36,
                                                 height: 36,
@@ -456,41 +449,40 @@ export default function SiteHeader() {
                                     anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                                 >
                                     <Box sx={{px: 2, pt: 1, pb: 1}}>
-                                        <Typography variant="subtitle2" sx={{fontWeight: 700}}>{displayName}</Typography>
+                                        <Typography variant="subtitle2"
+                                                    sx={{fontWeight: 700}}>{displayName}</Typography>
                                         <Typography variant="caption" color="text.secondary">
                                             {currentUser?.email || 'Đã đăng nhập'}
                                         </Typography>
                                     </Box>
                                     <Divider/>
                                     <MenuItem onClick={() => {
-                                        if (role === 'BUYER') {
-                                            navigate('/buyer/profile')
-                                        } else if (role === 'SELLER') {
-                                            navigate('/seller/profile')
-                                        } else if (role === 'ADMIN') {
-                                            navigate('/admin/profile')
+                                        if (role === 'EDUCATION') {
+                                            navigate('/education/profile')
+                                        } else if (role === 'HR') {
+                                            navigate('/hr/profile')
                                         } else {
                                             navigate('/profile')
                                         }
                                     }}>
                                         <ListItemIcon><PersonIcon fontSize="small"/></ListItemIcon>
-                                        Hồ sơ của tôi
+                                        My profile
                                     </MenuItem>
-                                    {role === 'ADMIN' && (
-                                        <MenuItem onClick={() => navigate('/admin/dashboard')}>
+                                    {role === 'EDUCATION' && (
+                                        <MenuItem onClick={() => navigate('/education/dashboard')}>
                                             <ListItemIcon><DashboardIcon fontSize="small"/></ListItemIcon>
-                                            Admin Dashboard
+                                            Education Portal
                                         </MenuItem>
                                     )}
-                                    {role === 'SELLER' && (
-                                        <MenuItem onClick={() => navigate('/seller/dashboard')}>
+                                    {role === 'HR' && (
+                                        <MenuItem onClick={() => navigate('/hr/dashboard')}>
                                             <ListItemIcon><StorefrontIcon fontSize="small"/></ListItemIcon>
-                                            Kênh người bán
+                                            HR Portal
                                         </MenuItem>
                                     )}
                                     <MenuItem onClick={handleLogout}>
                                         <ListItemIcon><LogoutIcon fontSize="small"/></ListItemIcon>
-                                        Đăng xuất
+                                        Sign out
                                     </MenuItem>
                                 </Menu>
                             </Box>

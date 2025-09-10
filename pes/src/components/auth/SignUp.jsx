@@ -1,306 +1,452 @@
-import React, {useState} from "react";
-import PropTypes from "prop-types";
-import {Link, useNavigate, useSearchParams} from "react-router-dom";
-import {useTranslation} from "react-i18next";
-import {authService} from "@/api/services/authService";
-import {ROUTES} from "@/constants/routes";
-import {Spinner} from "../atoms";
-import SignUpForm from "../molecules/forms/SignUpForm";
-import EmailVerificationForm from "../molecules/forms/EmailVerificationForm";
-import {CheckCircle} from "lucide-react";
+import {useEffect, useState} from 'react'
+import {useLocation, useNavigate} from 'react-router-dom'
+import {
+    Box,
+    Button,
+    CircularProgress,
+    IconButton,
+    InputAdornment,
+    Link,
+    Paper,
+    TextField,
+    Typography
+} from '@mui/material'
+import {Email, Lock, Person, Phone, Visibility, VisibilityOff} from '@mui/icons-material'
+import {useSnackbar} from 'notistack'
 
-// Success message component following Atomic Design principles
-const SuccessMessage = ({onContinue}) => {
-    const {t} = useTranslation("auth");
+export default function SignUp() {
+    const [isLoading, setIsLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        phone: '',
+        password: '',
+        confirmPassword: ''
+    })
+    const {enqueueSnackbar} = useSnackbar()
+    const navigate = useNavigate()
+    const {search} = useLocation()
+    const redirectTo = new URLSearchParams(search).get('redirectTo')
 
-    return (
-        <div
-            className="min-h-screen flex items-center justify-center py-8 px-4"
-            style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-            }}>
-            <div className="w-full max-w-md mx-auto space-y-8">
-                {/* Logo and Header */}
-                <div className="text-center">
-                    <div className="flex justify-center mb-6">
-                        <img
-                            src="/SUNSHINE.png"
-                            alt="Sunshine Preschool"
-                            className="h-16 w-auto"
-                        />
-                    </div>
-
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                        {t("register.success")}
-                    </h2>
-
-                    <p className="text-sm text-gray-600">
-                        {t("register.success")}
-                    </p>
-                </div>
-
-                {/* Success Content */}
-                <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-8 transform hover:scale-105 transition-all duration-300">
-                    <div className="text-center space-y-6">
-                        <div
-                            className="mx-auto w-24 h-24 bg-gradient-to-r from-green-400 via-emerald-500 to-teal-500 rounded-full flex items-center justify-center shadow-lg animate-pulse">
-                            <CheckCircle className="w-12 h-12 text-white drop-shadow-lg"/>
-                        </div>
-
-                        <div className="space-y-4">
-                            <p className="text-gray-700 text-lg font-medium">
-                                {t("register.success")}
-                            </p>
-                            <p className="text-gray-600">
-                                {t("login.redirectInfo.generic")}
-                            </p>
-                        </div>
-
-                        <div className="flex justify-center">
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full blur-md opacity-30 animate-ping"></div>
-                                <Spinner size="md" className="text-green-500 relative z-10"/>
-                            </div>
-                        </div>
-
-                        <p className="text-gray-600">
-                            {t("register.backToLogin")}{" "}
-                            <button
-                                onClick={onContinue}
-                                className="text-green-600 hover:text-green-700 hover:underline font-semibold transition-colors duration-200 hover:scale-105 transform inline-block"
-                            >
-                                {t("register.signIn")}
-                            </button>
-                        </p>
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <div className="text-center text-sm text-gray-500">
-                    © 2025 Sunshine Preschool. All rights reserved.
-                </div>
-            </div>
-        </div>
-    );
-};
-
-SuccessMessage.propTypes = {
-    onContinue: PropTypes.func.isRequired,
-};
-
-// Error Alert component (Atom)
-const ErrorAlert = ({message, onDismiss}) => {
-    if (!message) return null;
-
-    return (
-        <div
-            className="mb-4 p-4 bg-red-50/90 backdrop-blur-sm border border-red-200 text-red-700 rounded-xl text-sm flex items-center justify-between shadow-lg transform hover:scale-105 transition-all duration-200">
-            <span className="font-medium">{message}</span>
-            {onDismiss && (
-                <button
-                    onClick={onDismiss}
-                    className="ml-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-full w-6 h-6 flex items-center justify-center transition-all duration-200"
-                >
-                    ×
-                </button>
-            )}
-        </div>
-    );
-};
-
-ErrorAlert.propTypes = {
-    message: PropTypes.string,
-    onDismiss: PropTypes.func,
-};
-
-// SignUp Footer component (Molecule)
-const SignUpFooter = () => {
-    const {t} = useTranslation("auth");
-    return (
-        <div className="mt-6 text-center space-y-4">
-            <div className="flex items-center">
-                <div className="flex-1 border-t border-gray-200"></div>
-                <span className="px-4 text-gray-500 text-sm">or</span>
-                <div className="flex-1 border-t border-gray-200"></div>
-            </div>
-            <p className="text-gray-600">
-                Already have an account?{" "}
-                <Link
-                    to={ROUTES.LOGIN}
-                    className="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors"
-                >
-                    Sign in now
-                </Link>
-            </p>
-
-            <p className="text-xs text-gray-500 leading-relaxed">
-                By creating an account, you agree to our{" "}
-                <button className="text-blue-600 hover:underline">
-                    Terms of Service
-                </button>
-                {" "}
-                and{" "}
-                <button className="text-blue-600 hover:underline">
-                    Privacy Policy
-                </button>
-            </p>
-        </div>
-    );
-};
-
-const SignUp = () => {
-    const navigate = useNavigate();
-    const {t} = useTranslation("auth");
-    const [searchParams] = useSearchParams();
-    const [loading, setLoading] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [submitError, setSubmitError] = useState("");
-    const [registeredEmail, setRegisteredEmail] = useState("");
-
-    // Check if we have code and email in URL params
-    const code = searchParams.get('code');
-    const email = searchParams.get('email');
-    const isVerified = Boolean(code && email);
-
-    const handleEmailVerify = async (email) => {
-        setSubmitError("");
-        setLoading(true);
-
+    // If already logged in -> redirect
+    useEffect(() => {
         try {
-            // Request verification code
-            await authService.requestVerificationCode(email);
-            // Redirect to login page with success message
-            navigate(ROUTES.LOGIN, {
-                state: {
-                    message: t("emailVerification.checkEmail"),
-                    email: email
-                }
-            });
-        } catch (error) {
-            if (error.response?.data?.message) {
-                setSubmitError(error.response.data.message);
-            } else if (error.message) {
-                setSubmitError(error.message);
-            } else {
-                setSubmitError(t("register.errors.genericError"));
+            const raw = localStorage.getItem('user')
+            if (raw) {
+                navigate(redirectTo || '/', {replace: true})
             }
-        } finally {
-            setLoading(false);
+        } catch {
+            /* noop */
         }
-    };
+    }, [navigate, redirectTo])
 
-    const handleSignUpSubmit = async (formData) => {
-        setSubmitError("");
-        setLoading(true);
-
-        try {
-            // Call the registration API with the code from URL
-            await authService.register({
-                ...formData,
-                email: email, // Use email from URL params
-                code: code
-            });
-            
-            // Save email for success message
-            setRegisteredEmail(email);
-            
-            // Show success message
-            setShowSuccess(true);
-
-            // Auto redirect to login after 3 seconds
-            setTimeout(() => {
-                handleContinueToLogin(email);
-            }, 3000);
-        } catch (error) {
-            if (error.response?.data?.message) {
-                setSubmitError(error.response.data.message);
-            } else if (error.message) {
-                setSubmitError(error.message);
-            } else {
-                setSubmitError(t("register.errors.genericError"));
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleContinueToLogin = (email) => {
-        navigate(ROUTES.LOGIN, {
-            state: {
-                message: "Registration successful! Please sign in.",
-                email: email
-            }
-        });
-    };
-
-    const clearError = () => {
-        setSubmitError("");
-    };
-
-    // Show success screen if registration was successful
-    if (showSuccess) {
-        return <SuccessMessage onContinue={() => handleContinueToLogin(registeredEmail || email)} />;
+    const handleInputChange = (field) => (e) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: e.target.value
+        }))
     }
 
+    const handleSignUp = async (e) => {
+        e.preventDefault()
+
+        // Validation
+        if (formData.password !== formData.confirmPassword) {
+            enqueueSnackbar('Password confirmation does not match', {variant: 'error'})
+            return
+        }
+
+        if (formData.password.length < 6) {
+            enqueueSnackbar('Password must be at least 6 characters', {variant: 'error'})
+            return
+        }
+
+        setIsLoading(true)
+        try {
+            await new Promise(res => setTimeout(res, 700))
+            const mockUser = {
+                id: 1,
+                email: formData.email,
+                name: formData.fullName,
+                role: 'BUYER',
+                avatar: ''
+            }
+            localStorage.setItem('user', JSON.stringify(mockUser))
+            enqueueSnackbar('Registration successful!', {variant: 'success'})
+            navigate(redirectTo || '/', {replace: true})
+        } catch (err) {
+            enqueueSnackbar('Registration failed', {variant: 'error'})
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    document.title = "Sign Up | MerryStar Kindergarten"
+
     return (
-        <div 
-            className="min-h-screen flex items-center justify-center py-4 px-4"
-            style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-            }}>
-            <div className="w-full max-w-6xl mx-auto space-y-4">
+        <Box
+            sx={{
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "linear-gradient(135deg,rgb(227, 210, 203) 0%,rgb(230, 226, 225) 50%,rgb(237, 237, 237) 100%)",
+                position: "relative",
+                overflow: "hidden",
+                "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><pattern id=\"grain\" width=\"100\" height=\"100\" patternUnits=\"userSpaceOnUse\"><circle cx=\"50\" cy=\"50\" r=\"1\" fill=\"rgba(255,255,255,0.1)\"/></pattern></defs><rect width=\"100\" height=\"100\" fill=\"url(%23grain)\"/></svg>')",
+                    opacity: 0.3,
+                }
+            }}
+        >
+            {/* Animated background elements */}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: "10%",
+                    left: "10%",
+                    width: 200,
+                    height: 200,
+                    background: "rgba(255, 255, 255, 0.1)",
+                    borderRadius: "50%",
+                    animation: "float 6s ease-in-out infinite",
+                    "@keyframes float": {
+                        "0%, 100%": {transform: "translateY(0px) rotate(0deg)"},
+                        "50%": {transform: "translateY(-20px) rotate(180deg)"}
+                    }
+                }}
+            />
+            <Box
+                sx={{
+                    position: "absolute",
+                    bottom: "20%",
+                    right: "15%",
+                    width: 150,
+                    height: 150,
+                    background: "rgba(255, 255, 255, 0.08)",
+                    borderRadius: "50%",
+                    animation: "float 8s ease-in-out infinite reverse",
+                }}
+            />
 
-
-                {/* Error Alert */}
-                <div className="flex justify-center">
-                    <div className="w-full max-w-5xl">
-                        <ErrorAlert
-                            message={submitError}
-                            onDismiss={clearError}
+            <Paper
+                elevation={24}
+                sx={{
+                    p: {xs: 3, sm: 4, md: 5},
+                    borderRadius: 4,
+                    textAlign: "center",
+                    maxWidth: 560,
+                    width: "90%",
+                    background: "rgba(255, 255, 255, 0.95)",
+                    backdropFilter: "blur(20px)",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    boxShadow: "0 25px 50px rgba(0,0,0,0.25)",
+                    position: "relative",
+                    zIndex: 1,
+                    "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: "0 35px 60px rgba(0,0,0,0.3)",
+                        transition: "all 0.3s ease"
+                    },
+                    transition: "all 0.3s ease"
+                }}
+            >
+                {/* Logo Section */}
+                <Box sx={{mb: 4, position: "relative"}}>
+                    <Box
+                        sx={{
+                            position: "relative",
+                            display: "inline-block",
+                            mb: 2
+                        }}
+                    >
+                        <Box
+                            component="img"
+                            src="/logo.png"
+                            alt="MerryStar Kindergarten"
+                            sx={{
+                                height: 80,
+                                width: 80,
+                                borderRadius: "50%",
+                                boxShadow: "0 8px 25px rgba(255, 107, 53, 0.4)",
+                                border: "3px solid rgba(255, 255, 255, 0.8)",
+                                transition: "all 0.3s ease",
+                                "&:hover": {
+                                    transform: "scale(1.05)",
+                                    boxShadow: "0 12px 35px rgba(255, 107, 53, 0.6)"
+                                }
+                            }}
                         />
-                    </div>
-                </div>
-
-                {/* Show either email verification form or signup form */}
-                {isVerified ? (
-                    <>
-                        <SignUpForm
-                            onSubmit={handleSignUpSubmit}
-                            loading={loading}
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: -5,
+                                right: -5,
+                                width: 20,
+                                height: 20,
+                                background: "linear-gradient(45deg, #FF6B35, #FF8A65)",
+                                borderRadius: "50%",
+                                animation: "pulse 2s infinite"
+                            }}
                         />
-                        <div className="flex justify-center">
-                            <div className="w-full max-w-md text-center space-y-3">
-                                <div className="flex items-center">
-                                    <div className="flex-1 border-t border-white/30"></div>
-                                    <span className="px-4 text-white/70 text-sm font-medium">or</span>
-                                    <div className="flex-1 border-t border-white/30"></div>
-                                </div>
-                                <p className="text-white/90 text-base">
-                                    {t("register.haveAccount")}{" "}
-                                    <Link
-                                        to={ROUTES.LOGIN}
-                                        className="text-white font-bold hover:text-white/80 hover:underline transition-all duration-200 hover:scale-105 transform inline-block drop-shadow-md"
-                                    >
-                                        {t("register.signIn")}
-                                    </Link>
-                                </p>
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <EmailVerificationForm
-                        onVerify={handleEmailVerify}
-                        loading={loading}
-                    />
-                )}
+                    </Box>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            fontWeight: 800,
+                            background: "linear-gradient(135deg, #FF6B35 0%, #3498DB 100%)",
+                            backgroundClip: "text",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            letterSpacing: "-0.5px",
+                            mb: 0.5
+                        }}
+                    >
+                        MerryStar Kindergarten
+                    </Typography>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            color: "#666",
+                            fontWeight: 500,
+                            letterSpacing: "1px",
+                            textTransform: "uppercase",
+                            fontSize: "0.75rem"
+                        }}
+                    >
+                        Bilingual Kindergarten
+                    </Typography>
+                </Box>
 
-                {/* Copyright - Smaller */}
-                <div className="text-center text-sm text-white/60 drop-shadow-md">
-                    © 2025 Sunshine Preschool. All rights reserved.
-                </div>
-            </div>
-        </div>
+                {/* Welcome Text */}
+                <Box sx={{mb: 4}}>
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            mb: 1.5,
+                            fontWeight: 700,
+                            color: "#2c3e50",
+                            letterSpacing: "-0.5px"
+                        }}
+                    >
+                        Create a new account
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: "#7f8c8d",
+                            fontSize: "0.95rem",
+                            lineHeight: 1.5,
+                            maxWidth: 280,
+                            mx: "auto"
+                        }}
+                    >
+                        Register to manage admissions and track your child's learning progress
+                    </Typography>
+                </Box>
+
+                {/* Sign Up Form */}
+                <Box component="form" onSubmit={handleSignUp} sx={{mb: 2}}>
+                    <Box sx={{
+                        display: 'grid',
+                        gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'},
+                        gap: 2
+                    }}>
+                        <TextField
+                            fullWidth size="small" margin="dense"
+                            type="text"
+                            label="Full name"
+                            value={formData.fullName}
+                            onChange={handleInputChange('fullName')}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Person sx={{color: 'text.secondary'}}/>
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+                        <TextField
+                            fullWidth size="small" margin="dense"
+                            type="email"
+                            label="Email"
+                            value={formData.email}
+                            onChange={handleInputChange('email')}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Email sx={{color: 'text.secondary'}}/>
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+                        <TextField
+                            fullWidth size="small" margin="dense"
+                            type="tel"
+                            label="Phone number"
+                            value={formData.phone}
+                            onChange={handleInputChange('phone')}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Phone sx={{color: 'text.secondary'}}/>
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+                        <TextField
+                            fullWidth size="small" margin="dense"
+                            type={showPassword ? 'text' : 'password'}
+                            label="Password"
+                            value={formData.password}
+                            onChange={handleInputChange('password')}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Lock sx={{color: 'text.secondary'}}/>
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowPassword(v => !v)} edge="end">
+                                            {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+                        <TextField
+                            fullWidth size="small" margin="dense"
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            label="Confirm password"
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange('confirmPassword')}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Lock sx={{color: 'text.secondary'}}/>
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowConfirmPassword(v => !v)} edge="end">
+                                            {showConfirmPassword ? <VisibilityOff/> : <Visibility/>}
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+                    </Box>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disabled={isLoading}
+                        fullWidth
+                        sx={{
+                            mt: 2,
+                            background: 'linear-gradient(135deg, #FF6B35, #FF8A65)',
+                            borderRadius: '25px',
+                            py: 1.5,
+                            fontSize: '16px',
+                            fontWeight: 700,
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px',
+                            boxShadow: '0 4px 15px rgba(255, 107, 53, 0.3)',
+                            '&:hover': {
+                                background: 'linear-gradient(135deg, #FF8A65, #FF6B35)',
+                                boxShadow: '0 6px 20px rgba(255, 107, 53, 0.4)',
+                                transform: 'translateY(-2px)'
+                            },
+                            '&:disabled': {
+                                background: '#ccc',
+                                color: '#666'
+                            }
+                        }}
+                        startIcon={isLoading ? <CircularProgress size={18}/> : null}
+                    >
+                        {isLoading ? 'Signing up...' : 'Sign up'}
+                    </Button>
+                </Box>
+
+                {/* Sign In Link */}
+                <Box sx={{textAlign: 'center', mb: 2}}>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: "#666",
+                            fontSize: "0.9rem"
+                        }}
+                    >
+                        Already have an account?{" "}
+                        <Link
+                            component="button"
+                            onClick={() => navigate('/login')}
+                            sx={{
+                                color: "#FF6B35",
+                                textDecoration: "none",
+                                fontWeight: 600,
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                "&:hover": {
+                                    textDecoration: "underline"
+                                }
+                            }}
+                        >
+                            Sign in
+                        </Link>
+                    </Typography>
+                </Box>
+
+                {/* Footer Links */}
+                <Box sx={{borderTop: "1px solid rgba(0,0,0,0.1)", pt: 2.5}}>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            color: "#95a5a6",
+                            lineHeight: 1.5,
+                            fontSize: "0.75rem"
+                        }}
+                    >
+                        By creating an account, you agree to our{" "}
+                        <Link
+                            href="#"
+                            sx={{
+                                color: "#FF6B35",
+                                textDecoration: "none",
+                                fontWeight: 600,
+                                "&:hover": {
+                                    textDecoration: "underline"
+                                }
+                            }}
+                        >
+                            Terms of Service
+                        </Link>
+                        {" "}and{" "}
+                        <Link
+                            href="#"
+                            sx={{
+                                color: "#FF6B35",
+                                textDecoration: "none",
+                                fontWeight: 600,
+                                "&:hover": {
+                                    textDecoration: "underline"
+                                }
+                            }}
+                        >
+                            Privacy Policy
+                        </Link>
+                    </Typography>
+                </Box>
+            </Paper>
+        </Box>
     );
-};
-
-export default SignUp;
+}
