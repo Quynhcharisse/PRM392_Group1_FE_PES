@@ -4,14 +4,22 @@ import { LocationOn, Phone, Email } from '@mui/icons-material'
 export default function SiteFooter() {
   return (
     <footer className="footer">
-      {/* Main Footer Section - Two Columns */}
+      {/* Main Footer Section - Three Columns */}
       <div className="container footer__main">
         <div className="footer__grid">
-          {/* Column 1 - Contact Info */}
+          {/* Column 1 - Logo and Brand */}
+          <div className="footer__column">
+            <div className="footer__brand">
+              <img src="/logo.png" alt="MerryStar Logo" className="footer__logo" />
+              <h3 className="footer__title">Mầm non song ngữ Merrystar</h3>
+              <img src="/cambmerrystar1.png" alt="Cambridge MerryStar" className="footer__cambridge" />
+            </div>
+          </div>
+
+          {/* Column 2 - Contact Info */}
           <div className="footer__column">
             <h3 className="footer__title">Liên hệ</h3>
             
-            {/* Cơ sở 1 */}
             <div className="contact__section">
               <h4 className="contact__subtitle">Cơ sở chính:</h4>
               <div className="footer__contact">
