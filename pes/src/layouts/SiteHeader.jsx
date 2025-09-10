@@ -18,7 +18,8 @@ import {
     Info as InfoIcon,
     KeyboardArrowDown as KeyboardArrowDownIcon,
     Language as LanguageIcon,
-    ArrowDropDown as ArrowDropDownIcon
+        ArrowDropDown as ArrowDropDownIcon,
+    Description as DescriptionIcon
 } from '@mui/icons-material'
 import {enqueueSnackbar} from 'notistack'
 
@@ -29,11 +30,13 @@ export default function SiteHeader() {
     const [introMenuAnchor, setIntroMenuAnchor] = useState(null)
     const [teamMenuAnchor, setTeamMenuAnchor] = useState(null)
     const [educationMenuAnchor, setEducationMenuAnchor] = useState(null)
+    const [tuyenSinhMenuAnchor, setTuyenSinhMenuAnchor] = useState(null)
     const [currentUser, setCurrentUser] = useState(null)
     const menuOpen = Boolean(anchorEl)
     const introMenuOpen = Boolean(introMenuAnchor)
     const teamMenuOpen = Boolean(teamMenuAnchor)
     const educationMenuOpen = Boolean(educationMenuAnchor)
+    const tuyenSinhMenuOpen = Boolean(tuyenSinhMenuAnchor)
 
     useEffect(() => {
         const raw = localStorage.getItem('user')
@@ -69,6 +72,9 @@ export default function SiteHeader() {
     const handleOpenEducationMenu = (event) => setEducationMenuAnchor(event.currentTarget)
     const handleCloseEducationMenu = () => setEducationMenuAnchor(null)
     
+    const handleOpenTuyenSinhMenu = (event) => setTuyenSinhMenuAnchor(event.currentTarget)
+    const handleCloseTuyenSinhMenu = () => setTuyenSinhMenuAnchor(null)
+    
     const handleIntroMenuClick = (tabIndex) => {
         handleCloseIntroMenu()
         // Navigate to home page and scroll to specific intro tab
@@ -96,6 +102,16 @@ export default function SiteHeader() {
         setTimeout(() => {
             // Trigger education tab change by dispatching a custom event
             window.dispatchEvent(new CustomEvent('changeEducationTab', { detail: { tabIndex } }))
+        }, 100)
+    }
+    
+    const handleTuyenSinhMenuClick = (tabIndex) => {
+        handleCloseTuyenSinhMenu()
+        // Navigate to home page and scroll to specific tuyen sinh tab
+        navigate('/')
+        setTimeout(() => {
+            // Trigger tuyen sinh tab change by dispatching a custom event
+            window.dispatchEvent(new CustomEvent('changeTuyenSinhTab', { detail: { tabIndex } }))
         }, 100)
     }
 
@@ -316,22 +332,60 @@ export default function SiteHeader() {
                                 </ListItemIcon>
                                 Chương trình học
                             </MenuItem>
+                          
                         </Menu>
-                        <NavLink to="/tuyen-sinh" className="nav__item">
+                        <Box
+                            className="nav__item"
+                            onClick={handleOpenTuyenSinhMenu}
+                            sx={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5,
+                                px: 2,
+                                py: 1,
+                                borderRadius: 1,
+                                transition: 'all 0.3s ease',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                }
+                            }}
+                        >
                             <span>TUYỂN SINH</span>
-                            <KeyboardArrowDownIcon fontSize="small" />
-                        </NavLink>
-                        <NavLink to="/cham-soc-ket-noi" className="nav__item">
-                            <span>CHĂM SÓC - KẾT NỐI</span>
-                            <KeyboardArrowDownIcon fontSize="small" />
-                        </NavLink>
-                        <NavLink to="/tin-tuc-su-kien" className="nav__item">
-                            <span>TIN TỨC & SỰ KIỆN</span>
-                            <KeyboardArrowDownIcon fontSize="small" />
-                        </NavLink>
-                        <NavLink to="/lien-he" className="nav__item">
-                            <span>LIÊN HỆ</span>
-                        </NavLink>
+                            <ArrowDropDownIcon fontSize="small" />
+                        </Box>
+                        
+                        {/* Tuyen Sinh Dropdown Menu */}
+                        <Menu
+                            anchorEl={tuyenSinhMenuAnchor}
+                            open={tuyenSinhMenuOpen}
+                            onClose={handleCloseTuyenSinhMenu}
+                            slotProps={{
+                                paper: {
+                                    elevation: 3,
+                                    sx: {
+                                        mt: 1,
+                                        minWidth: 280,
+                                        borderRadius: 2,
+                                        '& .MuiMenuItem-root': {
+                                            px: 2,
+                                            py: 1.5,
+                                            fontSize: '14px',
+                                            fontWeight: 500,
+                                        }
+                                    }
+                                }
+                            }}
+                            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+                            anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                        >
+                            <MenuItem onClick={() => handleTuyenSinhMenuClick(0)}>
+                                <ListItemIcon>
+                                    <DescriptionIcon fontSize="small" sx={{ color: '#FF6B35' }} />
+                                </ListItemIcon>
+                                Quy Chế Tuyển Sinh
+                            </MenuItem>
+                        </Menu>
                     </nav>
 
                     {/* Right Side - Language & CTA */}

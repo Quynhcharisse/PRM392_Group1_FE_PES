@@ -31,20 +31,6 @@ export default function SiteFooter() {
             </div>
           </div>
 
-          {/* Column 2 - Quick Links */}
-          <div className="footer__column">
-            <h3 className="footer__title">Liên kết nhanh</h3>
-            <ul className="footer__list">
-              <li><a href="/ve-merrystar-kindergarten">Về MerryStar Kindergarten</a></li>
-              <li><a href="/triet-ly-giao-duc">Triết lý giáo dục</a></li>
-              <li><a href="/quy-che-tuyen-sinh">Quy chế tuyển sinh</a></li>
-              <li><a href="/so-tay-phu-huynh">Sổ tay Phụ huynh</a></li>
-              <li><a href="/cha-me-thong-thai">Cha Mẹ Thông Thái</a></li>
-              <li><a href="/cau-hoi-thuong-gap">Câu hỏi thường gặp</a></li>
-              <li><a href="/chinh-sach-bao-mat">Chính sách bảo mật và Điều khoản sử dụng</a></li>
-              <li><a href="/lien-he">Liên Hệ</a></li>
-            </ul>
-          </div>
         </div>
       </div>
 
