@@ -11,36 +11,37 @@ const ProtectedRoute = lazy(() => import('./config/ProtectedRoute.jsx'))
 
 const Home = lazy(() => import('./components/auth/Home.jsx'))
 const SignIn = lazy(() => import('./components/auth/SignIn.jsx'))
+const SignUp = lazy(() => import('./components/auth/SignUp.jsx'))
 
 const UserProfile = lazy(() => import('./components/account/UserProfile.jsx'))
 
 // Enhanced Loading component for Suspense fallback with responsive design
 const LoadingFallback = () => (<div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        backgroundColor: '#f5f5f5',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-        padding: '20px',
-        boxSizing: 'border-box'
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#f5f5f5',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+    padding: '20px',
+    boxSizing: 'border-box'
+}}>
+    <div style={{
+        width: 'clamp(40px, 8vw, 60px)',
+        height: 'clamp(40px, 8vw, 60px)',
+        border: 'clamp(3px, 0.8vw, 5px) solid #e3e3e3',
+        borderTop: 'clamp(3px, 0.8vw, 5px) solid #1976d2',
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite',
+        marginBottom: 'clamp(15px, 4vw, 25px)'
+    }}></div>
+    <div style={{
+        fontSize: 'clamp(14px, 4vw, 18px)', color: '#666', fontWeight: '500', textAlign: 'center', lineHeight: '1.5'
     }}>
-        <div style={{
-            width: 'clamp(40px, 8vw, 60px)',
-            height: 'clamp(40px, 8vw, 60px)',
-            border: 'clamp(3px, 0.8vw, 5px) solid #e3e3e3',
-            borderTop: 'clamp(3px, 0.8vw, 5px) solid #1976d2',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            marginBottom: 'clamp(15px, 4vw, 25px)'
-        }}></div>
-        <div style={{
-            fontSize: 'clamp(14px, 4vw, 18px)', color: '#666', fontWeight: '500', textAlign: 'center', lineHeight: '1.5'
-        }}>
-            Đang tải...
-        </div>
-        <style>{`
+        Loading...
+    </div>
+    <style>{`
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
@@ -64,7 +65,7 @@ const LoadingFallback = () => (<div style={{
         }
       }
     `}</style>
-    </div>)
+</div>)
 
 // Custom theme configuration with responsive design
 const theme = createTheme({
@@ -72,29 +73,62 @@ const theme = createTheme({
         values: {
             xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536,
         },
-    },         typography: {
-      fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', h1: {
-            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(1.75rem, 5vw, 2.5rem)', lineHeight: 1.2,
-        }, h2: {
-            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(1.5rem, 4vw, 2rem)', lineHeight: 1.3,
-        }, h3: {
-            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(1.25rem, 3.5vw, 1.75rem)', lineHeight: 1.4,
-        }, h4: {
-            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(1.125rem, 3vw, 1.5rem)', lineHeight: 1.4,
-        }, h5: {
-            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(1rem, 2.5vw, 1.25rem)', lineHeight: 1.5,
-        }, h6: {
-            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(0.875rem, 2vw, 1.125rem)', lineHeight: 1.5,
-        }, body1: {
-            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(0.875rem, 2vw, 1rem)', lineHeight: 1.6,
-        }, body2: {
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(0.75rem, 1.8vw, 0.875rem)', lineHeight: 1.6,
-        }, button: {
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(0.875rem, 2vw, 1rem)', fontWeight: 600,
-        }, caption: {
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', lineHeight: 1.4,
-        }, overline: {
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', letterSpacing: '0.08em',
+    }, typography: {
+        fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+        h1: {
+            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
+            lineHeight: 1.2,
+        },
+        h2: {
+            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+            lineHeight: 1.3,
+        },
+        h3: {
+            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(1.25rem, 3.5vw, 1.75rem)',
+            lineHeight: 1.4,
+        },
+        h4: {
+            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(1.125rem, 3vw, 1.5rem)',
+            lineHeight: 1.4,
+        },
+        h5: {
+            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+            lineHeight: 1.5,
+        },
+        h6: {
+            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(0.875rem, 2vw, 1.125rem)',
+            lineHeight: 1.5,
+        },
+        body1: {
+            fontFamily: '"Mali", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+            lineHeight: 1.6,
+        },
+        body2: {
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(0.75rem, 1.8vw, 0.875rem)',
+            lineHeight: 1.6,
+        },
+        button: {
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+            fontWeight: 600,
+        },
+        caption: {
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)',
+            lineHeight: 1.4,
+        },
+        overline: {
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+            fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)',
+            letterSpacing: '0.08em',
         },
     }, components: {
         MuiCssBaseline: {
@@ -157,53 +191,47 @@ const theme = createTheme({
 
 const router = createBrowserRouter([{
     path: '/', element: (<Suspense fallback={<LoadingFallback/>}>
-            <WebApplicationLayout/>
-        </Suspense>), children: [{
+        <WebApplicationLayout/>
+    </Suspense>), children: [{
         index: true, element: (<Suspense fallback={<LoadingFallback/>}>
-                <Home/>
-            </Suspense>)
+            <Home/>
+        </Suspense>)
     }, {
         path: 'login', element: (<Suspense fallback={<LoadingFallback/>}>
-                <SignIn/>
-            </Suspense>)
+            <SignIn/>
+        </Suspense>)
+    }, {
+        path: 'signup', element: (<Suspense fallback={<LoadingFallback/>}>
+            <SignUp/>
+        </Suspense>)
     }],
 }, {
     path: 'hr', element: (<Suspense fallback={<LoadingFallback/>}>
-            <ProtectedRoute allowRoles={["ADMIN"]}>
-                <Suspense fallback={<LoadingFallback/>}>
-                    <HRDashboard/>
-                </Suspense>
-            </ProtectedRoute>
-        </Suspense>), children: [{
-        index: true, element: <Navigate to={'/admin/dashboard'}/>
+        <ProtectedRoute allowRoles={["HR"]}>
+            <Suspense fallback={<LoadingFallback/>}>
+                <HRDashboard/>
+            </Suspense>
+        </ProtectedRoute>
+    </Suspense>), children: [{
+        index: true, element: <Navigate to={'/hr/dashboard'}/>
     }, {
         path: 'dashboard', element: <h1>Dashboard Pannel</h1>
     }]
 }, {
     path: 'education', element: (<Suspense fallback={<LoadingFallback/>}>
-            <ProtectedRoute allowRoles={["SELLER"]}>
-                <Suspense fallback={<LoadingFallback/>}>
-                    <EducationDashboard/>
-                </Suspense>
-            </ProtectedRoute>
-        </Suspense>), children: [{
-        index: true, element: <Navigate to={'/seller/dashboard'}/>
+        <ProtectedRoute allowRoles={["EDUCATION"]}>
+            <Suspense fallback={<LoadingFallback/>}>
+                <EducationDashboard/>
+            </Suspense>
+        </ProtectedRoute>
+    </Suspense>), children: [{
+        index: true, element: <Navigate to={'/education/dashboard'}/>
     }, {
         path: 'dashboard', element: <h1>Dashboard Pannel</h1>
     }, {
         path: 'profile', element: (<Suspense fallback={<LoadingFallback/>}>
-                <UserProfile/>
-            </Suspense>)
-    }, {
-        path: 'products', element: <h1>Quản lý sản phẩm</h1>
-    }, {
-        path: 'orders', element: <h1>Quản lý đơn hàng</h1>
-    }, {
-        path: 'analytics', element: <h1>Báo cáo & Thống kê</h1>
-    }, {
-        path: 'store', element: <h1>Cửa hàng của tôi</h1>
-    }, {
-        path: 'settings', element: <h1>Cài đặt</h1>
+            <UserProfile/>
+        </Suspense>)
     }]
 }, {
     path: 'profile', element: <Navigate to="/buyer/profile"/>
@@ -212,22 +240,16 @@ const router = createBrowserRouter([{
 },])
 
 export default function App() {
-    const clientID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "fallback_client_id"
-
-    if (!clientID || clientID === "your_actual_google_client_id_here" || clientID === "fallback_client_id") {
-        console.warn("Google Client ID not configured. Please set VITE_GOOGLE_CLIENT_ID in your .env file")
-    }
-
     return (<SnackbarProvider
-            maxSnack={3}
-            autoHideDuration={3000}
-            anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-            TransitionComponent={Slide}
-            preventDuplicate={true}
-        >
-            <ThemeProvider theme={theme}>
-                <CssBaseline/>
-                <RouterProvider router={router}/>
-            </ThemeProvider>
-        </SnackbarProvider>)
+        maxSnack={3}
+        autoHideDuration={3000}
+        anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+        TransitionComponent={Slide}
+        preventDuplicate={true}
+    >
+        <ThemeProvider theme={theme}>
+            <CssBaseline/>
+            <RouterProvider router={router}/>
+        </ThemeProvider>
+    </SnackbarProvider>)
 }

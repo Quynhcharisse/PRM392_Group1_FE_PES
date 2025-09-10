@@ -4,11 +4,9 @@ import {
     AppBar,
     Avatar,
     Box,
-    Button,
     Card,
     CardContent,
     Chip,
-    Divider,
     Drawer,
     Grid,
     IconButton,
@@ -19,26 +17,15 @@ import {
     ListItemText,
     Menu,
     MenuItem,
-    Stack,
     Toolbar,
     Typography,
-    useMediaQuery,
     useTheme
 } from '@mui/material';
 import {
     AccountCircle as AccountCircleIcon,
-    Add as AddIcon,
-    Assessment as AssessmentIcon,
     Dashboard as DashboardIcon,
-    Inventory as InventoryIcon,
-    LocalShipping as LocalShippingIcon,
     Logout as LogoutIcon,
-    Menu as MenuIcon,
-    Settings as SettingsIcon,
-    ShoppingCart as ShoppingCartIcon,
-    Store as StoreIcon,
-    TrendingUp as TrendingUpIcon,
-    Visibility as VisibilityIcon
+    Menu as MenuIcon
 } from '@mui/icons-material';
 import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 
@@ -59,139 +46,17 @@ const colors = {
     info: '#3b82f6'
 };
 
-// Navigation configuration for sellers
+// Navigation configuration (EDUCATION only)
 const NAVIGATION = [
     {
         segment: 'dashboard',
         title: 'Dashboard',
         icon: <DashboardIcon/>,
-        path: '/seller/dashboard'
-    },
-    {
-        segment: 'analytics',
-        title: 'Báo cáo & Thống kê',
-        icon: <AssessmentIcon/>,
-        path: '/seller/analytics'
-    },
-    {
-        segment: 'store',
-        title: 'Cửa hàng của tôi',
-        icon: <StoreIcon/>,
-        path: '/seller/store'
-    },
-    {
-        segment: 'settings',
-        title: 'Cài đặt',
-        icon: <SettingsIcon/>,
-        path: '/seller/settings'
+        path: '/education/dashboard'
     }
 ];
 
 function SellerDashboardContent({session}) {
-    const navigate = useNavigate();
-    const [stats, setStats] = useState({
-        todayOrders: 18,
-        revenueVnd: 8750000,
-        totalProducts: 42,
-        lowStock: 3
-    });
-
-    const [recentOrders] = useState([
-        {
-            id: 1,
-            code: 'ORD001',
-            customerName: 'Nguyễn Văn A',
-            total: 250000,
-            statusLabel: 'Mới',
-            createdAt: new Date().toISOString()
-        },
-        {
-            id: 2,
-            code: 'ORD002',
-            customerName: 'Trần Thị B',
-            total: 150000,
-            statusLabel: 'Đang xử lý',
-            createdAt: new Date(Date.now() - 3600000).toISOString()
-        }
-    ]);
-
-    function formatCurrencyVnd(value) {
-        try {
-            return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value || 0);
-        } catch (_) {
-            return `${value ?? 0} ₫`;
-        }
-    }
-
-    const StatCard = ({title, value, icon, color, trend, suffix}) => (
-        <Card sx={{
-            background: `linear-gradient(135deg, ${color} 0%, ${alpha(color, 0.8)} 100%)`,
-            color: 'white',
-            borderRadius: 3,
-            overflow: 'hidden',
-            position: 'relative',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: `0 12px 24px ${alpha(color, 0.3)}`,
-            },
-            '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                width: '100px',
-                height: '100px',
-                background: `radial-gradient(circle, ${alpha('#ffffff', 0.1)} 0%, transparent 70%)`,
-                transform: 'translate(30px, -30px)',
-            }
-        }}>
-            <CardContent sx={{p: 3, position: 'relative', zIndex: 1}}>
-                <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={2}>
-                    <Box sx={{
-                        backgroundColor: alpha('#ffffff', 0.2),
-                        borderRadius: 2,
-                        p: 1.5,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        {icon}
-                    </Box>
-                    {trend && (
-                        <Chip
-                            size="small"
-                            label={trend}
-                            sx={{
-                                backgroundColor: alpha('#ffffff', 0.2),
-                                color: 'white',
-                                fontWeight: 600
-                            }}
-                        />
-                    )}
-                </Stack>
-                <Typography variant="body2" sx={{opacity: 0.9, mb: 1, fontSize: '0.875rem'}}>
-                    {title}
-                </Typography>
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                    <Typography variant="h4" sx={{fontWeight: 700, lineHeight: 1}}>
-                        {value}
-                    </Typography>
-                    {suffix && (
-                        <Chip
-                            size="small"
-                            label={suffix}
-                            sx={{
-                                backgroundColor: alpha('#ffffff', 0.2),
-                                color: 'white',
-                                fontSize: '0.75rem'
-                            }}
-                        />
-                    )}
-                </Box>
-            </CardContent>
-        </Card>
-    );
 
     return (
         <Box sx={{px: 4, py: 5}}>
@@ -208,194 +73,45 @@ function SellerDashboardContent({session}) {
                     {session.user.role || 'User'} Dashboard
                 </Typography>
                 <Typography variant="body1" sx={{color: 'text.secondary', fontSize: '1.1rem'}}>
-                    Tổng quan hiệu suất cửa hàng của bạn hôm nay
+                    Welcome to the Education portal overview.
                 </Typography>
             </Box>
 
-            {/* Stats Cards */}
+            {/* Education-specific content (minimal) */}
             <Grid container spacing={3} sx={{mb: 4}}>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <StatCard
-                        title="Đơn hàng hôm nay"
-                        value={stats.todayOrders}
-                        icon={<ShoppingCartIcon sx={{fontSize: 28}}/>}
-                        color={colors.primary}
-                        trend="+15%"
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <StatCard
-                        title="Doanh thu hôm nay"
-                        value={formatCurrencyVnd(stats.revenueVnd)}
-                        icon={<TrendingUpIcon sx={{fontSize: 28}}/>}
-                        color={colors.success}
-                        trend="+12%"
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <StatCard
-                        title="Sản phẩm đang bán"
-                        value={stats.totalProducts}
-                        icon={<InventoryIcon sx={{fontSize: 28}}/>}
-                        color={colors.info}
-                        trend="+3"
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <StatCard
-                        title="Sắp hết hàng"
-                        value={stats.lowStock}
-                        icon={<LocalShippingIcon sx={{fontSize: 28}}/>}
-                        color={stats.lowStock > 0 ? colors.warning : colors.success}
-                        suffix={stats.lowStock > 0 ? 'Kiểm tra' : 'Ổn định'}
-                    />
+                <Grid item xs={12}>
+                    <Card sx={{
+                        borderRadius: 3,
+                        border: `1px solid ${alpha(colors.primary, 0.1)}`,
+                        background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.5)} 100%)`,
+                        boxShadow: `0 2px 12px ${alpha(colors.primary, 0.08)}`
+                    }}>
+                        <CardContent>
+                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 1}}>
+                                Education actions
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Configure education modules and content here.
+                            </Typography>
+                        </CardContent>
+                    </Card>
                 </Grid>
             </Grid>
 
             {/* Main Content Grid */}
             <Grid container spacing={3}>
-                {/* Quick Actions */}
-                <Grid item xs={12} lg={8}>
+                {/* Main education section placeholder */}
+                <Grid item xs={12}>
                     <Card sx={{
                         borderRadius: 4,
                         border: `1px solid ${alpha(colors.primary, 0.1)}`,
                         background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.5)} 100%)`,
-                        boxShadow: `0 4px 20px ${alpha(colors.primary, 0.1)}`,
-                        mb: 3
+                        boxShadow: `0 4px 20px ${alpha(colors.primary, 0.1)}`
                     }}>
                         <CardContent sx={{p: 4}}>
-                            <Typography variant="h5" sx={{
-                                fontWeight: 700,
-                                mb: 3,
-                                color: colors.primary,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1
-                            }}>
-                                <Box sx={{
-                                    width: 6,
-                                    height: 24,
-                                    backgroundColor: colors.primary,
-                                    borderRadius: 1
-                                }}/>
-                                Tác vụ nhanh
+                            <Typography variant="body1" color="text.secondary">
+                                This area will display EDUCATION dashboards and reports.
                             </Typography>
-                            <Stack direction={{xs: 'column', sm: 'row'}} spacing={2} flexWrap="wrap">
-                                <Button
-                                    variant="contained"
-                                    startIcon={<AddIcon/>}
-                                    onClick={() => navigate('/seller/succulent')}
-                                    sx={{
-                                        borderRadius: 3,
-                                        px: 3,
-                                        py: 1.5,
-                                        backgroundColor: colors.primary,
-                                        '&:hover': {backgroundColor: colors.primaryDark}
-                                    }}
-                                >
-                                    Tạo sản phẩm sen đá
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<VisibilityIcon/>}
-                                    onClick={() => navigate('/seller/orders')}
-                                    sx={{
-                                        borderRadius: 3,
-                                        px: 3,
-                                        py: 1.5,
-                                        borderColor: colors.primary,
-                                        color: colors.primary,
-                                        '&:hover': {borderColor: colors.primaryDark}
-                                    }}
-                                >
-                                    Xem đơn hàng
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<InventoryIcon/>}
-                                    onClick={() => navigate('/seller/succulent')}
-                                    sx={{
-                                        borderRadius: 3,
-                                        px: 3,
-                                        py: 1.5,
-                                        borderColor: colors.primary,
-                                        color: colors.primary,
-                                        '&:hover': {borderColor: colors.primaryDark}
-                                    }}
-                                >
-                                    Quản lý sen đá
-                                </Button>
-                            </Stack>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                {/* Recent Orders */}
-                <Grid item xs={12} lg={4}>
-                    <Card sx={{
-                        borderRadius: 4,
-                        border: `1px solid ${alpha(colors.primary, 0.1)}`,
-                        background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.5)} 100%)`,
-                        boxShadow: `0 4px 20px ${alpha(colors.primary, 0.1)}`,
-                        height: 'fit-content'
-                    }}>
-                        <CardContent sx={{p: 3}}>
-                            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3}}>
-                                <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary}}>
-                                    Đơn gần đây
-                                </Typography>
-                                <Button
-                                    size="small"
-                                    sx={{color: colors.primary}}
-                                    onClick={() => navigate('/seller/orders')}
-                                >
-                                    Xem tất cả
-                                </Button>
-                            </Box>
-                            <Divider sx={{mb: 2}}/>
-
-                            <Stack spacing={2}>
-                                {recentOrders.map(order => (
-                                    <Box key={order.id} sx={{
-                                        p: 2,
-                                        borderRadius: 2,
-                                        backgroundColor: alpha(colors.primary, 0.05),
-                                        border: `1px solid ${alpha(colors.primary, 0.1)}`,
-                                        transition: 'all 0.2s ease',
-                                        '&:hover': {
-                                            backgroundColor: alpha(colors.primary, 0.1),
-                                            transform: 'translateX(4px)'
-                                        }
-                                    }}>
-                                        <Box sx={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'flex-start',
-                                            mb: 1
-                                        }}>
-                                            <Typography variant="subtitle2"
-                                                        sx={{fontWeight: 600, color: colors.primary}}>
-                                                #{order.code}
-                                            </Typography>
-                                            <Chip
-                                                size="small"
-                                                label={order.statusLabel}
-                                                sx={{
-                                                    backgroundColor: order.statusLabel === 'Mới' ? colors.success : colors.warning,
-                                                    color: 'white',
-                                                    fontSize: '0.75rem'
-                                                }}
-                                            />
-                                        </Box>
-                                        <Typography variant="body2" sx={{color: 'text.secondary', mb: 1}}>
-                                            {order.customerName}
-                                        </Typography>
-                                        <Typography variant="body2" sx={{fontWeight: 600, color: colors.primary}}>
-                                            {formatCurrencyVnd(order.total)}
-                                        </Typography>
-                                    </Box>
-                                ))}
-                            </Stack>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -406,7 +122,6 @@ function SellerDashboardContent({session}) {
 
 export default function EducationDashboard() {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -422,9 +137,9 @@ export default function EducationDashboard() {
     });
 
     useEffect(() => {
-        document.title = 'Kênh người bán | Lá Nhỏ Bên Thềm';
+        document.title = 'Education Portal | La Nho Ben Them';
 
-        // Lấy thông tin user từ localStorage
+        // Get user info from localStorage
         try {
             const userData = localStorage.getItem('user');
 
@@ -475,7 +190,7 @@ export default function EducationDashboard() {
 
     const handleProfileClick = () => {
         handleMenuClose();
-        navigate('/seller/profile');
+        navigate('/education/profile');
     };
 
     const isActiveRoute = (path) => {
@@ -519,7 +234,7 @@ export default function EducationDashboard() {
                     }}>
                         <img
                             src="/LaNhoBenThemLogo.png"
-                            alt="Lá Nhỏ Bên Thềm Logo"
+                            alt="La Nho Ben Them Logo"
                             style={{
                                 width: '100%',
                                 height: '100%',
@@ -535,7 +250,7 @@ export default function EducationDashboard() {
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                     }}>
-                        Lá Nhỏ Bên Thềm
+                        La Nho Ben Them
                     </Typography>
                 </Box>
             </Toolbar>
@@ -549,7 +264,7 @@ export default function EducationDashboard() {
                     letterSpacing: 1,
                     textTransform: 'uppercase'
                 }}>
-                    Kênh {session.user.role?.toLowerCase() || 'người dùng'}
+                    Portal {session.user.role?.toLowerCase() || 'user'}
                 </Typography>
                 <List sx={{mt: 1}}>
                     {NAVIGATION.map((item) => (
@@ -666,8 +381,8 @@ export default function EducationDashboard() {
                         fontWeight: 600,
                         color: colors.primary
                     }}>
-                        {location.pathname === '/seller/dashboard' ? 'Dashboard' :
-                            NAVIGATION.find(nav => nav.path === location.pathname)?.title || `Kênh ${session.user.role?.toLowerCase() || 'người dùng'}`}
+                        {location.pathname === '/education/dashboard' ? 'Dashboard' :
+                            NAVIGATION.find(nav => nav.path === location.pathname)?.title || `Portal ${session.user.role?.toLowerCase() || 'user'}`}
                     </Typography>
 
                     <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
@@ -811,7 +526,7 @@ export default function EducationDashboard() {
                             <AccountCircleIcon fontSize="small" sx={{color: colors.primary}}/>
                         </ListItemIcon>
                         <ListItemText
-                            primary="Hồ sơ cá nhân"
+                            primary="Profile"
                         />
                     </MenuItem>
                     <MenuItem
@@ -831,7 +546,7 @@ export default function EducationDashboard() {
                             <LogoutIcon fontSize="small" sx={{color: colors.error}}/>
                         </ListItemIcon>
                         <ListItemText
-                            primary="Đăng xuất"
+                            primary="Sign out"
                         />
                     </MenuItem>
                 </Box>
@@ -896,7 +611,7 @@ export default function EducationDashboard() {
                 }}
             >
                 {/* Dashboard content or nested routes */}
-                {location.pathname === '/seller/dashboard' ? (
+                {location.pathname === '/education/dashboard' ? (
                     <SellerDashboardContent session={session}/>
                 ) : (
                     <Box sx={{p: 4}}>

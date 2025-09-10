@@ -1,64 +1,64 @@
-import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import {useEffect, useState} from 'react'
+import {useLocation, useNavigate} from 'react-router-dom'
 import {
-  Box,
-  Button,
-  Link,
-  Paper,
-  Typography,
-  TextField,
-  InputAdornment,
-  IconButton,
-  CircularProgress
+    Box,
+    Button,
+    CircularProgress,
+    IconButton,
+    InputAdornment,
+    Link,
+    Paper,
+    TextField,
+    Typography
 } from '@mui/material'
-import { Email, Lock, Visibility, VisibilityOff } from '@mui/icons-material'
-import { useSnackbar } from 'notistack'
+import {Email, Lock, Visibility, VisibilityOff} from '@mui/icons-material'
+import {useSnackbar} from 'notistack'
 
 export default function SignIn() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const { enqueueSnackbar } = useSnackbar()
-  const navigate = useNavigate()
-  const { search } = useLocation()
-  const redirectTo = new URLSearchParams(search).get('redirectTo')
+    const [isLoading, setIsLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const {enqueueSnackbar} = useSnackbar()
+    const navigate = useNavigate()
+    const {search} = useLocation()
+    const redirectTo = new URLSearchParams(search).get('redirectTo')
 
-  // If already logged in -> redirect
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('user')
-      if (raw) {
-        navigate(redirectTo || '/', { replace: true })
-      }
-    } catch {
-      /* noop */
+    // If already logged in -> redirect
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem('user')
+            if (raw) {
+                navigate(redirectTo || '/', {replace: true})
+            }
+        } catch {
+            /* noop */
+        }
+    }, [navigate, redirectTo])
+
+    const handleLogin = async (e) => {
+        e.preventDefault()
+        setIsLoading(true)
+        try {
+            await new Promise(res => setTimeout(res, 700))
+            const mockUser = {
+                id: 1,
+                email,
+                name: email.split('@')[0] || 'User',
+                role: 'BUYER',
+                avatar: ''
+            }
+            localStorage.setItem('user', JSON.stringify(mockUser))
+            enqueueSnackbar('Login successful!', {variant: 'success'})
+            navigate(redirectTo || '/', {replace: true})
+        } catch (err) {
+            enqueueSnackbar('Login failed', {variant: 'error'})
+        } finally {
+            setIsLoading(false)
+        }
     }
-  }, [navigate, redirectTo])
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    try {
-      await new Promise(res => setTimeout(res, 700))
-      const mockUser = {
-        id: 1,
-        email,
-        name: email.split('@')[0] || 'Người dùng',
-        role: 'BUYER',
-        avatar: ''
-      }
-      localStorage.setItem('user', JSON.stringify(mockUser))
-      enqueueSnackbar('Đăng nhập thành công!', { variant: 'success' })
-      navigate(redirectTo || '/', { replace: true })
-    } catch (err) {
-      enqueueSnackbar('Đăng nhập thất bại', { variant: 'error' })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-    document.title = "Đăng nhập | Sunshine"
+    document.title = "Sign in | MerryStar Kindergarten"
 
     return (
         <Box
@@ -67,7 +67,7 @@ export default function SignIn() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "linear-gradient(135deg, #2D6A4F 0%, #1B4332 100%)",
+                background: "linear-gradient(135deg,rgb(227, 210, 203) 0%,rgb(230, 226, 225) 50%,rgb(237, 237, 237) 100%)",
                 position: "relative",
                 overflow: "hidden",
                 "&::before": {
@@ -118,7 +118,7 @@ export default function SignIn() {
                     p: {xs: 3, sm: 4, md: 5},
                     borderRadius: 4,
                     textAlign: "center",
-                    maxWidth: 420,
+                    maxWidth: 480,
                     width: "90%",
                     background: "rgba(255, 255, 255, 0.95)",
                     backdropFilter: "blur(20px)",
@@ -145,18 +145,18 @@ export default function SignIn() {
                     >
                         <Box
                             component="img"
-                            src="/LaNhoBenThemLogo.png"
-                            alt="Lá Nhỏ Bên Thềm"
+                            src="/logo.png"
+                            alt="MerryStar Kindergarten"
                             sx={{
-                                height: 65,
-                                width: 65,
+                                height: 80,
+                                width: 80,
                                 borderRadius: "50%",
-                                boxShadow: "0 8px 25px rgba(45, 106, 79, 0.4)",
+                                boxShadow: "0 8px 25px rgba(255, 107, 53, 0.4)",
                                 border: "3px solid rgba(255, 255, 255, 0.8)",
                                 transition: "all 0.3s ease",
                                 "&:hover": {
                                     transform: "scale(1.05)",
-                                    boxShadow: "0 12px 35px rgba(45, 106, 79, 0.6)"
+                                    boxShadow: "0 12px 35px rgba(255, 107, 53, 0.6)"
                                 }
                             }}
                         />
@@ -167,7 +167,7 @@ export default function SignIn() {
                                 right: -5,
                                 width: 20,
                                 height: 20,
-                                background: "linear-gradient(45deg, #2D6A4F, #1B4332)",
+                                background: "linear-gradient(45deg, #FF6B35, #FF8A65)",
                                 borderRadius: "50%",
                                 animation: "pulse 2s infinite"
                             }}
@@ -177,7 +177,7 @@ export default function SignIn() {
                         variant="h4"
                         sx={{
                             fontWeight: 800,
-                            background: "linear-gradient(135deg, #2D6A4F 0%, #1B4332 100%)",
+                            background: "linear-gradient(135deg, #FF6B35 0%, #3498DB 100%)",
                             backgroundClip: "text",
                             WebkitBackgroundClip: "text",
                             WebkitTextFillColor: "transparent",
@@ -185,7 +185,7 @@ export default function SignIn() {
                             mb: 0.5
                         }}
                     >
-                        Lá Nhỏ Bên Thềm
+                        MerryStar Kindergarten
                     </Typography>
                     <Typography
                         variant="caption"
@@ -197,7 +197,7 @@ export default function SignIn() {
                             fontSize: "0.75rem"
                         }}
                     >
-                        Góc nhỏ xanh trong nhà
+                        Bilingual Kindergarten
                     </Typography>
                 </Box>
 
@@ -212,7 +212,7 @@ export default function SignIn() {
                             letterSpacing: "-0.5px"
                         }}
                     >
-                        Chào mừng trở lại
+                        Welcome to MerryStar
                     </Typography>
                     <Typography
                         variant="body2"
@@ -224,7 +224,7 @@ export default function SignIn() {
                             mx: "auto"
                         }}
                     >
-                        Đăng nhập để nhận ưu đãi, lưu giỏ hàng và theo dõi đơn
+                        Sign in to manage admissions and track your child's learning progress
                     </Typography>
                 </Box>
 
@@ -240,7 +240,7 @@ export default function SignIn() {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <Email sx={{ color: 'text.secondary' }} />
+                                    <Email sx={{color: 'text.secondary'}}/>
                                 </InputAdornment>
                             )
                         }}
@@ -248,20 +248,20 @@ export default function SignIn() {
                     <TextField
                         fullWidth
                         type={showPassword ? 'text' : 'password'}
-                        label="Mật khẩu"
+                        label="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         margin="normal"
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <Lock sx={{ color: 'text.secondary' }} />
+                                    <Lock sx={{color: 'text.secondary'}}/>
                                 </InputAdornment>
                             ),
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton onClick={() => setShowPassword(v => !v)} edge="end">
-                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        {showPassword ? <VisibilityOff/> : <Visibility/>}
                                     </IconButton>
                                 </InputAdornment>
                             )
@@ -272,11 +272,79 @@ export default function SignIn() {
                         variant="contained"
                         disabled={isLoading}
                         fullWidth
-                        sx={{ mt: 2 }}
-                        startIcon={isLoading ? <CircularProgress size={18} /> : null}
+                        sx={{
+                            mt: 2,
+                            background: 'linear-gradient(135deg, #FF6B35, #FF8A65)',
+                            borderRadius: '25px',
+                            py: 1.5,
+                            fontSize: '16px',
+                            fontWeight: 700,
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px',
+                            boxShadow: '0 4px 15px rgba(255, 107, 53, 0.3)',
+                            '&:hover': {
+                                background: 'linear-gradient(135deg, #FF8A65, #FF6B35)',
+                                boxShadow: '0 6px 20px rgba(255, 107, 53, 0.4)',
+                                transform: 'translateY(-2px)'
+                            },
+                            '&:disabled': {
+                                background: '#ccc',
+                                color: '#666'
+                            }
+                        }}
+                        startIcon={isLoading ? <CircularProgress size={18}/> : null}
                     >
-                        {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                        {isLoading ? 'Signing in...' : 'Sign in'}
                     </Button>
+                </Box>
+
+                {/* Forgot Password & Sign Up Links */}
+                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
+                    <Link
+                        component="button"
+                        onClick={() => navigate('/forgot-password')}
+                        sx={{
+                            color: "#FF6B35",
+                            textDecoration: "none",
+                            fontWeight: 600,
+                            fontSize: "0.9rem",
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            "&:hover": {
+                                textDecoration: "underline"
+                            }
+                        }}
+                    >
+                        Forgot Password
+                    </Link>
+
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: "#666",
+                            fontSize: "0.9rem"
+                        }}
+                    >
+                        Have not an Account?{" "}
+                        <Link
+                            component="button"
+                            onClick={() => navigate('/signup')}
+                            sx={{
+                                color: "#FF6B35",
+                                textDecoration: "none",
+                                fontWeight: 600,
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                "&:hover": {
+                                    textDecoration: "underline"
+                                }
+                            }}
+                        >
+                            Sign up
+                        </Link>
+                    </Typography>
                 </Box>
 
                 {/* Footer Links */}
@@ -289,11 +357,11 @@ export default function SignIn() {
                             fontSize: "0.75rem"
                         }}
                     >
-                        Bằng việc đăng nhập, bạn đồng ý với{" "}
+                        By signing in, you agree to our{" "}
                         <Link
                             href="#"
                             sx={{
-                                color: "#2D6A4F",
+                                color: "#FF6B35",
                                 textDecoration: "none",
                                 fontWeight: 600,
                                 "&:hover": {
@@ -301,13 +369,13 @@ export default function SignIn() {
                                 }
                             }}
                         >
-                            Điều khoản dịch vụ
+                            Terms of Service
                         </Link>
-                        {" "}và{" "}
+                        {" "}and{" "}
                         <Link
                             href="#"
                             sx={{
-                                color: "#2D6A4F",
+                                color: "#FF6B35",
                                 textDecoration: "none",
                                 fontWeight: 600,
                                 "&:hover": {
@@ -315,7 +383,7 @@ export default function SignIn() {
                                 }
                             }}
                         >
-                            Chính sách bảo mật
+                            Privacy Policy
                         </Link>
                     </Typography>
                 </Box>
