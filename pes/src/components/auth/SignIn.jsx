@@ -39,22 +39,46 @@ export default function SignIn() {
     const handleLogin = async (e) => {
         e.preventDefault()
         setIsLoading(true)
+        
         try {
-            await new Promise(res => setTimeout(res, 700))
-            const mockUser = {
-                id: 1,
-                email,
-                name: email.split('@')[0] || 'User',
-                role: 'BUYER',
-                avatar: ''
+            // Import authService dynamically to avoid circular dependency
+            const { authService } = await import('@services/authService.jsx');
+            
+            const result = await authService.login(email, password);
+            
+            if (result.success) {
+                enqueueSnackbar('Login successful!', { variant: 'success' });
+                
+                // Navigate based on user role
+                const { role } = result.data;
+                let dashboardRoute = '/';
+                
+                switch (role?.toLowerCase()) {
+                    case 'parent':
+                        dashboardRoute = '/dashboard/parent';
+                        break;
+                    case 'education':
+                        dashboardRoute = '/education/dashboard';
+                        break;
+                    case 'hr':
+                        dashboardRoute = '/hr/dashboard';
+                        break;
+                    case 'admin':
+                        dashboardRoute = '/admin/dashboard';
+                        break;
+                    default:
+                        dashboardRoute = redirectTo || '/';
+                }
+                
+                navigate(dashboardRoute, { replace: true });
+            } else {
+                enqueueSnackbar(result.error || 'Login failed', { variant: 'error' });
             }
-            localStorage.setItem('user', JSON.stringify(mockUser))
-            enqueueSnackbar('Login successful!', {variant: 'success'})
-            navigate(redirectTo || '/', {replace: true})
         } catch (err) {
-            enqueueSnackbar('Login failed', {variant: 'error'})
+            console.error('Login error:', err);
+            enqueueSnackbar('An unexpected error occurred', { variant: 'error' });
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 
