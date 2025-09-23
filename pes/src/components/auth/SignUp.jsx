@@ -65,21 +65,28 @@ export default function SignUp() {
 
         setIsLoading(true)
         try {
-            await new Promise(res => setTimeout(res, 700))
-            const mockUser = {
-                id: 1,
+            // Import authService dynamically
+            const { authService } = await import('@services/authService.jsx');
+            
+            const result = await authService.register({
                 email: formData.email,
-                name: formData.fullName,
-                role: 'BUYER',
-                avatar: ''
+                password: formData.password,
+                fullName: formData.fullName,
+                phone: formData.phone
+            });
+
+            if (result.success) {
+                enqueueSnackbar('Registration successful! Please login.', { variant: 'success' });
+                // Redirect to login page
+                navigate('/login', { replace: true });
+            } else {
+                enqueueSnackbar(result.error || 'Registration failed', { variant: 'error' });
             }
-            localStorage.setItem('user', JSON.stringify(mockUser))
-            enqueueSnackbar('Registration successful!', {variant: 'success'})
-            navigate(redirectTo || '/', {replace: true})
         } catch (err) {
-            enqueueSnackbar('Registration failed', {variant: 'error'})
+            console.error('Registration error:', err);
+            enqueueSnackbar('An unexpected error occurred', { variant: 'error' });
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 
@@ -287,21 +294,7 @@ export default function SignUp() {
                                     </InputAdornment>
                                 )
                             }}
-                        />
-                        <TextField
-                            fullWidth size="small" margin="dense"
-                            type="tel"
-                            label="Phone number"
-                            value={formData.phone}
-                            onChange={handleInputChange('phone')}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <Phone sx={{color: 'text.secondary'}}/>
-                                    </InputAdornment>
-                                )
-                            }}
-                        />
+                        />                       
                         <TextField
                             fullWidth size="small" margin="dense"
                             type={showPassword ? 'text' : 'password'}
