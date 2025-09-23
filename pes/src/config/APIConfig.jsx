@@ -1,6 +1,5 @@
 import axios from "axios"
 
-// Using the correct backend URL from your Swagger UI
 axios.defaults.baseURL = "http://localhost:5000/auth-api/api"
 
 const axiosClient = axios.create({
@@ -8,7 +7,7 @@ const axiosClient = axios.create({
     headers: {
         "Content-Type": "application/json",
     }, 
-    withCredentials: false, // Set to false to avoid CORS issues
+    withCredentials: false,
 });
 
 // Request interceptor to add auth token

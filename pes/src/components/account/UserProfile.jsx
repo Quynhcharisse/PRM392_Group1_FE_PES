@@ -75,7 +75,6 @@ const UserProfile = () => {
     });
 
     useEffect(() => {
-        //     console.log("🔄 UserProfile useEffect triggered, calling loadProfile");
         loadProfile();
     }, []);
 
@@ -85,21 +84,15 @@ const UserProfile = () => {
             setError("");
 
             const response = await authService.getUserProfile();
-            //       console.log("📋 Profile response:", response);
 
-            // Extract actual data from response
             const profileData = response.data || response;
-            //       console.log("📋 Profile data extracted:", profileData);
-            //       console.log("📋 Setting profile state with:", profileData);
             setProfile(profileData);
 
-            // Check if this is first login (profile incomplete or password needs reset)
             const needsPasswordReset =
                 profileData.firstLogin || profileData.tempPassword;
             setIsFirstLogin(needsPasswordReset);
             setShowPasswordReset(needsPasswordReset);
 
-            // Set form data with name field directly
             setFormData({
                 name: profileData.name || "",
                 phone: profileData.phone || "",
@@ -112,12 +105,9 @@ const UserProfile = () => {
                 email: profileData.email || "",
             }));
 
-            //       console.log("✅ Profile loaded successfully, final state:", {
         } catch (error) {
-            //       console.error("❌ Failed to load profile:", error);
             setError("Failed to load profile. Please try again.");
         } finally {
-            //       console.log("🏁 loadProfile finished, setting loading to false");
             setLoading(false);
         }
     };
@@ -142,7 +132,6 @@ const UserProfile = () => {
         if (rules.pattern && !rules.pattern.test(value)) {
             return rules.message.pattern;
         }
-
         return "";
     };
 
@@ -187,7 +176,6 @@ const UserProfile = () => {
             setEditing(false);
             await loadProfile();
         } catch (error) {
-            //       console.error("Failed to update profile:", error);
             setError("Update failed. Please try again.");
         } finally {
             setSaving(false);
@@ -220,7 +208,6 @@ const UserProfile = () => {
             setShowPasswordReset(false);
             setIsFirstLogin(false);
         } catch (error) {
-            //       console.error("Password reset failed:", error);
             setError("Password reset failed. Please try again.");
         } finally {
             setSaving(false);
@@ -233,10 +220,8 @@ const UserProfile = () => {
         navigate(dashboardRoute);
     };
 
-    //   console.log("🎭 Render state:", { loading, profile, formData, error });
 
     if (loading) {
-        //     console.log("⏳ Showing loading state");
         return (
             <PageTemplate title="Personal Information">
                 <div className="text-center py-8">
