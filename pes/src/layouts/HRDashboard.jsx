@@ -4,7 +4,6 @@ import {
     AppBar,
     Avatar,
     Box,
-    Button,
     Card,
     CardContent,
     Chip,
@@ -23,13 +22,7 @@ import {
     useMediaQuery,
     useTheme,
 } from '@mui/material';
-import {
-    Business as BusinessIcon,
-    Dashboard as DashboardIcon,
-    Logout as LogoutIcon,
-    Menu as MenuIcon,
-    People as PeopleIcon
-} from '@mui/icons-material';
+import {Dashboard as DashboardIcon, Logout as LogoutIcon, Menu as MenuIcon} from '@mui/icons-material';
 import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 
 
