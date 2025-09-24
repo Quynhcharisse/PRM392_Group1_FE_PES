@@ -312,8 +312,8 @@ export default function SignIn() {
                     </Button>
                 </Box>
 
-                {/* Forgot Password & Sign Up Links */}
-                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
+                {/* Forgot Password (Sign up hidden as per requirement) */}
+                <Box sx={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', mb: 2}}>
                     <Link
                         component="button"
                         onClick={() => navigate('/forgot-password')}
@@ -332,33 +332,6 @@ export default function SignIn() {
                     >
                         Forgot Password
                     </Link>
-
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: "#666",
-                            fontSize: "0.9rem"
-                        }}
-                    >
-                        Have not an Account?{" "}
-                        <Link
-                            component="button"
-                            onClick={() => navigate('/signup')}
-                            sx={{
-                                color: "#FF6B35",
-                                textDecoration: "none",
-                                fontWeight: 600,
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                "&:hover": {
-                                    textDecoration: "underline"
-                                }
-                            }}
-                        >
-                            Sign up
-                        </Link>
-                    </Typography>
                 </Box>
 
                 {/* Footer Links */}
