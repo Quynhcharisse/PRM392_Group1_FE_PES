@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import {
   alpha,
   Box,
@@ -13,13 +13,17 @@ import {
   Typography,
   Avatar,
   Chip,
-  Divider
+  Divider,
+  Alert,
+  CircularProgress,
+  Snackbar
 } from '@mui/material'
-import {Add, Edit, Search, Upload} from '@mui/icons-material'
+import {Add, Search, Upload, Visibility, Block, RemoveCircle} from '@mui/icons-material'
 
 import CreateTeacher from './CreateTeacher.jsx'
-import UpdateTeacher from './UpdateTeacher.jsx'
 import ExportTeacher from './ExportTeacher.jsx'
+import TeacherDetail from './TeacherDetail.jsx'
+import {hrService} from '@services/hrService.jsx'
 
 const colors = {
   primary: '#0b3f31',
@@ -77,8 +81,12 @@ function TeacherActions({search, setSearch, onAdd, onExport}) {
   )
 }
 
-function TeacherCard({teacher, onEdit}) {
+function TeacherCard({teacher, onView, onBan, onUnban}) {
   const initials = useMemo(() => (teacher.name || 'U').split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase(), [teacher.name])
+  
+  // Determine if teacher is banned (assuming status field exists)
+  const isBanned = teacher.status === 'ACCOUNT_INACTIVE'
+  
   return (
     <Card sx={{borderRadius: 3, border: theme => `1px solid ${alpha('#0b3f31', 0.1)}`}}>
       <CardContent>
@@ -86,11 +94,58 @@ function TeacherCard({teacher, onEdit}) {
           <Stack direction="row" spacing={2} alignItems="center">
             <Avatar sx={{bgcolor: alpha(colors.primary, 0.1), color: colors.primary, fontWeight: 700}}>{initials}</Avatar>
             <Box>
-              <Typography sx={{fontWeight: 700}}>{teacher.name}</Typography>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <Typography sx={{fontWeight: 700}}>{teacher.name}</Typography>
+                {isBanned && (
+                  <Chip 
+                    size="small" 
+                    label="Banned" 
+                    sx={{
+                      backgroundColor: alpha('#ef4444', 0.12), 
+                      color: '#ef4444',
+                      fontSize: '0.7rem',
+                      height: 18
+                    }}
+                  />
+                )}
+              </Stack>
               <Typography variant="caption" color="text.secondary">{teacher.email}</Typography>
             </Box>
           </Stack>
-          <IconButton size="small" onClick={() => onEdit(teacher)}><Edit fontSize="small"/></IconButton>
+          <Stack direction="row" spacing={1}>
+            <IconButton size="small" onClick={() => onView(teacher)} title="View Details">
+              <Visibility fontSize="small"/>
+            </IconButton>
+            {isBanned ? (
+              <IconButton 
+                size="small" 
+                onClick={() => onUnban(teacher)} 
+                title="Unban Account"
+                sx={{ 
+                  color: '#22c55e',
+                  '&:hover': { 
+                    backgroundColor: alpha('#22c55e', 0.1) 
+                  }
+                }}
+              >
+                <RemoveCircle fontSize="small"/>
+              </IconButton>
+            ) : (
+              <IconButton 
+                size="small" 
+                onClick={() => onBan(teacher)} 
+                title="Ban Account"
+                sx={{ 
+                  color: '#ef4444',
+                  '&:hover': { 
+                    backgroundColor: alpha('#ef4444', 0.1) 
+                  }
+                }}
+              >
+                <Block fontSize="small"/>
+              </IconButton>
+            )}
+          </Stack>
         </Stack>
         <Divider sx={{my: 2}}/>
         <Grid container spacing={1}>
@@ -103,9 +158,9 @@ function TeacherCard({teacher, onEdit}) {
             <Typography variant="body2">{teacher.gender || 'N/A'}</Typography>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="caption" color="text.secondary">Status:</Typography>
+            <Typography variant="caption" color="text.secondary">Role:</Typography>
             <Box>
-              <Chip size="small" label={teacher.status || 'active'} sx={{
+              <Chip size="small" label={teacher.role || 'TEACHER'} sx={{
                 backgroundColor: alpha('#22c55e', 0.12), color: '#22c55e'
               }}/>
             </Box>
@@ -120,31 +175,194 @@ export default function TeacherList() {
   const [search, setSearch] = useState('')
   const [openCreate, setOpenCreate] = useState(false)
   const [openExport, setOpenExport] = useState(false)
-  const [editTeacher, setEditTeacher] = useState(null)
+  const [viewTeacher, setViewTeacher] = useState(null)
+  const [teachers, setTeachers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [actionLoading, setActionLoading] = useState(false)
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' })
 
-  // Mock data; later replace with API call
-  const teachers = useMemo(() => ([
-    { id: 1, name: 'Teacher', email: 'teacher@gmail.com', gender: 'Male', status: 'active' },
-    { id: 2, name: 'Nguyen Thanh Ha', email: 'systemteacher08+gv002@gmail.com', gender: 'Female', status: 'active' },
-    { id: 3, name: 'Ho Ngoc Ha', email: 'systemteacher08+gv003@gmail.com', gender: 'Female', status: 'active' }
-  ].filter(t => `${t.name} ${t.email}`.toLowerCase().includes(search.toLowerCase()))), [search])
+  // Load teachers from API
+  useEffect(() => {
+    loadTeachers()
+  }, [])
+
+  const loadTeachers = async () => {
+    try {
+      setLoading(true)
+      setError('')
+      const response = await hrService.getTeacherList()
+      
+      if (response.success) {
+        setTeachers(response.data || [])
+      } else {
+        setError(response.error || 'Failed to load teachers')
+      }
+    } catch (error) {
+      setError('Failed to load teachers')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleBanTeacher = async (teacher) => {
+    if (actionLoading) return
+    
+    try {
+      setActionLoading(true)
+      const response = await hrService.banAccount(teacher.id)
+      
+      if (response.success) {
+        setSnackbar({
+          open: true,
+          message: `${teacher.name} has been banned successfully`,
+          severity: 'success'
+        })
+        
+        // Update teacher status locally
+        setTeachers(prevTeachers => 
+          prevTeachers.map(t => 
+            t.id === teacher.id ? { ...t, status: 'ACCOUNT_INACTIVE' } : t
+          )
+        )
+      } else {
+        setSnackbar({
+          open: true,
+          message: response.error || 'Failed to ban teacher',
+          severity: 'error'
+        })
+      }
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Failed to ban teacher. Please try again.',
+        severity: 'error'
+      })
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleUnbanTeacher = async (teacher) => {
+    if (actionLoading) return
+    
+    try {
+      setActionLoading(true)
+      const response = await hrService.unbanAccount(teacher.id)
+      
+      if (response.success) {
+        setSnackbar({
+          open: true,
+          message: `${teacher.name} has been unbanned successfully`,
+          severity: 'success'
+        })
+        
+        // Update teacher status locally
+        setTeachers(prevTeachers => 
+          prevTeachers.map(t => 
+            t.id === teacher.id ? { ...t, status: 'ACCOUNT_ACTIVE' } : t
+          )
+        )
+      } else {
+        setSnackbar({
+          open: true,
+          message: response.error || 'Failed to unban teacher',
+          severity: 'error'
+        })
+      }
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Failed to unban teacher. Please try again.',
+        severity: 'error'
+      })
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false })
+  }
+
+  // Filter teachers based on search
+  const filteredTeachers = useMemo(() => {
+    if (!search) return teachers
+    return teachers.filter(teacher => 
+      `${teacher.name || ''} ${teacher.email || ''} ${teacher.phone || ''}`.toLowerCase().includes(search.toLowerCase())
+    )
+  }, [teachers, search])
+
+  if (loading) {
+    return (
+      <Box>
+        <TeacherHeader total={0}/>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+          <CircularProgress />
+        </Box>
+      </Box>
+    )
+  }
 
   return (
     <Box>
-      <TeacherHeader total={teachers.length}/>
+      <TeacherHeader total={filteredTeachers.length}/>
       <TeacherActions search={search} setSearch={setSearch} onAdd={() => setOpenCreate(true)} onExport={() => setOpenExport(true)}/>
 
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
       <Grid container spacing={2}>
-        {teachers.map(t => (
-          <Grid key={t.id} item xs={12} md={6} lg={4}>
-            <TeacherCard teacher={t} onEdit={(teacher) => setEditTeacher(teacher)}/>
+        {filteredTeachers.map(teacher => (
+          <Grid key={teacher.id} item xs={12} md={6} lg={4}>
+            <TeacherCard 
+              teacher={teacher} 
+              onView={(teacher) => setViewTeacher(teacher)}
+              onBan={handleBanTeacher}
+              onUnban={handleUnbanTeacher}
+            />
           </Grid>
         ))}
+        {filteredTeachers.length === 0 && !loading && (
+          <Grid item xs={12}>
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+              <Typography variant="h6" color="text.secondary">
+                {search ? 'No teachers found matching your search' : 'No teachers found'}
+              </Typography>
+            </Box>
+          </Grid>
+        )}
       </Grid>
 
-      <CreateTeacher open={openCreate} onClose={() => setOpenCreate(false)}/>
+      <CreateTeacher open={openCreate} onClose={() => {
+        setOpenCreate(false)
+        loadTeachers() // Refresh data after creating
+      }}/>
       <ExportTeacher open={openExport} onClose={() => setOpenExport(false)}/>
-      <UpdateTeacher open={!!editTeacher} teacher={editTeacher} onClose={() => setEditTeacher(null)}/>
+      <TeacherDetail open={!!viewTeacher} teacherId={viewTeacher?.id} onClose={() => setViewTeacher(null)}/>
+      
+      {/* Success/Error Snackbar */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity}
+          sx={{ 
+            width: '100%',
+            borderRadius: 2,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.1)'
+          }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

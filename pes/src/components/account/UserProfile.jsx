@@ -326,9 +326,9 @@ const UserProfile = () => {
                     : "Manage your account information"
             }
             actions={
-                <Button
-                    variant="outline"
-                    onClick={() => setShowPasswordReset(true)}
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowPasswordReset(true)}
                     sx={{ 
                         borderRadius: 2,
                         textTransform: 'none',
@@ -336,8 +336,8 @@ const UserProfile = () => {
                     }}
                     startIcon={<KeyIcon />}
                 >
-                    Change Password
-                </Button>
+                            Change Password
+                        </Button>
             }
         >
             <Box sx={{ 
@@ -415,24 +415,24 @@ const UserProfile = () => {
 
                         <CardContent sx={{ p: 3 }}>
                             <Stack spacing={3}>
-                                {/* First Login Alert */}
-                                {isFirstLogin && (
+                {/* First Login Alert */}
+                {isFirstLogin && (
                                     <Alert severity="warning" sx={{ borderRadius: 2 }}>
                                         <AlertTitle>First Time Login</AlertTitle>
                                         Please update your personal information and change your password to complete account setup.
                                     </Alert>
-                                )}
+                )}
 
-                                {/* Success/Error Messages */}
-                                {success && (
+                {/* Success/Error Messages */}
+                {success && (
                                     <Alert severity="success" sx={{ borderRadius: 2 }}>
-                                        {success}
+                        {success}
                                     </Alert>
-                                )}
+                )}
 
-                                {error && (
+                {error && (
                                     <Alert severity="error" sx={{ borderRadius: 2 }}>
-                                        {error}
+                        {error}
                                     </Alert>
                                 )}
 
@@ -548,11 +548,11 @@ const UserProfile = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <KeyIcon sx={{ color: brandColor }} />
                         <Typography variant="h6" sx={{ fontWeight: 700, color: brandColor }}>
-                            Change Password
+                                Change Password
                         </Typography>
-                        {!isFirstLogin && (
+                            {!isFirstLogin && (
                             <IconButton 
-                                onClick={() => setShowPasswordReset(false)}
+                                    onClick={() => setShowPasswordReset(false)}
                                 sx={{ ml: 'auto' }}
                             >
                                 <CloseIcon />
@@ -566,9 +566,9 @@ const UserProfile = () => {
                         <TextField
                             fullWidth
                             label="Email"
-                            type="email"
-                            value={passwordData.email}
-                            disabled
+                                    type="email"
+                                    value={passwordData.email}
+                                    disabled
                             variant="outlined"
                             sx={{
                                 '& .MuiOutlinedInput-root': {
@@ -581,14 +581,14 @@ const UserProfile = () => {
                         <TextField
                             fullWidth
                             label="New Password"
-                            type="password"
-                            value={passwordData.password}
-                            onChange={(e) =>
-                                setPasswordData((prev) => ({
-                                    ...prev,
-                                    password: e.target.value,
-                                }))
-                            }
+                                    type="password"
+                                    value={passwordData.password}
+                                    onChange={(e) =>
+                                        setPasswordData((prev) => ({
+                                            ...prev,
+                                            password: e.target.value,
+                                        }))
+                                    }
                             variant="outlined"
                             sx={{
                                 '& .MuiOutlinedInput-root': {
@@ -600,14 +600,14 @@ const UserProfile = () => {
                         <TextField
                             fullWidth
                             label="Confirm Password"
-                            type="password"
-                            value={passwordData.confirmPassword}
-                            onChange={(e) =>
-                                setPasswordData((prev) => ({
-                                    ...prev,
-                                    confirmPassword: e.target.value,
-                                }))
-                            }
+                                    type="password"
+                                    value={passwordData.confirmPassword}
+                                    onChange={(e) =>
+                                        setPasswordData((prev) => ({
+                                            ...prev,
+                                            confirmPassword: e.target.value,
+                                        }))
+                                    }
                             variant="outlined"
                             sx={{
                                 '& .MuiOutlinedInput-root': {
@@ -628,19 +628,19 @@ const UserProfile = () => {
                             Cancel
                         </Button>
                     )}
-                    <Button
-                        variant="primary"
-                        onClick={handlePasswordReset}
-                        loading={saving}
+                            <Button
+                                variant="primary"
+                                onClick={handlePasswordReset}
+                                loading={saving}
                         sx={{ 
                             borderRadius: 2, 
                             textTransform: 'none',
                             fontWeight: 600,
                             px: 4
                         }}
-                    >
-                        Change Password
-                    </Button>
+                            >
+                                Change Password
+                            </Button>
                 </DialogActions>
             </Dialog>
 
@@ -650,7 +650,7 @@ const UserProfile = () => {
                 formData={formData}
                 formErrors={formErrors}
                 saving={saving}
-                onChange={handleFormChange}
+                                            onChange={handleFormChange}
                 onSave={handleSaveProfile}
                 onCancel={() => {
                     setEditing(false);

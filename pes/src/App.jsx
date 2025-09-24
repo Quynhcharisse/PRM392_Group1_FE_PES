@@ -16,6 +16,7 @@ const MobileInfo = lazy(() => import('./components/auth/MobileInfo.jsx'))
 
 const UserProfile = lazy(() => import('./components/account/UserProfile.jsx'))
 const TeacherList = lazy(() => import('./components/hrManager/teacher/TeacherList.jsx'))
+const ParentList = lazy(() => import('./components/hrManager/parent/ParentList.jsx'))
 
 const LoadingFallback = () => (<div style={{
     display: 'flex',
@@ -251,8 +252,21 @@ const router = createBrowserRouter([{
                 element: (<Suspense fallback={<LoadingFallback/>}>
                     <TeacherList/>
                 </Suspense>)
+            },
+            {
+                path: 'parents',
+                element: (<Suspense fallback={<LoadingFallback/>}>
+                    <ParentList/>
+                </Suspense>)
+            },
+            {
+                path: 'profile',
+                element: (<Suspense fallback={<LoadingFallback/>}>
+                    <UserProfile/>
+                </Suspense>)
             }]
-    }, {
+    }, 
+    {
         path: 'education',
         element: (
             <Suspense fallback={<LoadingFallback/>}>
