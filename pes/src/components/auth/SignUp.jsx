@@ -30,11 +30,16 @@ export default function SignUp() {
     const {search} = useLocation()
     const redirectTo = new URLSearchParams(search).get('redirectTo')
 
-    // If already logged in -> redirect
+    // If already logged in -> redirect by role
     useEffect(() => {
         try {
             const raw = localStorage.getItem('user')
             if (raw) {
+                const user = JSON.parse(raw)
+                const role = String(user?.role || '').toUpperCase()
+                if (role === 'HR') return navigate('/hr/dashboard', { replace: true })
+                if (role === 'EDUCATION') return navigate('/education/dashboard', { replace: true })
+                if (role === 'PARENT' || role === 'TEACHER') return navigate('/mobile-info', { replace: true })
                 navigate(redirectTo || '/', {replace: true})
             }
         } catch {

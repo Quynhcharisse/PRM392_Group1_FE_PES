@@ -44,22 +44,31 @@ export const authService = {
       };
     }
   },
-
-  // Register new user
   async register(userData) {
     try {
-      // Format the data to match your backend API structure
-      const registrationData = {
+      // API expects: { email, password, name }
+      const payload = {
         email: userData.email,
         password: userData.password,
-        name: userData.fullName || userData.name,
-        role: "parent" // Fixed role as parent for all registrations
+        name: userData.name || userData.fullName,
+        phone: userData.phone,
+        role: 'PARENT'
       };
 
-      const response = await axiosClient.post('/auth/register', registrationData);
+      const response = await axiosClient.post('/auth/register', payload);
+      const result = response?.data ?? {};
+
       return {
         success: true,
-        data: response.data
+        data: {
+          id: result.id,
+          email: result.email,
+          name: result.name,
+          role: result.role,
+          status: result.status,
+          phone: result.phone ?? null,
+          address: result.address ?? null
+        }
       };
     } catch (error) {
       console.error('Registration error:', error);
@@ -115,35 +124,6 @@ export const authService = {
     return token;
   },
 
-  // Refresh token (if your backend supports it)
-  async refreshToken() {
-    try {
-      const response = await axiosClient.post('/auth/refresh');
-      if (response.data && response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        
-        // Update user data with new token
-        const currentUser = this.getCurrentUser();
-        if (currentUser) {
-          const decodedToken = jwtDecode(response.data.token);
-          const updatedUser = {
-            ...currentUser,
-            token: response.data.token,
-            tokenExpiry: decodedToken.exp * 1000
-          };
-          localStorage.setItem('user', JSON.stringify(updatedUser));
-        }
-        
-        return response.data.token;
-      }
-      throw new Error('Invalid refresh response');
-    } catch (error) {
-      console.error('Token refresh error:', error);
-      this.logout();
-      throw error;
-    }
-  },
-
   // Forgot password
   async forgotPassword(email) {
     try {
@@ -181,45 +161,4 @@ export const authService = {
     }
   },
 
-  // Get all accounts (admin only)
-  async getAllAccounts() {
-    try {
-      const response = await axiosClient.get('/auth/getAllAccount');
-      return {
-        success: true,
-        data: response.data
-      };
-    } catch (error) {
-      console.error('Get accounts error:', error);
-      return {
-        success: false,
-        error: error.response?.data?.message || error.message || 'Failed to fetch accounts'
-      };
-    }
-  },
-
-  // Update user profile
-  async updateProfile(userId, profileData) {
-    try {
-      const response = await axiosClient.put(`/auth/updateProfile/${userId}`, profileData);
-      
-      // Update local user data if successful
-      const currentUser = this.getCurrentUser();
-      if (currentUser && currentUser.id === userId) {
-        const updatedUser = { ...currentUser, ...profileData };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-      }
-      
-      return {
-        success: true,
-        data: response.data
-      };
-    } catch (error) {
-      console.error('Update profile error:', error);
-      return {
-        success: false,
-        error: error.response?.data?.message || error.message || 'Failed to update profile'
-      };
-    }
-  }
 };

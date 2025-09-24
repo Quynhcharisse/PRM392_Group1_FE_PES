@@ -15,7 +15,9 @@ export default function ProtectedRoute({children, allowRoles = []}) {
                 return
             }
             const user = JSON.parse(raw)
-            if (allowRoles.length > 0 && !allowRoles.includes(user?.role)) {
+            const userRole = String(user?.role || '').toUpperCase()
+            const allowed = allowRoles.map(r => String(r).toUpperCase())
+            if (allowed.length > 0 && !allowed.some(r => userRole === r || userRole.includes(r) || r.includes(userRole))) {
                 setAuthorized(false)
                 return
             }

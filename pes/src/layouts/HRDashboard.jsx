@@ -6,7 +6,9 @@ import {
     Box,
     Card,
     CardContent,
+    Button,
     Chip,
+    Divider,
     Drawer,
     Grid,
     IconButton,
@@ -17,12 +19,28 @@ import {
     ListItemText,
     Menu,
     MenuItem,
+    Stack,
     Toolbar,
     Typography,
     useMediaQuery,
     useTheme,
 } from '@mui/material';
-import {Dashboard as DashboardIcon, Logout as LogoutIcon, Menu as MenuIcon} from '@mui/icons-material';
+import {
+    Dashboard as DashboardIcon,
+    Logout as LogoutIcon,
+    Menu as MenuIcon,
+    People as PeopleIcon,
+    School as SchoolIcon,
+    MenuBook as MenuBookIcon,
+    FamilyRestroom as FamilyRestroomIcon,
+    Event as EventIcon,
+    ListAlt as ListAltIcon,
+    Timeline as TimelineIcon,
+    AccountCircle as AccountCircleIcon,
+    Notifications as NotificationsIcon,
+    CalendarToday as CalendarTodayIcon,
+    WorkOutline as WorkOutlineIcon
+} from '@mui/icons-material';
 import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 
 
@@ -44,15 +62,86 @@ const colors = {
 };
 
 const NAVIGATION = [
-    {
-        segment: 'dashboard',
-        title: 'Dashboard',
-        icon: <DashboardIcon/>,
-        path: '/hr/dashboard'
-    }
+    {segment: 'user', title: 'User', icon: <PeopleIcon/>, path: '/hr/user'},
+    {segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon/>, path: '/hr/dashboard'},
+    {segment: 'teacher', title: 'Teacher Management', icon: <SchoolIcon/>, path: '/hr/teachers'},
+    {segment: 'parent', title: 'Parent Management', icon: <FamilyRestroomIcon/>, path: '/hr/parents'},
+    {segment: 'profile', title: 'Profile', icon: <AccountCircleIcon/>, path: '/hr/profile'}
 ];
 
-function AdminDashboardContent({session}) {
+function MetricCard({title, value, icon, note}) {
+    return (
+        <Card sx={{
+            borderRadius: 3,
+            border: `1px solid ${alpha(colors.primary, 0.1)}`,
+            background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.6)} 100%)`,
+            boxShadow: `0 2px 12px ${alpha(colors.primary, 0.08)}`
+        }}>
+            <CardContent>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                    <Box>
+                        <Typography variant="overline" sx={{color: 'text.secondary', letterSpacing: 1}}>
+                            {title}
+                        </Typography>
+                        <Typography variant="h4" sx={{fontWeight: 800, color: colors.primary}}>{value}</Typography>
+                        {note && <Typography variant="caption" color="text.secondary">{note}</Typography>}
+                    </Box>
+                    <Box sx={{
+                        width: 46, height: 46, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: alpha(colors.primary, 0.1), color: colors.primary
+                    }}>
+                        {icon}
+                    </Box>
+                </Stack>
+            </CardContent>
+        </Card>
+    );
+}
+
+function QuickActionItem({title, subtitle, color}) {
+    return (
+        <Box sx={{
+            p: 2,
+            borderRadius: 2,
+            border: `1px solid ${alpha(colors.primary, 0.08)}`,
+            backgroundColor: alpha(color, 0.06)
+        }}>
+            <Typography variant="subtitle2" sx={{fontWeight: 700, color: colors.primary}}>{title}</Typography>
+            <Typography variant="caption" color="text.secondary">{subtitle}</Typography>
+        </Box>
+    );
+}
+
+function ActivityItem({title, time, color}) {
+    return (
+        <Stack direction="row" spacing={1.5} alignItems="flex-start">
+            <Box sx={{width: 8, height: 8, borderRadius: 8, mt: 0.6, backgroundColor: color}}/>
+            <Box>
+                <Typography variant="body2" sx={{fontWeight: 500}}>{title}</Typography>
+                <Typography variant="caption" color="text.secondary">{time}</Typography>
+            </Box>
+        </Stack>
+    );
+}
+
+function CalendarItem({title, datetime, tag}) {
+    return (
+        <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Stack direction="row" spacing={2} alignItems="center">
+                <Box sx={{width: 36, height: 36, borderRadius: 1, backgroundColor: alpha(colors.primary, 0.1), display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                    <CalendarTodayIcon fontSize="small"/>
+                </Box>
+                <Box>
+                    <Typography variant="subtitle2" sx={{fontWeight: 600}}>{title}</Typography>
+                    <Typography variant="caption" color="text.secondary">{datetime}</Typography>
+                </Box>
+            </Stack>
+            {tag && <Chip size="small" label={tag.text} sx={{backgroundColor: alpha(tag.color, 0.12), color: tag.color}}/>}
+        </Stack>
+    );
+}
+
+function HRDashboardContent({session}) {
     return (
         <Box sx={{px: 4, py: 5}}>
             {/* Header */}
@@ -65,119 +154,64 @@ function AdminDashboardContent({session}) {
                     WebkitTextFillColor: 'transparent',
                     mb: 1
                 }}>
-                    {session.user.role || 'User'} Dashboard
+                    HR Dashboard
                 </Typography>
                 <Typography variant="body1" sx={{color: 'text.secondary', fontSize: '1.1rem'}}>
-                    Welcome back! This is the HR portal overview.
+                    Human Resources management and activities
                 </Typography>
             </Box>
+            {/* Top metrics */}
+            <Grid container spacing={3} sx={{mb: 3}}>
+                <Grid item xs={12} md={3}><MetricCard title="Total Teachers" value="45" note="+3 this month" icon={<PeopleIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Total Parents" value="123" note="+8 this month" icon={<FamilyRestroomIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Leave Requests" value="8" note="Pending Approval" icon={<EventIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Open Positions" value="3" note="Currently Hiring" icon={<WorkOutlineIcon/>}/></Grid>
+            </Grid>
 
-            {/* Welcome Message */}
-            <Card sx={{
-                borderRadius: 4,
-                border: `1px solid ${alpha(colors.primary, 0.1)}`,
-                background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.5)} 100%)`,
-                boxShadow: `0 4px 20px ${alpha(colors.primary, 0.1)}`,
-                mb: 4
-            }}>
-                <CardContent sx={{p: 4, textAlign: 'center'}}>
-                    <Typography variant="h5" sx={{
-                        fontWeight: 700,
-                        mb: 2,
-                        color: colors.primary
-                    }}>
-                        Welcome to the HR Dashboard
-                    </Typography>
-                    <Typography variant="body1" sx={{color: 'text.secondary', mb: 1}}>
-                        Use the left menu to navigate.
-                    </Typography>
+            <Grid container spacing={3}>
+                {/* Left column quick actions + calendar */}
+                <Grid item xs={12} md={7.5} lg={8}>
+                    <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`, mb: 3}}>
+                        <CardContent>
+                            <Stack direction="row" alignItems="center" spacing={1} sx={{mb: 2}}>
+                                <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary}}>Quick Actions</Typography>
+                            </Stack>
+                            <Stack spacing={1.5}>
+                                <QuickActionItem title="Teacher Management" subtitle="View and manage teacher records" color={colors.info}/>
+                                <QuickActionItem title="Parent Management" subtitle="View and export parent information" color={colors.success}/>
+                                <QuickActionItem title="Recruitment" subtitle="Post job openings and review applications" color={colors.primary}/>
+                                <QuickActionItem title="HR Reports" subtitle="Generate HR statistics and reports" color={colors.warning}/>
+                            </Stack>
                 </CardContent>
             </Card>
 
-            {/* System Info */}
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                    <Card sx={{
-                        borderRadius: 3,
-                        border: `1px solid ${alpha(colors.primary, 0.1)}`,
-                        background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.3)} 100%)`,
-                        boxShadow: `0 2px 12px ${alpha(colors.primary, 0.08)}`,
-                    }}>
-                        <CardContent sx={{p: 3}}>
-                            <Typography variant="h6" sx={{
-                                fontWeight: 600,
-                                mb: 2,
-                                color: colors.primary,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1
-                            }}>
-                                <Box sx={{
-                                    width: 4,
-                                    height: 20,
-                                    backgroundColor: colors.primary,
-                                    borderRadius: 1
-                                }}/>
-                                System information
-                            </Typography>
-                            <Box sx={{display: 'flex', flexDirection: 'column', gap: 1.5}}>
-                                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <Typography variant="body2" color="text.secondary">Version:</Typography>
-                                    <Chip label="v1.0.0" size="small" color="primary" variant="outlined"/>
-                                </Box>
-                                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <Typography variant="body2" color="text.secondary">Status:</Typography>
-                                    <Chip label="Active" size="small" color="success"/>
-                                </Box>
-                                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <Typography variant="body2" color="text.secondary">Last updated:</Typography>
-                                    <Typography variant="body2" sx={{fontFamily: 'monospace'}}>
-                                        {new Date().toLocaleDateString('vi-VN')}
-                                    </Typography>
-                                </Box>
-                            </Box>
+                    <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
+                        <CardContent>
+                            <Stack direction="row" alignItems="center" spacing={1} sx={{mb: 2}}>
+                                <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary}}>Calendar Overview</Typography>
+                            </Stack>
+                            <Stack spacing={2}>
+                                <CalendarItem title="Họp đánh giá hiệu suất" datetime="Thứ 2, 10:00 AM - Phòng họp A" tag={{text: 'Quan trọng', color: colors.info}}/>
+                                <Divider/>
+                                <CalendarItem title="Phỏng vấn ứng viên" datetime="Thứ 4, 2:00 PM - Phòng HR" tag={{text: 'Lên lịch', color: colors.success}}/>
+                                <Divider/>
+                                <CalendarItem title="Đào tạo kỹ năng mềm" datetime="Thứ 6, 9:00 AM - Hội trường" tag={{text: 'Sắp tới', color: colors.warning}}/>
+                            </Stack>
                         </CardContent>
                     </Card>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
-                    <Card sx={{
-                        borderRadius: 3,
-                        border: `1px solid ${alpha(colors.primary, 0.1)}`,
-                        background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.3)} 100%)`,
-                        boxShadow: `0 2px 12px ${alpha(colors.primary, 0.08)}`,
-                    }}>
-                        <CardContent sx={{p: 3}}>
-                            <Typography variant="h6" sx={{
-                                fontWeight: 600,
-                                mb: 2,
-                                color: colors.primary,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 1
-                            }}>
-                                <Box sx={{
-                                    width: 4,
-                                    height: 20,
-                                    backgroundColor: colors.primary,
-                                    borderRadius: 1
-                                }}/>
-                                Quick guide
-                            </Typography>
-                            <Box sx={{display: 'flex', flexDirection: 'column', gap: 1.5}}>
-                                <Typography variant="body2" color="text.secondary" sx={{lineHeight: 1.6}}>
-                                    • Use the left menu to navigate
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{lineHeight: 1.6}}>
-                                    • Click "Suppliers" to manage the supplier list
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{lineHeight: 1.6}}>
-                                    • Click "User management" to view the user list
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{lineHeight: 1.6}}>
-                                    • Use the avatar to sign out or view profile
-                                </Typography>
-                            </Box>
+                {/* Right column recent activities */}
+                <Grid item xs={12} md={4.5} lg={4}>
+                    <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
+                        <CardContent>
+                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Recent Activities</Typography>
+                            <Stack spacing={1.6}>
+                                <ActivityItem title="Nguyen Van A submitted leave request" time="2 hours ago" color={colors.info}/>
+                                <ActivityItem title="Tran Thi B completed training course" time="5 hours ago" color={colors.success}/>
+                                <ActivityItem title="Updated salary and bonus policy" time="1 day ago" color={colors.warning}/>
+                                <ActivityItem title="Preschool teacher recruitment" time="2 days ago" color={colors.error}/>
+                            </Stack>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -204,7 +238,7 @@ export default function HRDashboard() {
     });
 
     useEffect(() => {
-        document.title = 'Admin Dashboard | La Nho Ben Them';
+        document.title = 'HR Staff Portal | La Nho Ben Them';
 
         // Lấy thông tin user từ localStorage
         try {
@@ -215,10 +249,10 @@ export default function HRDashboard() {
 
                 const sessionData = {
                     user: {
-                        name: parsedUser.user?.name || parsedUser.name || 'Admin User',
+                        name: parsedUser.user?.name || parsedUser.name || 'HR Staff',
                         email: parsedUser.email || '',
                         image: parsedUser.user?.avatarUrl || parsedUser.avatarUrl || parsedUser.avatar || null,
-                        role: parsedUser.role || 'ADMIN'
+                        role: parsedUser.role || 'HR Staff'
                     }
                 };
 
@@ -258,7 +292,7 @@ export default function HRDashboard() {
 
     const handleProfileClick = () => {
         handleMenuClose();
-        navigate('/admin/profile');
+        navigate('/hr/profile');
     };
 
     const isActiveRoute = (path) => {
@@ -332,7 +366,7 @@ export default function HRDashboard() {
                     letterSpacing: 1,
                     textTransform: 'uppercase'
                 }}>
-                    {session.user.role || 'User'} Navigation
+                    HR Staff Navigation
                 </Typography>
                 <List sx={{mt: 1}}>
                     {NAVIGATION.map((item, index) => (
@@ -449,8 +483,8 @@ export default function HRDashboard() {
                         fontWeight: 600,
                         color: colors.primary
                     }}>
-                        {location.pathname === '/admin/dashboard' ? 'Dashboard' :
-                            NAVIGATION.find(nav => nav.path === location.pathname)?.title || `${session.user.role || 'User'} Panel`}
+                        {location.pathname === '/hr/dashboard' ? 'Dashboard' :
+                            NAVIGATION.find(nav => nav.path === location.pathname)?.title || `HR Panel`}
                     </Typography>
 
                     <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
@@ -466,7 +500,7 @@ export default function HRDashboard() {
                                 transition: 'all 0.2s ease'
                             }}
                         >
-                            <NotificationDisplay/>
+                            <NotificationsIcon/>
                         </IconButton>
 
                         <IconButton
@@ -661,8 +695,8 @@ export default function HRDashboard() {
                 }}
             >
                 {/* Dashboard content or nested routes */}
-                {location.pathname === '/admin/dashboard' ? (
-                    <AdminDashboardContent session={session} navigate={navigate}/>
+                {location.pathname === '/hr/dashboard' ? (
+                    <HRDashboardContent session={session}/>
                 ) : (
                     <Box sx={{p: 4}}>
                         <Outlet/>
