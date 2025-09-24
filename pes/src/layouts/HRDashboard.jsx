@@ -47,11 +47,11 @@ import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 const DRAWER_WIDTH = 280;
 
 const colors = {
-    primary: '#0b3f31',
-    primaryLight: '#1a6b4e',
-    primaryDark: '#073026',
-    secondary: '#2c7a5e',
-    accent: '#4ade80',
+    primary: '#0038A5',
+    primaryLight: '#0038A5',
+    primaryDark: '#0038A5',
+    secondary: '#0038A5',
+    accent: '#0038A5',
     surface: '#f8fffe',
     surfaceVariant: '#e8f5f2',
     onSurface: '#0d1a16',
@@ -238,7 +238,7 @@ export default function HRDashboard() {
     });
 
     useEffect(() => {
-        document.title = 'HR Staff Portal | La Nho Ben Them';
+        document.title = 'HR Portal | HR Dashboard';
 
         // Lấy thông tin user từ localStorage
         try {
@@ -335,8 +335,8 @@ export default function HRDashboard() {
                         border: `1px solid ${alpha('#ffffff', 0.2)}`
                     }}>
                         <img
-                            src="/LaNhoBenThemLogo.png"
-                            alt="La Nho Ben Them Logo"
+                            src="/logo.png"
+                               alt="Marry Star Kindergarten logo"
                             style={{
                                 width: '100%',
                                 height: '100%',
@@ -352,7 +352,7 @@ export default function HRDashboard() {
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                     }}>
-                        La Nho Ben Them
+                        HR
                     </Typography>
                 </Box>
             </Toolbar>

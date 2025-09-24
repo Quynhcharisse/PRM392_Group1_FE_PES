@@ -46,11 +46,11 @@ import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 const DRAWER_WIDTH = 280;
 
 const colors = {
-    primary: '#0b3f31',
-    primaryLight: '#1a6b4e',
-    primaryDark: '#073026',
-    secondary: '#2c7a5e',
-    accent: '#4ade80',
+    primary: '#0038A5',
+    primaryLight: '#0038A5',
+    primaryDark: '#0038A5',
+    secondary: '#0038A5',
+    accent: '#0038A5',
     surface: '#f8fffe',
     surfaceVariant: '#e8f5f2',
     success: '#22c55e',
@@ -61,7 +61,6 @@ const colors = {
 
 // Navigation configuration (EDUCATION)
 const NAVIGATION = [
-    { segment: 'user', title: 'User', icon: <PeopleIcon/>, path: '/education/user' },
     { segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon/>, path: '/education/dashboard' },
     { segment: 'admission-term', title: 'Admission Term', icon: <AutorenewIcon/>, path: '/education/admission-term' },
     { segment: 'process-form', title: 'Process Form', icon: <AutorenewIcon/>, path: '/education/process-form' },
@@ -333,7 +332,7 @@ export default function EducationDashboard() {
     });
 
     useEffect(() => {
-        document.title = 'Education Portal | La Nho Ben Them';
+        document.title = 'Education Portal | Education Dashboard';
 
         // Get user info from localStorage
         try {
@@ -429,8 +428,8 @@ export default function EducationDashboard() {
                         border: `1px solid ${alpha('#ffffff', 0.2)}`
                     }}>
                         <img
-                            src="/LaNhoBenThemLogo.png"
-                            alt="La Nho Ben Them Logo"
+                            src="/logo.png"
+                            alt="Marry Star Kindergarten logo"
                             style={{
                                 width: '100%',
                                 height: '100%',
@@ -446,7 +445,7 @@ export default function EducationDashboard() {
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                     }}>
-                        La Nho Ben Them
+                       EDUCATION
                     </Typography>
                 </Box>
             </Toolbar>

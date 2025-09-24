@@ -1,12 +1,52 @@
 import {getDashboardRoute} from "@/constants/routes";
-import {Button, Input, Label, Spinner} from "@atoms";
+import {Button, Spinner} from "@atoms";
 import {authService} from "@services/authService";
-import { accountService } from "@services/accountService.jsx";
+import {accountService} from "@services/accountService.jsx";
 import {getCurrentTokenData} from "@services/JWTService";
 import {PageTemplate} from "@templates";
-import {AlertCircle, Calendar, Edit2, Key, Mail, MapPin, Phone, Save, Shield, User, Users, X,} from "lucide-react";
+import {
+    alpha, 
+    Box, 
+    Paper, 
+    Typography, 
+    IconButton, 
+    Tooltip,
+    Card,
+    CardContent,
+    Divider,
+    Chip,
+    Avatar,
+    Grid,
+    Alert,
+    AlertTitle,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
+    Stack,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
+} from "@mui/material";
+import {
+    Person as PersonIcon,
+    Email as EmailIcon,
+    Phone as PhoneIcon,
+    LocationOn as LocationIcon,
+    CalendarToday as CalendarIcon,
+    Security as SecurityIcon,
+    Edit as EditIcon,
+    Key as KeyIcon,
+    Close as CloseIcon,
+    Warning as WarningIcon,
+    Badge as BadgeIcon,
+    AccountCircle as AccountIcon
+} from "@mui/icons-material";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import EditProfileForm from "./EditProfileForm.jsx";
 
 // Validation rules
 const VALIDATION_RULES = {
@@ -23,11 +63,11 @@ const VALIDATION_RULES = {
         },
     },
     phone: {
-        required: true,
-        pattern: /^[0-9]{10}$/,
+        required: false,
+        pattern: /^[0-9]{10,11}$/,
         message: {
             required: "Phone number is required",
-            pattern: "Phone number must be 10 digits",
+            pattern: "Phone number must be 10-11 digits",
         },
     },
     address: {
@@ -118,8 +158,13 @@ const UserProfile = () => {
         const rules = VALIDATION_RULES[name];
         if (!rules) return "";
 
-        if (rules.required && !value) {
+        if (rules.required && (!value || value.trim() === '')) {
             return rules.message.required;
+        }
+
+        // Skip other validations if field is optional and empty
+        if (!rules.required && (!value || value.trim() === '')) {
+            return "";
         }
 
         if (rules.minLength && value.length < rules.minLength) {
@@ -151,12 +196,14 @@ const UserProfile = () => {
     // Validate all fields before saving
     const validateForm = () => {
         const errors = {};
+        
         Object.keys(VALIDATION_RULES).forEach((field) => {
             const error = validateField(field, formData[field]);
             if (error) {
                 errors[field] = error;
             }
         });
+        
         setFormErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -171,13 +218,12 @@ const UserProfile = () => {
             setSaving(true);
             setError("");
             setSuccess("");
-
-            const result = await accountService.updateProfile(profile?.id, formData);
+            const result = await accountService.updateProfile(formData);
             setSuccess(result?.message || "Update Profile Successfully");
             setEditing(false);
             await loadProfile();
         } catch (error) {
-            setError("Update failed. Please try again.");
+            setError(error.message || "Update failed. Please try again.");
         } finally {
             setSaving(false);
         }
@@ -221,17 +267,55 @@ const UserProfile = () => {
         navigate(dashboardRoute);
     };
 
+    const formatCreatedAt = (iso) => {
+        if (!iso) return 'N/A';
+        try {
+            const d = new Date(iso);
+            const pad = (n) => String(n).padStart(2, '0');
+            const day = pad(d.getDate());
+            const month = pad(d.getMonth() + 1);
+            const year = d.getFullYear();
+            const hours = pad(d.getHours());
+            const minutes = pad(d.getMinutes());
+            const seconds = pad(d.getSeconds());
+            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        } catch {
+            return 'N/A';
+        }
+    };
+
+    const getRoleColor = (role) => {
+        switch (role?.toUpperCase()) {
+            case 'HR': return '#e91e63';
+            case 'EDUCATION': return '#2196f3';
+            case 'PARENT': return '#4caf50';
+            case 'TEACHER': return '#ff9800';
+            default: return '#757575';
+        }
+    };
+
+    const getGenderDisplay = (gender) => {
+        const g = (gender || "").toLowerCase();
+        if (g === "male") return "Male";
+        if (g === "female") return "Female";
+        if (g === "other") return "Other";
+        return "Not updated";
+    };
 
     if (loading) {
         return (
             <PageTemplate title="Personal Information">
-                <div className="text-center py-8">
-                    <Spinner size="lg" className="mx-auto mb-4"/>
-                    <p className="text-gray-600">Loading information...</p>
-                </div>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+                    <Stack alignItems="center" spacing={2}>
+                        <Spinner size="lg" />
+                        <Typography color="text.secondary">Loading information...</Typography>
+                    </Stack>
+                </Box>
             </PageTemplate>
         );
     }
+
+    const brandColor = '#0038A5';
 
     return (
         <PageTemplate
@@ -242,355 +326,343 @@ const UserProfile = () => {
                     : "Manage your account information"
             }
             actions={
-                !isFirstLogin && (
-                    <div className="flex gap-3">
-                        {!editing ? (
-                            <Button
-                                variant="outline"
-                                onClick={() => setEditing(true)}
-                                className="flex items-center gap-2"
-                            >
-                                <Edit2 className="w-4 h-4"/>
-                                Edit
-                            </Button>
-                        ) : (
-                            <>
-                                <Button
-                                    variant="outline"
-                                    onClick={() => {
-                                        setEditing(false);
-                                        setFormData({
-                                            name: profile?.name || "",
-                                            phone: profile?.phone || "",
-                                            address: profile?.address || "",
-                                            gender: profile?.gender || "",
-                                        });
-                                    }}
-                                    className="flex items-center gap-2"
-                                >
-                                    <X className="w-4 h-4"/>
-                                    Cancel
-                                </Button>
-                                <Button
-                                    variant="primary"
-                                    onClick={handleSaveProfile}
-                                    loading={saving}
-                                    className="flex items-center gap-2"
-                                >
-                                    <Save className="w-4 h-4"/>
-                                    Save
-                                </Button>
-                            </>
-                        )}
-                        <Button
-                            variant="outline"
-                            onClick={() => setShowPasswordReset(true)}
-                            className="flex items-center gap-2"
-                        >
-                            <Key className="w-4 h-4"/>
-                            Change Password
-                        </Button>
-                    </div>
-                )
+                <Button
+                    variant="outline"
+                    onClick={() => setShowPasswordReset(true)}
+                    sx={{ 
+                        borderRadius: 2,
+                        textTransform: 'none',
+                        fontWeight: 600
+                    }}
+                    startIcon={<KeyIcon />}
+                >
+                    Change Password
+                </Button>
             }
         >
-            <div className="space-y-6">
-                {/* First Login Alert */}
-                {isFirstLogin && (
-                    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                        <div className="flex">
-                            <AlertCircle className="w-5 h-5 text-yellow-400 mt-0.5"/>
-                            <div className="ml-3">
-                                <h4 className="text-sm font-medium text-yellow-800">
-                                    First Time Login
-                                </h4>
-                                <p className="text-sm text-yellow-700 mt-1">
-                                    Please update your personal information and change your
-                                    password to complete account setup.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Success/Error Messages */}
-                {success && (
-                    <div className="bg-green-50 border border-green-200 text-green-700 rounded-md p-3 text-sm">
-                        {success}
-                    </div>
-                )}
-
-                {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 rounded-md p-3 text-sm">
-                        {error}
-                    </div>
-                )}
-
-                {/* Password Reset Modal */}
-                {showPasswordReset && (
-                    <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
-                        <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                                <Key className="w-5 h-5"/>
-                                Change Password
-                            </h3>
-                            {!isFirstLogin && (
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => setShowPasswordReset(false)}
-                                >
-                                    <X className="w-4 h-4"/>
-                                </Button>
-                            )}
-                        </div>
-
-                        <div className="space-y-4">
-                            <div>
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    value={passwordData.email}
-                                    disabled
-                                    className="bg-gray-50"
-                                />
-                            </div>
-
-                            <div>
-                                <Label htmlFor="password">New Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    value={passwordData.password}
-                                    onChange={(e) =>
-                                        setPasswordData((prev) => ({
-                                            ...prev,
-                                            password: e.target.value,
-                                        }))
-                                    }
-                                    placeholder="Enter new password"
-                                />
-                            </div>
-
-                            <div>
-                                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                                <Input
-                                    id="confirmPassword"
-                                    type="password"
-                                    value={passwordData.confirmPassword}
-                                    onChange={(e) =>
-                                        setPasswordData((prev) => ({
-                                            ...prev,
-                                            confirmPassword: e.target.value,
-                                        }))
-                                    }
-                                    placeholder="Enter again"
-                                />
-                            </div>
-
-                            <Button
-                                variant="primary"
-                                onClick={handlePasswordReset}
-                                loading={saving}
-                                className="w-full"
+            <Box sx={{ 
+                display: 'flex', 
+                flexDirection: { xs: 'column', md: 'row' }, 
+                gap: 3 
+            }}>
+                {/* Profile Card */}
+                <Box sx={{ flex: { xs: 'none', md: 1 } }}>
+                    <Card elevation={4} sx={{ 
+                        borderRadius: 3,
+                        background: `linear-gradient(135deg, ${brandColor}08 0%, ${brandColor}03 100%)`,
+                        border: `1px solid ${alpha(brandColor, 0.12)}`
+                    }}>
+                        <CardContent sx={{ p: 4, textAlign: 'center' }}>
+                            <Avatar
+                                sx={{
+                                    width: 120,
+                                    height: 120,
+                                    mx: 'auto',
+                                    mb: 2,
+                                    background: `linear-gradient(135deg, ${brandColor} 0%, ${brandColor}CC 100%)`,
+                                    fontSize: '3rem',
+                                    fontWeight: 600
+                                }}
                             >
-                                Change Password
-                            </Button>
-                        </div>
-                    </div>
-                )}
+                                {profile?.name ? profile.name.charAt(0).toUpperCase() : <AccountIcon sx={{ fontSize: '3rem' }} />}
+                            </Avatar>
+                            
+                            <Typography variant="h5" sx={{ fontWeight: 700, color: brandColor, mb: 1 }}>
+                                {profile?.name || "User"}
+                            </Typography>
+                            
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                {profile?.email}
+                            </Typography>
+                            
+                            <Typography variant="caption" color="text.secondary">
+                                Member since {formatCreatedAt(profile?.createAt)}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Box>
 
-                {/* Profile Information */}
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-200">
-                        <h3 className="text-lg font-semibold text-gray-800">
-                            Personal Information
-                        </h3>
-                    </div>
+                {/* Information Card */}
+                <Box sx={{ flex: { xs: 'none', md: 2 } }}>
+                    <Card elevation={4} sx={{ 
+                        borderRadius: 3,
+                        border: `1px solid ${alpha(brandColor, 0.12)}`
+                    }}>
+                        <Box sx={{
+                            px: 3,
+                            py: 2,
+                            borderBottom: `1px solid ${alpha(brandColor, 0.12)}`,
+                            background: alpha(brandColor, 0.03),
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between'
+                        }}>
+                            <Typography variant="h6" sx={{ fontWeight: 700, color: brandColor }}>
+                                Personal Information
+                            </Typography>
+                            <Tooltip title="Edit profile">
+                                <IconButton 
+                                    onClick={() => setEditing(true)} 
+                                    sx={{ 
+                                        color: brandColor, 
+                                        '&:hover': { backgroundColor: alpha(brandColor, 0.08) } 
+                                    }}
+                                >
+                                    <EditIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
 
-                    <div className="p-6 space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Full Name - Editable */}
-                            <div>
-                                <Label htmlFor="name">Full Name</Label>
-                                {editing ? (
-                                    <div>
-                                        <Input
-                                            id="name"
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleFormChange}
-                                            placeholder="Enter your full name"
-                                            className={formErrors.name ? "border-red-500" : ""}
-                                        />
-                                        {formErrors.name && (
-                                            <span className="text-red-500 text-sm mt-1">
-                        {formErrors.name}
-                      </span>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                                        <User className="w-4 h-4 text-gray-500"/>
-                                        <span className="text-gray-900">
-                      {formData.name || profile?.name || "Not updated"}
-                    </span>
-                                    </div>
+                        <CardContent sx={{ p: 3 }}>
+                            <Stack spacing={3}>
+                                {/* First Login Alert */}
+                                {isFirstLogin && (
+                                    <Alert severity="warning" sx={{ borderRadius: 2 }}>
+                                        <AlertTitle>First Time Login</AlertTitle>
+                                        Please update your personal information and change your password to complete account setup.
+                                    </Alert>
                                 )}
-                            </div>
 
-                            {/* Email - Read Only */}
-                            <div>
-                                <Label>Email</Label>
-                                <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                                    <Mail className="w-4 h-4 text-gray-500"/>
-                                    <span className="text-gray-900">{profile?.email}</span>
-                                </div>
-                            </div>
+                                {/* Success/Error Messages */}
+                                {success && (
+                                    <Alert severity="success" sx={{ borderRadius: 2 }}>
+                                        {success}
+                                    </Alert>
+                                )}
 
-                            {/* Role - Read Only */}
-                            <div>
-                                <Label>Role</Label>
-                                <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                                    <Shield className="w-4 h-4 text-gray-500"/>
-                                    <span className="text-gray-900">{profile?.role}</span>
-                                </div>
-                            </div>
+                                {error && (
+                                    <Alert severity="error" sx={{ borderRadius: 2 }}>
+                                        {error}
+                                    </Alert>
+                                )}
 
-                            <div>
-                                <Label htmlFor="gender">Gender</Label>
-                                {editing ? (
-                                    <div>
-                                        <select
-                                            id="gender"
-                                            name="gender"
-                                            value={formData.gender}
-                                            onChange={handleFormChange}
-                                            className={`w-full p-2 border rounded-md ${
-                                                formErrors.gender ? "border-red-500" : "border-gray-300"
-                                            } focus:ring-2 focus:ring-blue-500`}
+                                {/* Information Fields */}
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 2, backgroundColor: 'grey.50' }}>
+                                        <PersonIcon sx={{ color: brandColor }} />
+                                        <Box>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                                Full Name
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                                                {formData.name || profile?.name || "Not updated"}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 2, backgroundColor: 'grey.50' }}>
+                                        <EmailIcon sx={{ color: brandColor }} />
+                                        <Box>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                                Email
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                                                {profile?.email}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 2, backgroundColor: 'grey.50' }}>
+                                        <PhoneIcon sx={{ color: brandColor }} />
+                                        <Box>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                                Phone Number
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                                                {formData.phone || profile?.phone || "Not updated"}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 2, backgroundColor: 'grey.50' }}>
+                                        <PersonIcon sx={{ color: brandColor }} />
+                                        <Box>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                                Gender
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                                                {getGenderDisplay(formData.gender || profile?.gender)}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+
+                                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 2, borderRadius: 2, backgroundColor: 'grey.50' }}>
+                                        <LocationIcon sx={{ color: brandColor, mt: 0.5 }} />
+                                        <Box>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                                Address
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                                                {formData.address || profile?.address || "Not updated"}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Box>
+
+                                {/* Continue Button for First Login */}
+                                {isFirstLogin && !showPasswordReset && (
+                                    <Box sx={{ textAlign: 'center', pt: 2 }}>
+                                        <Button
+                                            variant="primary"
+                                            size="large"
+                                            onClick={handleContinueToDashboard}
+                                            sx={{
+                                                borderRadius: 2,
+                                                px: 4,
+                                                py: 1.5,
+                                                fontWeight: 600,
+                                                textTransform: 'none',
+                                                minWidth: 200
+                                            }}
                                         >
-                                            <option value="">Select gender</option>
-                                            <option value="MALE">Male</option>
-                                            <option value="FEMALE">Female</option>
-                                            <option value="OTHER">Other</option>
-                                        </select>
-                                        {formErrors.gender && (
-                                            <span className="text-red-500 text-sm mt-1">
-                        {formErrors.gender}
-                      </span>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                                        <Users className="w-4 h-4 text-gray-500"/>
-                                        <span className="text-gray-900">
-                      {(() => {
-                          const genderValue = (formData.gender || profile?.gender || "").toLowerCase();
-                          if (genderValue === "male") return "Male";
-                          if (genderValue === "female") return "Female";
-                          if (genderValue === "other") return "Other";
-                          return "Not updated";
-                      })()}
-                    </span>
-                                    </div>
+                                            Continue to Dashboard
+                                        </Button>
+                                    </Box>
                                 )}
-                            </div>
+                            </Stack>
+                        </CardContent>
+                    </Card>
+                </Box>
+            </Box>
 
-                            {/* Phone - Editable */}
-                            <div>
-                                <Label htmlFor="phone">Phone Number</Label>
-                                {editing ? (
-                                    <div>
-                                        <Input
-                                            id="phone"
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={handleFormChange}
-                                            placeholder="Enter your phone number"
-                                            className={formErrors.phone ? "border-red-500" : ""}
-                                        />
-                                        {formErrors.phone && (
-                                            <span className="text-red-500 text-sm mt-1">
-                        {formErrors.phone}
-                      </span>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                                        <Phone className="w-4 h-4 text-gray-500"/>
-                                        <span className="text-gray-900">
-                      {formData.phone || profile?.phone || "Not updated"}
-                    </span>
-                                    </div>
-                                )}
-                            </div>
+            {/* Password Reset Dialog */}
+            <Dialog 
+                open={showPasswordReset} 
+                onClose={() => !isFirstLogin && setShowPasswordReset(false)}
+                maxWidth="sm"
+                fullWidth
+                slotProps={{
+                    paper: {
+                        sx: {
+                            borderRadius: 3,
+                            boxShadow: '0 24px 48px rgba(0,0,0,0.12)'
+                        }
+                    }
+                }}
+            >
+                <DialogTitle sx={{ 
+                    pb: 2,
+                    borderBottom: `1px solid ${alpha(brandColor, 0.12)}`,
+                    background: alpha(brandColor, 0.03)
+                }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <KeyIcon sx={{ color: brandColor }} />
+                        <Typography variant="h6" sx={{ fontWeight: 700, color: brandColor }}>
+                            Change Password
+                        </Typography>
+                        {!isFirstLogin && (
+                            <IconButton 
+                                onClick={() => setShowPasswordReset(false)}
+                                sx={{ ml: 'auto' }}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        )}
+                    </Box>
+                </DialogTitle>
+                
+                <DialogContent sx={{ p: 3 }}>
+                    <Stack spacing={3} sx={{ mt: 1 }}>
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            type="email"
+                            value={passwordData.email}
+                            disabled
+                            variant="outlined"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: 2,
+                                    backgroundColor: 'grey.50'
+                                }
+                            }}
+                        />
 
-                            {/* Created Date - Read Only */}
-                            <div>
-                                <Label>Created Date</Label>
-                                <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                                    <Calendar className="w-4 h-4 text-gray-500"/>
-                                    <span className="text-gray-900">
-                    {profile?.createdAt
-                        ? new Date(profile.createdAt).toLocaleDateString("en-US")
-                        : "N/A"}
-                  </span>
-                                </div>
-                            </div>
+                        <TextField
+                            fullWidth
+                            label="New Password"
+                            type="password"
+                            value={passwordData.password}
+                            onChange={(e) =>
+                                setPasswordData((prev) => ({
+                                    ...prev,
+                                    password: e.target.value,
+                                }))
+                            }
+                            variant="outlined"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: 2
+                                }
+                            }}
+                        />
 
-                            {/* Address - Editable */}
-                            <div className="col-span-2">
-                                <Label htmlFor="address">Address</Label>
-                                {editing ? (
-                                    <div>
-                    <textarea
-                        id="address"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleFormChange}
-                        placeholder="Enter your address"
-                        className={`w-full p-2 border rounded-md ${
-                            formErrors.address
-                                ? "border-red-500"
-                                : "border-gray-300"
-                        } focus:ring-2 focus:ring-blue-500`}
-                        rows={3}
-                    />
-                                        {formErrors.address && (
-                                            <span className="text-red-500 text-sm mt-1">
-                        {formErrors.address}
-                      </span>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div className="flex items-start gap-2 p-2 bg-gray-50 rounded">
-                                        <MapPin className="w-4 h-4 text-gray-500 mt-0.5"/>
-                                        <span className="text-gray-900">
-                      {formData.address || profile?.address || "Not updated"}
-                    </span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Continue Button for First Login */}
-                {isFirstLogin && !showPasswordReset && (
-                    <div className="text-center">
+                        <TextField
+                            fullWidth
+                            label="Confirm Password"
+                            type="password"
+                            value={passwordData.confirmPassword}
+                            onChange={(e) =>
+                                setPasswordData((prev) => ({
+                                    ...prev,
+                                    confirmPassword: e.target.value,
+                                }))
+                            }
+                            variant="outlined"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: 2
+                                }
+                            }}
+                        />
+                    </Stack>
+                </DialogContent>
+                
+                <DialogActions sx={{ p: 3, gap: 2 }}>
+                    {!isFirstLogin && (
                         <Button
-                            variant="primary"
-                            size="lg"
-                            onClick={handleContinueToDashboard}
-                            className="min-w-[200px]"
+                            variant="outline"
+                            onClick={() => setShowPasswordReset(false)}
+                            sx={{ borderRadius: 2, textTransform: 'none' }}
                         >
-                            Continue to Dashboard
+                            Cancel
                         </Button>
-                    </div>
-                )}
-            </div>
+                    )}
+                    <Button
+                        variant="primary"
+                        onClick={handlePasswordReset}
+                        loading={saving}
+                        sx={{ 
+                            borderRadius: 2, 
+                            textTransform: 'none',
+                            fontWeight: 600,
+                            px: 4
+                        }}
+                    >
+                        Change Password
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Edit Profile Form */}
+            <EditProfileForm
+                open={editing}
+                formData={formData}
+                formErrors={formErrors}
+                saving={saving}
+                onChange={handleFormChange}
+                onSave={handleSaveProfile}
+                onCancel={() => {
+                    setEditing(false);
+                    setFormData({
+                        name: profile?.name || "",
+                        phone: profile?.phone || "",
+                        address: profile?.address || "",
+                        gender: profile?.gender || "",
+                    });
+                    setFormErrors({});
+                }}
+            />
         </PageTemplate>
     );
 };

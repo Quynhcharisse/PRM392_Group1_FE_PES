@@ -31,7 +31,6 @@ export const accountService = {
                 data: response.data
             };
         } catch (error) {
-            console.error('Get profile error:', error);
             return {
                 success: false,
                 error: error.response?.data?.message || error.message || 'Failed to fetch profile'
@@ -39,19 +38,25 @@ export const accountService = {
         }
     },
 
-    async updateProfile(userId, profileData) {
+    async updateProfile(profileData) {
         try {
             const payload = {
-                name: profileData.name,
-                phone: profileData.phone,
-                address: profileData.address,
-                avatarUrl: profileData.avatarUrl,
-                gender: profileData.gender,
-                role: profileData.role,
-                status: profileData.status,
+                name: profileData.name || "",
+                phone: profileData.phone || "",
+                address: profileData.address || "",
+                avatarUrl: profileData.avatarUrl || "",
+                gender: profileData.gender || "",
             };
 
-            const response = await axiosClient.put(`/auth/updateProfile/${userId}`, payload);
+            // Ensure all fields are strings (backend expects all fields)
+            Object.keys(payload).forEach(key => {
+                if (payload[key] === undefined || payload[key] === null) {
+                    payload[key] = "";
+                }
+            });
+
+
+            const response = await axiosClient.put('/auth/profile', payload);
 
             // On 204 No Content: treat as success with message
             if (response && response.status === 204) {
@@ -82,14 +87,8 @@ export const accountService = {
                 data: response?.data ?? null,
             };
         } catch (error) {
-            console.error('Update profile error:', error);
-            return {
-                success: false,
-                error: error.response?.data?.message || error.message || 'Failed to update profile'
-            };
+            throw new Error(error.response?.data?.message || error.message || 'Failed to update profile');
         }
     }
-
-
 }
 
