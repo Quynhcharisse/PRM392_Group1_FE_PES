@@ -51,26 +51,16 @@ export default function SignIn() {
                 
                 // Navigate based on user role
                 const { role } = result.data;
-                let dashboardRoute = '/';
-                
-                switch (role?.toLowerCase()) {
-                    case 'parent':
-                        dashboardRoute = '/dashboard/parent';
-                        break;
-                    case 'education':
-                        dashboardRoute = '/education/dashboard';
-                        break;
-                    case 'hr':
-                        dashboardRoute = '/hr/dashboard';
-                        break;
-                    case 'admin':
-                        dashboardRoute = '/admin/dashboard';
-                        break;
-                    default:
-                        dashboardRoute = redirectTo || '/';
+                const upperRole = String(role || '').toUpperCase();
+                if (upperRole === 'HR') {
+                    navigate('/hr/dashboard', { replace: true });
+                } else if (upperRole === 'EDUCATION') {
+                    navigate('/education/dashboard', { replace: true });
+                } else if (upperRole === 'PARENT' || upperRole === 'TEACHER') {
+                    navigate('/mobile-info', { replace: true });
+                } else {
+                    navigate(redirectTo || '/', { replace: true });
                 }
-                
-                navigate(dashboardRoute, { replace: true });
             } else {
                 enqueueSnackbar(result.error || 'Login failed', { variant: 'error' });
             }

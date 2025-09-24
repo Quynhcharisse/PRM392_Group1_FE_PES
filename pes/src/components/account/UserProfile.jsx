@@ -1,6 +1,7 @@
 import {getDashboardRoute} from "@/constants/routes";
 import {Button, Input, Label, Spinner} from "@atoms";
 import {authService} from "@services/authService";
+import { accountService } from "@services/accountService.jsx";
 import {getCurrentTokenData} from "@services/JWTService";
 import {PageTemplate} from "@templates";
 import {AlertCircle, Calendar, Edit2, Key, Mail, MapPin, Phone, Save, Shield, User, Users, X,} from "lucide-react";
@@ -83,7 +84,7 @@ const UserProfile = () => {
             setLoading(true);
             setError("");
 
-            const response = await authService.getUserProfile();
+            const response = await accountService.getProfile();
 
             const profileData = response.data || response;
             setProfile(profileData);
@@ -171,8 +172,8 @@ const UserProfile = () => {
             setError("");
             setSuccess("");
 
-            await authService.updateUserProfile(formData);
-            setSuccess("Profile updated successfully!");
+            const result = await accountService.updateProfile(profile?.id, formData);
+            setSuccess(result?.message || "Update Profile Successfully");
             setEditing(false);
             await loadProfile();
         } catch (error) {

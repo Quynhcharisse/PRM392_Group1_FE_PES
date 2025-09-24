@@ -6,7 +6,9 @@ import {
     Box,
     Card,
     CardContent,
+    Button,
     Chip,
+    Divider,
     Drawer,
     Grid,
     IconButton,
@@ -17,6 +19,7 @@ import {
     ListItemText,
     Menu,
     MenuItem,
+    Stack,
     Toolbar,
     Typography,
     useTheme
@@ -24,14 +27,24 @@ import {
 import {
     AccountCircle as AccountCircleIcon,
     Dashboard as DashboardIcon,
+    Event as EventIcon,
+    ListAlt as ListAltIcon,
     Logout as LogoutIcon,
-    Menu as MenuIcon
+    Menu as MenuIcon,
+    MenuBook as MenuBookIcon,
+    People as PeopleIcon,
+    School as SchoolIcon,
+    Timeline as TimelineIcon,
+    Visibility as VisibilityIcon,
+    Assessment as AssessmentIcon,
+    Notifications as NotificationsIcon,
+    Autorenew as AutorenewIcon,
+    ShowChart as ShowChartIcon
 } from '@mui/icons-material';
 import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 
 const DRAWER_WIDTH = 280;
 
-// Color palette based on #0b3f31
 const colors = {
     primary: '#0b3f31',
     primaryLight: '#1a6b4e',
@@ -46,17 +59,103 @@ const colors = {
     info: '#3b82f6'
 };
 
-// Navigation configuration (EDUCATION only)
+// Navigation configuration (EDUCATION)
 const NAVIGATION = [
-    {
-        segment: 'dashboard',
-        title: 'Dashboard',
-        icon: <DashboardIcon/>,
-        path: '/education/dashboard'
-    }
+    { segment: 'user', title: 'User', icon: <PeopleIcon/>, path: '/education/user' },
+    { segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon/>, path: '/education/dashboard' },
+    { segment: 'admission-term', title: 'Admission Term', icon: <AutorenewIcon/>, path: '/education/admission-term' },
+    { segment: 'process-form', title: 'Process Form', icon: <AutorenewIcon/>, path: '/education/process-form' },
+    { segment: 'transaction-list', title: 'Transaction List', icon: <ListAltIcon/>, path: '/education/transactions' },
+    { segment: 'transaction-chart', title: 'Transaction Chart', icon: <ShowChartIcon/>, path: '/education/transactions/chart' },
+    { segment: 'syllabus', title: 'Syllabus', icon: <SchoolIcon/>, path: '/education/syllabus' },
+    { segment: 'lessons', title: 'Lessons', icon: <MenuBookIcon/>, path: '/education/lessons' },
+    { segment: 'events', title: 'Events', icon: <EventIcon/>, path: '/education/events' },
+    { segment: 'class', title: 'Class Management', icon: <ListAltIcon/>, path: '/education/classes' },
+    { segment: 'reports', title: 'Education Reports', icon: <TimelineIcon/>, path: '/education/reports' },
+    { segment: 'profile', title: 'Profile', icon: <AccountCircleIcon/>, path: '/education/profile' }
 ];
 
-function SellerDashboardContent({session}) {
+function MetricCard({title, value, subtitle, icon}) {
+    return (
+        <Card sx={{
+            borderRadius: 3,
+            border: `1px solid ${alpha(colors.primary, 0.1)}`,
+            background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.6)} 100%)`,
+            boxShadow: `0 2px 12px ${alpha(colors.primary, 0.08)}`
+        }}>
+            <CardContent>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                    <Box>
+                        <Typography variant="overline" sx={{color: 'text.secondary', letterSpacing: 1}}>
+                            {title}
+                        </Typography>
+                        <Typography variant="h4" sx={{fontWeight: 800, color: colors.primary}}>
+                            {value}
+                        </Typography>
+                        {subtitle && (
+                            <Typography variant="caption" color="text.secondary">{subtitle}</Typography>
+                        )}
+                    </Box>
+                    <Box sx={{
+                        width: 46,
+                        height: 46,
+                        borderRadius: 2,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: alpha(colors.primary, 0.1), color: colors.primary
+                    }}>
+                        {icon}
+                    </Box>
+                </Stack>
+            </CardContent>
+        </Card>
+    );
+}
+
+function StatusPill({label, color}) {
+    return (
+        <Chip size="small" label={label} sx={{
+            backgroundColor: alpha(color, 0.1),
+            color,
+            fontWeight: 600
+        }}/>);
+}
+
+function ApplicationItem({name, statusLabel, statusColor, program, parent, date}) {
+    return (
+        <Box sx={{
+            p: 2,
+            borderRadius: 2,
+            border: `1px solid ${alpha(colors.primary, 0.08)}`,
+            backgroundColor: alpha('#ffffff', 0.6)
+        }}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+                <Box>
+                    <Typography variant="subtitle1" sx={{fontWeight: 700, color: colors.primary}}>
+                        {name}
+                        <Chip size="small" label={statusLabel} sx={{ml: 1, backgroundColor: alpha(statusColor, 0.1), color: statusColor}}/>
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">Program: {program}</Typography>
+                    <Typography variant="body2" color="text.secondary">Parent: {parent}</Typography>
+                    <Typography variant="caption" color="text.secondary">Submitted on: {date}</Typography>
+                </Box>
+                <Stack direction="row" spacing={1} alignItems="center">
+                    <IconButton size="small" sx={{border: `1px solid ${alpha(colors.primary, 0.2)}`}}>
+                        <VisibilityIcon fontSize="small"/>
+                    </IconButton>
+                    <Button variant="contained" size="small" sx={{
+                        textTransform: 'none',
+                        backgroundColor: colors.primary,
+                        '&:hover': {backgroundColor: colors.primaryDark}
+                    }}>
+                        Review
+                    </Button>
+                </Stack>
+            </Stack>
+        </Box>
+    );
+}
+
+function EducationDashboardContent({session}) {
 
     return (
         <Box sx={{px: 4, py: 5}}>
@@ -72,46 +171,143 @@ function SellerDashboardContent({session}) {
                 }}>
                     {session.user.role || 'User'} Dashboard
                 </Typography>
-                <Typography variant="body1" sx={{color: 'text.secondary', fontSize: '1.1rem'}}>
-                    Welcome to the Education portal overview.
-                </Typography>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                    <Typography variant="body1" sx={{color: 'text.secondary', fontSize: '1.1rem'}}>
+                        Manage admission applications and registration approvals
+                    </Typography>
+                    <Stack direction="row" spacing={1}>
+                        <Button startIcon={<ListAltIcon/>} variant="outlined" sx={{
+                            textTransform: 'none', color: colors.primary, borderColor: alpha(colors.primary, 0.3)
+                        }}>All Applications</Button>
+                        <Button startIcon={<AssessmentIcon/>} variant="contained" sx={{
+                            textTransform: 'none', backgroundColor: colors.primary,
+                            '&:hover': {backgroundColor: colors.primaryDark}
+                        }}>Reports</Button>
+                    </Stack>
+                </Stack>
             </Box>
 
-            {/* Education-specific content (minimal) */}
-            <Grid container spacing={3} sx={{mb: 4}}>
-                <Grid item xs={12}>
-                    <Card sx={{
-                        borderRadius: 3,
-                        border: `1px solid ${alpha(colors.primary, 0.1)}`,
-                        background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.5)} 100%)`,
-                        boxShadow: `0 2px 12px ${alpha(colors.primary, 0.08)}`
-                    }}>
-                        <CardContent>
-                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 1}}>
-                                Education actions
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Configure education modules and content here.
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
+            {/* Top metrics */}
+            <Grid container spacing={3} sx={{mb: 3}}>
+                <Grid item xs={12} md={3}><MetricCard title="Total Applications" value="45" subtitle="All registrations" icon={<ListAltIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Pending Review" value="12" subtitle="Need processing" icon={<NotificationsIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Under Review" value="8" subtitle="In progress" icon={<PeopleIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="This Week" value="7" subtitle="New applications" icon={<TimelineIcon/>}/></Grid>
             </Grid>
 
             {/* Main Content Grid */}
             <Grid container spacing={3}>
-                {/* Main education section placeholder */}
-                <Grid item xs={12}>
-                    <Card sx={{
-                        borderRadius: 4,
-                        border: `1px solid ${alpha(colors.primary, 0.1)}`,
-                        background: `linear-gradient(135deg, ${colors.surface} 0%, ${alpha(colors.surfaceVariant, 0.5)} 100%)`,
-                        boxShadow: `0 4px 20px ${alpha(colors.primary, 0.1)}`
-                    }}>
-                        <CardContent sx={{p: 4}}>
-                            <Typography variant="body1" color="text.secondary">
-                                This area will display EDUCATION dashboards and reports.
-                            </Typography>
+                {/* Left column */}
+                <Grid item xs={12} md={8}>
+                    <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
+                        <CardContent>
+                            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{mb: 2}}>
+                                <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary}}>Applications Needing Review</Typography>
+                                <Button size="small" sx={{textTransform: 'none'}}>View all</Button>
+                            </Stack>
+                            <Stack spacing={2}>
+                                <ApplicationItem name="Emma Johnson" statusLabel="Chờ xem xét" statusColor={colors.warning} program="Toddler Program" parent="Sarah Johnson" date="6/1/2025"/>
+                                <ApplicationItem name="Liam Smith" statusLabel="Đang xem xét" statusColor={colors.info} program="Pre-K Program" parent="Mike Smith" date="6/2/2025"/>
+                            </Stack>
+                        </CardContent>
+                    </Card>
+
+                    <Card sx={{mt: 3, borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
+                        <CardContent>
+                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Recent Activities</Typography>
+                            <Stack spacing={2}>
+                                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Stack direction="row" spacing={2} alignItems="center">
+                                        <Box sx={{width: 36, height: 36, borderRadius: 1, backgroundColor: alpha(colors.primary, 0.1), display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                            <ListAltIcon fontSize="small"/>
+                                        </Box>
+                                        <Box>
+                                            <Typography variant="subtitle2" sx={{fontWeight: 600}}>Emma Johnson</Typography>
+                                            <Typography variant="caption" color="text.secondary">Application pending_review</Typography>
+                                        </Box>
+                                    </Stack>
+                                    <Stack direction="row" spacing={1} alignItems="center">
+                                        <Chip size="small" label="Chờ xem xét" sx={{backgroundColor: alpha(colors.warning, 0.1), color: colors.warning}}/>
+                                        <Typography variant="caption" color="text.secondary">6/1/2025</Typography>
+                                    </Stack>
+                                </Stack>
+                                <Divider/>
+                                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Stack direction="row" spacing={2} alignItems="center">
+                                        <Box sx={{width: 36, height: 36, borderRadius: 1, backgroundColor: alpha(colors.primary, 0.1), display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                            <ListAltIcon fontSize="small"/>
+                                        </Box>
+                                        <Box>
+                                            <Typography variant="subtitle2" sx={{fontWeight: 600}}>Liam Smith</Typography>
+                                            <Typography variant="caption" color="text.secondary">Application under_review</Typography>
+                                        </Box>
+                                    </Stack>
+                                    <Stack direction="row" spacing={1} alignItems="center">
+                                        <Chip size="small" label="Đang xem xét" sx={{backgroundColor: alpha(colors.info, 0.1), color: colors.info}}/>
+                                        <Typography variant="caption" color="text.secondary">6/2/2025</Typography>
+                                    </Stack>
+                                </Stack>
+                                <Divider/>
+                                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Stack direction="row" spacing={2} alignItems="center">
+                                        <Box sx={{width: 36, height: 36, borderRadius: 1, backgroundColor: alpha(colors.primary, 0.1), display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                            <ListAltIcon fontSize="small"/>
+                                        </Box>
+                                        <Box>
+                                            <Typography variant="subtitle2" sx={{fontWeight: 600}}>Sophia Brown</Typography>
+                                            <Typography variant="caption" color="text.secondary">Application approved</Typography>
+                                        </Box>
+                                    </Stack>
+                                    <Chip size="small" label="Đã duyệt" sx={{backgroundColor: alpha(colors.success, 0.1), color: colors.success}}/>
+                                </Stack>
+                            </Stack>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                {/* Right column */}
+                <Grid item xs={12} md={4}>
+                    <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`, mb: 3}}>
+                        <CardContent>
+                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Status Overview</Typography>
+                            <Stack spacing={1.5}>
+                                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Typography variant="body2">Pending Review:</Typography>
+                                    <StatusPill label="12" color={colors.warning}/>
+                                </Stack>
+                                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Typography variant="body2">Under Review:</Typography>
+                                    <StatusPill label="8" color={colors.info}/>
+                                </Stack>
+                                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Typography variant="body2">Approved:</Typography>
+                                    <StatusPill label="20" color={colors.success}/>
+                                </Stack>
+                                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                    <Typography variant="body2">Rejected:</Typography>
+                                    <StatusPill label="5" color={colors.error}/>
+                                </Stack>
+                            </Stack>
+                        </CardContent>
+                    </Card>
+
+                    <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
+                        <CardContent>
+                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Quick Actions</Typography>
+                            <Stack spacing={1.5}>
+                                <Button fullWidth variant="outlined" startIcon={<NotificationsIcon/>} sx={{
+                                    justifyContent: 'flex-start', textTransform: 'none', borderColor: alpha(colors.primary, 0.2)
+                                }}>Pending Applications</Button>
+                                <Button fullWidth variant="outlined" startIcon={<ListAltIcon/>} sx={{
+                                    justifyContent: 'flex-start', textTransform: 'none', borderColor: alpha(colors.primary, 0.2)
+                                }}>All Applications</Button>
+                                <Button fullWidth variant="outlined" startIcon={<AssessmentIcon/>} sx={{
+                                    justifyContent: 'flex-start', textTransform: 'none', borderColor: alpha(colors.primary, 0.2)
+                                }}>Statistical Reports</Button>
+                                <Button fullWidth variant="outlined" startIcon={<NotificationsIcon/>} sx={{
+                                    justifyContent: 'flex-start', textTransform: 'none', borderColor: alpha(colors.primary, 0.2)
+                                }}>Notifications</Button>
+                            </Stack>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -398,7 +594,7 @@ export default function EducationDashboard() {
                                 transition: 'all 0.2s ease'
                             }}
                         >
-                            <NotificationDisplay/>
+                            <NotificationsIcon/>
                         </IconButton>
 
                         <IconButton
@@ -612,7 +808,7 @@ export default function EducationDashboard() {
             >
                 {/* Dashboard content or nested routes */}
                 {location.pathname === '/education/dashboard' ? (
-                    <SellerDashboardContent session={session}/>
+                    <EducationDashboardContent session={session}/>
                 ) : (
                     <Box sx={{p: 4}}>
                         <Outlet/>
