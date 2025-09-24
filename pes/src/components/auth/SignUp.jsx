@@ -81,9 +81,9 @@ export default function SignUp() {
             });
 
             if (result.success) {
-                enqueueSnackbar('Registration successful! Please login.', { variant: 'success' });
-                // Redirect to login page
-                navigate('/login', { replace: true });
+                enqueueSnackbar('Registration successful! Please use the mobile app.', { variant: 'success' });
+                // Redirect to mobile info page for parent users
+                navigate('/mobile-info', { replace: true });
             } else {
                 enqueueSnackbar(result.error || 'Registration failed', { variant: 'error' });
             }

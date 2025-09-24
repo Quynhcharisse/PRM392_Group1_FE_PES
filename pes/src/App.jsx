@@ -218,14 +218,16 @@ const router = createBrowserRouter([{
                 </Suspense>
             )
         }],
-    }, {
+    }, 
+    {
         path: 'mobile-info',
         element: (
             <Suspense fallback={<LoadingFallback/>}>
                 <MobileInfo/>
             </Suspense>
         )
-    }, {
+    },
+     {
         path: 'hr',
         element: (
             <Suspense fallback={<LoadingFallback/>}>
