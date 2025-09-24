@@ -62,6 +62,11 @@ export default function SignIn() {
                     navigate(redirectTo || '/', { replace: true });
                 }
             } else {
+                // If server returns 500 on parent login, guide user to mobile
+                if (result?.status === 500) {
+                    navigate('/mobile-info', { replace: true });
+                    return;
+                }
                 enqueueSnackbar(result.error || 'Login failed', { variant: 'error' });
             }
         } catch (err) {

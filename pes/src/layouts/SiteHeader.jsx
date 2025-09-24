@@ -401,7 +401,7 @@ export default function SiteHeader() {
                                 }
                             }}
                         >
-                            REGISTER
+                            SIGN IN
                         </Button>
 
                         {/* User Authentication */}
