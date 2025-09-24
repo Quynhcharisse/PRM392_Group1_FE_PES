@@ -14,7 +14,7 @@ import {
 import {Download as DownloadIcon} from '@mui/icons-material'
 import {hrService} from '@services/hrService.jsx'
 
-export default function ExportTeacher({open, onClose}) {
+export default function ExportParent({open, onClose}) {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
@@ -25,7 +25,7 @@ export default function ExportTeacher({open, onClose}) {
             setError('')
             setSuccess('')
             
-            const response = await hrService.exportTeacher()
+            const response = await hrService.exportParent()
             
             if (response.success) {
                 setSuccess(`File "${response.filename}" downloaded successfully!`)
@@ -36,10 +36,10 @@ export default function ExportTeacher({open, onClose}) {
                     onClose?.()
                 }, 2000)
             } else {
-                setError(response.error || 'Failed to export teachers')
+                setError(response.error || 'Failed to export parents')
             }
         } catch (error) {
-            setError('Failed to export teachers. Please try again.')
+            setError('Failed to export parents. Please try again.')
         } finally {
             setLoading(false)
         }
@@ -75,10 +75,10 @@ export default function ExportTeacher({open, onClose}) {
                 background: alpha(brandColor, 0.03)
             }}>
                 <Typography variant="h6" sx={{ fontWeight: 700, color: brandColor }}>
-                    Export Teachers
+                    Export Parents
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    Download teacher list as Excel file
+                    Download parent list as Excel file
                 </Typography>
             </DialogTitle>
             
@@ -105,11 +105,11 @@ export default function ExportTeacher({open, onClose}) {
                     }} />
                     
                     <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
-                        Export Teacher Data
+                        Export Parent Data
                     </Typography>
                     
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                        This will download an Excel file containing all teacher information including names, emails, phone numbers, addresses, and other details.
+                        This will download an Excel file containing all parent information including names, emails, phone numbers, addresses, and other details.
                     </Typography>
 
                     {loading && (
@@ -157,5 +157,3 @@ export default function ExportTeacher({open, onClose}) {
         </Dialog>
     )
 }
-
-
