@@ -1,9 +1,20 @@
 import axios from "axios"
 
-axios.defaults.baseURL = "http://localhost:5000/auth-api/api"
+// Get API base URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/auth-api/api";
+
+axios.defaults.baseURL = API_BASE_URL;
+
+// Log API configuration in development
+if (import.meta.env.DEV) {
+    console.log("API Configuration:", {
+        baseURL: API_BASE_URL,
+        environment: import.meta.env.VITE_APP_ENV || "development"
+    });
+}
 
 const axiosClient = axios.create({
-    baseURL: axios.defaults.baseURL, 
+    baseURL: API_BASE_URL, 
     headers: {
         "Content-Type": "application/json",
     }, 
