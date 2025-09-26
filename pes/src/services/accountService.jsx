@@ -21,10 +21,14 @@ export const accountService = {
                         address: response.data.address ?? null,
                         avatarUrl: response.data.avatarUrl ?? null,
                         gender: response.data.gender ?? null,
+                        identityNumber: response.data.identityNumber ?? null,
+                        status: response.data.status ?? null,
+                        createAt: response.data.createAt ?? null,
                     };
                     localStorage.setItem('user', JSON.stringify(updated));
                 }
-            } catch {/* ignore localStorage errors */}
+            } catch {/* ignore localStorage errors */
+            }
 
             return {
                 success: true,
@@ -46,6 +50,7 @@ export const accountService = {
                 address: profileData.address || "",
                 avatarUrl: profileData.avatarUrl || "",
                 gender: profileData.gender || "",
+                identityNumber: profileData.identityNumber || "",
             };
 
             // Ensure all fields are strings (backend expects all fields)
@@ -71,7 +76,8 @@ export const accountService = {
                         };
                         localStorage.setItem('user', JSON.stringify(updated));
                     }
-                } catch { /* ignore localStorage errors */ }
+                } catch { /* ignore localStorage errors */
+                }
 
                 return {
                     success: true,

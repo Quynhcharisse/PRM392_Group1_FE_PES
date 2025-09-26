@@ -5,44 +5,35 @@ import {accountService} from "@services/accountService.jsx";
 import {getCurrentTokenData} from "@services/JWTService";
 import {PageTemplate} from "@templates";
 import {
-    alpha, 
-    Box, 
-    Paper, 
-    Typography, 
-    IconButton, 
-    Tooltip,
-    Card,
-    CardContent,
-    Divider,
-    Chip,
-    Avatar,
-    Grid,
     Alert,
     AlertTitle,
+    alpha,
+    Avatar,
+    Box,
+    Card,
+    CardContent,
+    Chip,
     Dialog,
-    DialogTitle,
-    DialogContent,
     DialogActions,
-    TextField,
+    DialogContent,
+    DialogTitle,
+    IconButton,
     Stack,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem
+    TextField,
+    Tooltip,
+    Typography
 } from "@mui/material";
 import {
-    Person as PersonIcon,
-    Email as EmailIcon,
-    Phone as PhoneIcon,
-    LocationOn as LocationIcon,
-    CalendarToday as CalendarIcon,
-    Security as SecurityIcon,
-    Edit as EditIcon,
-    Key as KeyIcon,
+    AccountCircle as AccountIcon,
     Close as CloseIcon,
-    Warning as WarningIcon,
-    Badge as BadgeIcon,
-    AccountCircle as AccountIcon
+    CreditCard as IdCardIcon,
+    Edit as EditIcon,
+    Email as EmailIcon,
+    Key as KeyIcon,
+    LocationOn as LocationIcon,
+    Person as PersonIcon,
+    Phone as PhoneIcon,
+    Security as SecurityIcon
 } from "@mui/icons-material";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
@@ -86,6 +77,14 @@ const VALIDATION_RULES = {
             required: "Please select a gender",
         },
     },
+    identityNumber: {
+        required: true,
+        pattern: /^\d{12}$/,
+        message: {
+            required: "Identity number is required",
+            pattern: "Identity number must be exactly 12 digits",
+        },
+    },
 };
 
 const UserProfile = () => {
@@ -106,6 +105,8 @@ const UserProfile = () => {
         phone: "",
         address: "",
         gender: "",
+        identityNumber: "",
+        avatarUrl: "",
     });
 
     // Password reset form
@@ -139,6 +140,8 @@ const UserProfile = () => {
                 phone: profileData.phone || "",
                 address: profileData.address || "",
                 gender: profileData.gender || "",
+                identityNumber: profileData.identityNumber || "",
+                avatarUrl: profileData.avatarUrl || "",
             });
 
             setPasswordData((prev) => ({
@@ -193,17 +196,22 @@ const UserProfile = () => {
         }));
     };
 
+    // Handle avatar change
+    const handleAvatarChange = (avatarUrl) => {
+        setFormData((prev) => ({...prev, avatarUrl}));
+    };
+
     // Validate all fields before saving
     const validateForm = () => {
         const errors = {};
-        
+
         Object.keys(VALIDATION_RULES).forEach((field) => {
             const error = validateField(field, formData[field]);
             if (error) {
                 errors[field] = error;
             }
         });
-        
+
         setFormErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -273,7 +281,7 @@ const UserProfile = () => {
             const d = new Date(iso);
             const pad = (n) => String(n).padStart(2, '0');
             const day = pad(d.getDate());
-            const month = pad(d.getMonth() + 1);
+            const month = d.getMonth() + 1; // No padding for month as requested
             const year = d.getFullYear();
             const hours = pad(d.getHours());
             const minutes = pad(d.getMinutes());
@@ -286,11 +294,16 @@ const UserProfile = () => {
 
     const getRoleColor = (role) => {
         switch (role?.toUpperCase()) {
-            case 'HR': return '#e91e63';
-            case 'EDUCATION': return '#2196f3';
-            case 'PARENT': return '#4caf50';
-            case 'TEACHER': return '#ff9800';
-            default: return '#757575';
+            case 'HR':
+                return '#e91e63';
+            case 'EDUCATION':
+                return '#2196f3';
+            case 'PARENT':
+                return '#4caf50';
+            case 'TEACHER':
+                return '#ff9800';
+            default:
+                return '#757575';
         }
     };
 
@@ -302,12 +315,48 @@ const UserProfile = () => {
         return "Not updated";
     };
 
+    const getStatusColor = (status) => {
+        switch (status?.toUpperCase()) {
+            case 'ACCOUNT_ACTIVE':
+                return '#4caf50';
+            case 'ACCOUNT_INACTIVE':
+                return '#f44336';
+            case 'PENDING':
+                return '#ff9800';
+            default:
+                return '#757575';
+        }
+    };
+
+    const getStatusDisplay = (status) => {
+        switch (status?.toUpperCase()) {
+            case 'ACCOUNT_ACTIVE':
+                return 'Active';
+            case 'ACCOUNT_INACTIVE':
+                return 'Inactive';
+            case 'PENDING':
+                return 'Pending';
+            default:
+                return 'Unknown';
+        }
+    };
+
+    const formatIdentityNumber = (identityNumber) => {
+        if (!identityNumber) return "Not updated";
+        if (identityNumber.length >= 3) {
+            const firstThree = identityNumber.substring(0, 3);
+            const masked = '*'.repeat(Math.max(0, identityNumber.length - 3));
+            return firstThree + masked;
+        }
+        return identityNumber;
+    };
+
     if (loading) {
         return (
             <PageTemplate title="Personal Information">
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+                <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400}}>
                     <Stack alignItems="center" spacing={2}>
-                        <Spinner size="lg" />
+                        <Spinner size="lg"/>
                         <Typography color="text.secondary">Loading information...</Typography>
                     </Stack>
                 </Box>
@@ -326,55 +375,61 @@ const UserProfile = () => {
                     : "Manage your account information"
             }
             actions={
-                        <Button
-                            variant="outline"
-                            onClick={() => setShowPasswordReset(true)}
-                    sx={{ 
+                <Button
+                    variant="outline"
+                    onClick={() => setShowPasswordReset(true)}
+                    sx={{
                         borderRadius: 2,
                         textTransform: 'none',
                         fontWeight: 600
                     }}
-                    startIcon={<KeyIcon />}
+                    startIcon={<KeyIcon/>}
                 >
-                            Change Password
-                        </Button>
+                    Change Password
+                </Button>
             }
         >
-            <Box sx={{ 
-                display: 'flex', 
-                flexDirection: { xs: 'column', md: 'row' }, 
-                gap: 3 
+            <Box sx={{
+                display: 'flex',
+                flexDirection: {xs: 'column', md: 'row'},
+                gap: 3
             }}>
                 {/* Profile Card */}
-                <Box sx={{ flex: { xs: 'none', md: 1 } }}>
-                    <Card elevation={4} sx={{ 
+                <Box sx={{flex: {xs: 'none', md: 1}}}>
+                    <Card elevation={4} sx={{
                         borderRadius: 3,
                         background: `linear-gradient(135deg, ${brandColor}08 0%, ${brandColor}03 100%)`,
                         border: `1px solid ${alpha(brandColor, 0.12)}`
                     }}>
-                        <CardContent sx={{ p: 4, textAlign: 'center' }}>
+                        <CardContent sx={{p: 4, textAlign: 'center'}}>
                             <Avatar
+                                src={formData.avatarUrl || profile?.avatarUrl || undefined}
                                 sx={{
                                     width: 120,
                                     height: 120,
                                     mx: 'auto',
                                     mb: 2,
-                                    background: `linear-gradient(135deg, ${brandColor} 0%, ${brandColor}CC 100%)`,
+                                    background: (formData.avatarUrl || profile?.avatarUrl)
+                                        ? 'transparent'
+                                        : `linear-gradient(135deg, ${brandColor} 0%, ${brandColor}CC 100%)`,
                                     fontSize: '3rem',
                                     fontWeight: 600
                                 }}
                             >
-                                {profile?.name ? profile.name.charAt(0).toUpperCase() : <AccountIcon sx={{ fontSize: '3rem' }} />}
+                                {!(formData.avatarUrl || profile?.avatarUrl) && (
+                                    profile?.name ? profile.name.charAt(0).toUpperCase() :
+                                        <AccountIcon sx={{fontSize: '3rem'}}/>
+                                )}
                             </Avatar>
-                            
-                            <Typography variant="h5" sx={{ fontWeight: 700, color: brandColor, mb: 1 }}>
+
+                            <Typography variant="h5" sx={{fontWeight: 700, color: brandColor, mb: 1}}>
                                 {profile?.name || "User"}
                             </Typography>
-                            
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+
+                            <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
                                 {profile?.email}
                             </Typography>
-                            
+
                             <Typography variant="caption" color="text.secondary">
                                 Member since {formatCreatedAt(profile?.createAt)}
                             </Typography>
@@ -383,8 +438,8 @@ const UserProfile = () => {
                 </Box>
 
                 {/* Information Card */}
-                <Box sx={{ flex: { xs: 'none', md: 2 } }}>
-                    <Card elevation={4} sx={{ 
+                <Box sx={{flex: {xs: 'none', md: 2}}}>
+                    <Card elevation={4} sx={{
                         borderRadius: 3,
                         border: `1px solid ${alpha(brandColor, 0.12)}`
                     }}>
@@ -397,111 +452,208 @@ const UserProfile = () => {
                             alignItems: 'center',
                             justifyContent: 'space-between'
                         }}>
-                            <Typography variant="h6" sx={{ fontWeight: 700, color: brandColor }}>
+                            <Typography variant="h6" sx={{fontWeight: 700, color: brandColor}}>
                                 Personal Information
                             </Typography>
                             <Tooltip title="Edit profile">
-                                <IconButton 
-                                    onClick={() => setEditing(true)} 
-                                    sx={{ 
-                                        color: brandColor, 
-                                        '&:hover': { backgroundColor: alpha(brandColor, 0.08) } 
+                                <IconButton
+                                    onClick={() => {
+                                        // Refresh formData with current profile data before editing
+                                        const newFormData = {
+                                            name: profile?.name || "",
+                                            phone: profile?.phone || "",
+                                            address: profile?.address || "",
+                                            gender: profile?.gender || "",
+                                            identityNumber: profile?.identityNumber || "",
+                                            avatarUrl: profile?.avatarUrl || "",
+                                        };
+                                        console.log('🚀 Opening Edit Form with data:', newFormData);
+                                        setFormData(newFormData);
+                                        setFormErrors({}); // Clear any previous errors
+                                        setEditing(true);
+                                    }}
+                                    sx={{
+                                        color: brandColor,
+                                        '&:hover': {backgroundColor: alpha(brandColor, 0.08)}
                                     }}
                                 >
-                                    <EditIcon />
+                                    <EditIcon/>
                                 </IconButton>
                             </Tooltip>
                         </Box>
 
-                        <CardContent sx={{ p: 3 }}>
+                        <CardContent sx={{p: 3}}>
                             <Stack spacing={3}>
-                {/* First Login Alert */}
-                {isFirstLogin && (
-                                    <Alert severity="warning" sx={{ borderRadius: 2 }}>
+                                {/* First Login Alert */}
+                                {isFirstLogin && (
+                                    <Alert severity="warning" sx={{borderRadius: 2}}>
                                         <AlertTitle>First Time Login</AlertTitle>
-                                        Please update your personal information and change your password to complete account setup.
+                                        Please update your personal information and change your password to complete
+                                        account setup.
                                     </Alert>
-                )}
+                                )}
 
-                {/* Success/Error Messages */}
-                {success && (
-                                    <Alert severity="success" sx={{ borderRadius: 2 }}>
-                        {success}
+                                {/* Success/Error Messages */}
+                                {success && (
+                                    <Alert severity="success" sx={{borderRadius: 2}}>
+                                        {success}
                                     </Alert>
-                )}
+                                )}
 
-                {error && (
-                                    <Alert severity="error" sx={{ borderRadius: 2 }}>
-                        {error}
+                                {error && (
+                                    <Alert severity="error" sx={{borderRadius: 2}}>
+                                        {error}
                                     </Alert>
                                 )}
 
                                 {/* Information Fields */}
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 2, backgroundColor: 'grey.50' }}>
-                                        <PersonIcon sx={{ color: brandColor }} />
+                                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2,
+                                        p: 2,
+                                        borderRadius: 2,
+                                        backgroundColor: 'grey.50'
+                                    }}>
+                                        <PersonIcon sx={{color: brandColor}}/>
                                         <Box>
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                            <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600}}>
                                                 Full Name
                                             </Typography>
-                                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                                                {formData.name || profile?.name || "Not updated"}
-                                            </Typography>
+                                             <Typography variant="body1" sx={{fontWeight: 500}}>
+                                                 {profile?.name || "Not updated"}
+                                             </Typography>
                                         </Box>
                                     </Box>
 
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 2, backgroundColor: 'grey.50' }}>
-                                        <EmailIcon sx={{ color: brandColor }} />
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2,
+                                        p: 2,
+                                        borderRadius: 2,
+                                        backgroundColor: 'grey.50'
+                                    }}>
+                                        <EmailIcon sx={{color: brandColor}}/>
                                         <Box>
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                            <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600}}>
                                                 Email
                                             </Typography>
-                                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                                            <Typography variant="body1" sx={{fontWeight: 500}}>
                                                 {profile?.email}
                                             </Typography>
                                         </Box>
                                     </Box>
 
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 2, backgroundColor: 'grey.50' }}>
-                                        <PhoneIcon sx={{ color: brandColor }} />
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2,
+                                        p: 2,
+                                        borderRadius: 2,
+                                        backgroundColor: 'grey.50'
+                                    }}>
+                                        <PhoneIcon sx={{color: brandColor}}/>
                                         <Box>
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                            <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600}}>
                                                 Phone Number
                                             </Typography>
-                                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                                                {formData.phone || profile?.phone || "Not updated"}
-                                            </Typography>
+                                             <Typography variant="body1" sx={{fontWeight: 500}}>
+                                                 {profile?.phone || "Not updated"}
+                                             </Typography>
                                         </Box>
                                     </Box>
 
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 2, backgroundColor: 'grey.50' }}>
-                                        <PersonIcon sx={{ color: brandColor }} />
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2,
+                                        p: 2,
+                                        borderRadius: 2,
+                                        backgroundColor: 'grey.50'
+                                    }}>
+                                        <PersonIcon sx={{color: brandColor}}/>
                                         <Box>
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                            <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600}}>
                                                 Gender
                                             </Typography>
-                                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                                                {getGenderDisplay(formData.gender || profile?.gender)}
-                                            </Typography>
+                                             <Typography variant="body1" sx={{fontWeight: 500}}>
+                                                 {getGenderDisplay(profile?.gender)}
+                                             </Typography>
                                         </Box>
                                     </Box>
 
-                                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 2, borderRadius: 2, backgroundColor: 'grey.50' }}>
-                                        <LocationIcon sx={{ color: brandColor, mt: 0.5 }} />
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'flex-start',
+                                        gap: 2,
+                                        p: 2,
+                                        borderRadius: 2,
+                                        backgroundColor: 'grey.50'
+                                    }}>
+                                        <LocationIcon sx={{color: brandColor, mt: 0.5}}/>
                                         <Box>
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                            <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600}}>
                                                 Address
                                             </Typography>
-                                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                                                {formData.address || profile?.address || "Not updated"}
+                                             <Typography variant="body1" sx={{fontWeight: 500}}>
+                                                 {profile?.address || "Not updated"}
+                                             </Typography>
+                                        </Box>
+                                    </Box>
+
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2,
+                                        p: 2,
+                                        borderRadius: 2,
+                                        backgroundColor: 'grey.50'
+                                    }}>
+                                        <IdCardIcon sx={{color: brandColor}}/>
+                                        <Box>
+                                            <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600}}>
+                                                Identity Number
                                             </Typography>
+                                             <Typography variant="body1" sx={{fontWeight: 500}}>
+                                                 {formatIdentityNumber(profile?.identityNumber)}
+                                             </Typography>
+                                        </Box>
+                                    </Box>
+
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2,
+                                        p: 2,
+                                        borderRadius: 2,
+                                        backgroundColor: 'grey.50'
+                                    }}>
+                                        <SecurityIcon sx={{color: brandColor}}/>
+                                        <Box>
+                                            <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600}}>
+                                                Account Status
+                                            </Typography>
+                                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                                <Chip
+                                                    size="small"
+                                                    label={getStatusDisplay(profile?.status)}
+                                                    sx={{
+                                                        backgroundColor: alpha(getStatusColor(profile?.status), 0.12),
+                                                        color: getStatusColor(profile?.status),
+                                                        fontWeight: 600,
+                                                        fontSize: '0.75rem'
+                                                    }}
+                                                />
+                                            </Box>
                                         </Box>
                                     </Box>
                                 </Box>
 
                                 {/* Continue Button for First Login */}
                                 {isFirstLogin && !showPasswordReset && (
-                                    <Box sx={{ textAlign: 'center', pt: 2 }}>
+                                    <Box sx={{textAlign: 'center', pt: 2}}>
                                         <Button
                                             variant="primary"
                                             size="large"
@@ -526,8 +678,8 @@ const UserProfile = () => {
             </Box>
 
             {/* Password Reset Dialog */}
-            <Dialog 
-                open={showPasswordReset} 
+            <Dialog
+                open={showPasswordReset}
                 onClose={() => !isFirstLogin && setShowPasswordReset(false)}
                 maxWidth="sm"
                 fullWidth
@@ -540,35 +692,35 @@ const UserProfile = () => {
                     }
                 }}
             >
-                <DialogTitle sx={{ 
+                <DialogTitle sx={{
                     pb: 2,
                     borderBottom: `1px solid ${alpha(brandColor, 0.12)}`,
                     background: alpha(brandColor, 0.03)
                 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <KeyIcon sx={{ color: brandColor }} />
-                        <Typography variant="h6" sx={{ fontWeight: 700, color: brandColor }}>
-                                Change Password
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
+                        <KeyIcon sx={{color: brandColor}}/>
+                        <Typography variant="h6" sx={{fontWeight: 700, color: brandColor}}>
+                            Change Password
                         </Typography>
-                            {!isFirstLogin && (
-                            <IconButton 
-                                    onClick={() => setShowPasswordReset(false)}
-                                sx={{ ml: 'auto' }}
+                        {!isFirstLogin && (
+                            <IconButton
+                                onClick={() => setShowPasswordReset(false)}
+                                sx={{ml: 'auto'}}
                             >
-                                <CloseIcon />
+                                <CloseIcon/>
                             </IconButton>
                         )}
                     </Box>
                 </DialogTitle>
-                
-                <DialogContent sx={{ p: 3 }}>
-                    <Stack spacing={3} sx={{ mt: 1 }}>
+
+                <DialogContent sx={{p: 3}}>
+                    <Stack spacing={3} sx={{mt: 1}}>
                         <TextField
                             fullWidth
                             label="Email"
-                                    type="email"
-                                    value={passwordData.email}
-                                    disabled
+                            type="email"
+                            value={passwordData.email}
+                            disabled
                             variant="outlined"
                             sx={{
                                 '& .MuiOutlinedInput-root': {
@@ -581,14 +733,14 @@ const UserProfile = () => {
                         <TextField
                             fullWidth
                             label="New Password"
-                                    type="password"
-                                    value={passwordData.password}
-                                    onChange={(e) =>
-                                        setPasswordData((prev) => ({
-                                            ...prev,
-                                            password: e.target.value,
-                                        }))
-                                    }
+                            type="password"
+                            value={passwordData.password}
+                            onChange={(e) =>
+                                setPasswordData((prev) => ({
+                                    ...prev,
+                                    password: e.target.value,
+                                }))
+                            }
                             variant="outlined"
                             sx={{
                                 '& .MuiOutlinedInput-root': {
@@ -600,14 +752,14 @@ const UserProfile = () => {
                         <TextField
                             fullWidth
                             label="Confirm Password"
-                                    type="password"
-                                    value={passwordData.confirmPassword}
-                                    onChange={(e) =>
-                                        setPasswordData((prev) => ({
-                                            ...prev,
-                                            confirmPassword: e.target.value,
-                                        }))
-                                    }
+                            type="password"
+                            value={passwordData.confirmPassword}
+                            onChange={(e) =>
+                                setPasswordData((prev) => ({
+                                    ...prev,
+                                    confirmPassword: e.target.value,
+                                }))
+                            }
                             variant="outlined"
                             sx={{
                                 '& .MuiOutlinedInput-root': {
@@ -617,30 +769,30 @@ const UserProfile = () => {
                         />
                     </Stack>
                 </DialogContent>
-                
-                <DialogActions sx={{ p: 3, gap: 2 }}>
+
+                <DialogActions sx={{p: 3, gap: 2}}>
                     {!isFirstLogin && (
                         <Button
                             variant="outline"
                             onClick={() => setShowPasswordReset(false)}
-                            sx={{ borderRadius: 2, textTransform: 'none' }}
+                            sx={{borderRadius: 2, textTransform: 'none'}}
                         >
                             Cancel
                         </Button>
                     )}
-                            <Button
-                                variant="primary"
-                                onClick={handlePasswordReset}
-                                loading={saving}
-                        sx={{ 
-                            borderRadius: 2, 
+                    <Button
+                        variant="primary"
+                        onClick={handlePasswordReset}
+                        loading={saving}
+                        sx={{
+                            borderRadius: 2,
                             textTransform: 'none',
                             fontWeight: 600,
                             px: 4
                         }}
-                            >
-                                Change Password
-                            </Button>
+                    >
+                        Change Password
+                    </Button>
                 </DialogActions>
             </Dialog>
 
@@ -650,7 +802,8 @@ const UserProfile = () => {
                 formData={formData}
                 formErrors={formErrors}
                 saving={saving}
-                                            onChange={handleFormChange}
+                onChange={handleFormChange}
+                onAvatarChange={handleAvatarChange}
                 onSave={handleSaveProfile}
                 onCancel={() => {
                     setEditing(false);
@@ -659,6 +812,8 @@ const UserProfile = () => {
                         phone: profile?.phone || "",
                         address: profile?.address || "",
                         gender: profile?.gender || "",
+                        identityNumber: profile?.identityNumber || "",
+                        avatarUrl: profile?.avatarUrl || "",
                     });
                     setFormErrors({});
                 }}
