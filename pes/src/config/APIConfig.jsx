@@ -1,6 +1,7 @@
 import axios from "axios"
 
-axios.defaults.baseURL = "http://localhost:5000/auth-api/api"
+// Set base URL from environment configuration
+axios.defaults.baseURL = "https://pesapp.orangeglacier-1e02abb7.southeastasia.azurecontainerapps.io/auth-api/api"
 
 const axiosClient = axios.create({
     baseURL: axios.defaults.baseURL, 

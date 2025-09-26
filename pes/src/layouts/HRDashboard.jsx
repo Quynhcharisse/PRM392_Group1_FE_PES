@@ -62,7 +62,6 @@ const colors = {
 };
 
 const NAVIGATION = [
-    {segment: 'user', title: 'User', icon: <PeopleIcon/>, path: '/hr/user'},
     {segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon/>, path: '/hr/dashboard'},
     {segment: 'teacher', title: 'Teacher Management', icon: <SchoolIcon/>, path: '/hr/teachers'},
     {segment: 'parent', title: 'Parent Management', icon: <FamilyRestroomIcon/>, path: '/hr/parents'},

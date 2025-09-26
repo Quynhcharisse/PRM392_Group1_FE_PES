@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
     Dialog, 
     DialogTitle, 
@@ -14,10 +15,46 @@ import {
     Stack
 } from "@mui/material";
 import {Edit as EditIcon} from "@mui/icons-material";
+import UploadImageField from './UploadImageField.jsx';
 
-export default function EditProfileForm({open, formData, formErrors = {}, onChange, onSave, onCancel, saving = false}) {
+export default function EditProfileForm({open, formData, formErrors = {}, onChange, onAvatarChange, onSave, onCancel, saving = false}) {
+
     const handleChange = (e) => {
-        onChange(e);
+        // For gender field, ensure we store the value consistently
+        if (e.target.name === 'gender') {
+            const modifiedEvent = {
+                ...e,
+                target: {
+                    ...e.target,
+                    value: e.target.value // Keep uppercase for consistency with MenuItem values
+                }
+            };
+            onChange(modifiedEvent);
+        } else if (e.target.name === 'identityNumber') {
+            // Handle identity number - only allow digits and max 12 characters
+            let inputValue = e.target.value;
+            
+            // Remove any non-digit characters
+            inputValue = inputValue.replace(/\D/g, '');
+            
+            // Limit to 12 digits
+            if (inputValue.length > 12) {
+                inputValue = inputValue.substring(0, 12);
+            }
+
+            // Create modified event with cleaned value
+            const modifiedEvent = {
+                ...e,
+                target: {
+                    ...e.target,
+                    name: 'identityNumber',
+                    value: inputValue
+                }
+            };
+            onChange(modifiedEvent);
+        } else {
+            onChange(e);
+        }
     };
 
     const brandColor = '#0038A5';
@@ -83,6 +120,18 @@ export default function EditProfileForm({open, formData, formErrors = {}, onChan
             
             <DialogContent sx={{ p: 4}}>
                 <Stack spacing={3} sx={{mt: 3}}>
+                    {/* Avatar Upload */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+                        <UploadImageField
+                            value={formData.avatarUrl || ''}
+                            onChange={onAvatarChange}
+                            error={formErrors.avatarUrl}
+                            disabled={saving}
+                            size={100}
+                            name={formData.name || "User"}
+                        />
+                    </Box>
+
                     <Stack direction={{ xs: 'column', sm: 'row'}} spacing={3}>
                         <TextField
                             fullWidth
@@ -147,6 +196,42 @@ export default function EditProfileForm({open, formData, formErrors = {}, onChan
                         />
                     </Stack>
 
+                    <TextField
+                        fullWidth
+                        label="Identity Number"
+                        name="identityNumber"
+                        value={formData.identityNumber || ''}
+                        onChange={handleChange}
+                        placeholder="Enter your identity number"
+                        error={!!formErrors.identityNumber}
+                        helperText={formErrors.identityNumber || `${(formData.identityNumber || '').length}/12 digits`}
+                        disabled={saving}
+                        variant="outlined"
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: 3,
+                                backgroundColor: 'white',
+                                '&:hover fieldset': {
+                                    borderColor: `${brandColor}80`,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: brandColor,
+                                }
+                            },
+                            '& .MuiInputLabel-root': {
+                                backgroundColor: 'white',
+                                px: 1,
+                                '&.Mui-focused': {
+                                    color: brandColor,
+                                }
+                            },
+                            '& .MuiFormHelperText-root': {
+                                color: formErrors.identityNumber ? 'error.main' : 'text.secondary',
+                                fontSize: '0.75rem'
+                            }
+                        }}
+                    />
+
                     <FormControl 
                         fullWidth 
                         error={!!formErrors.gender}
@@ -174,7 +259,7 @@ export default function EditProfileForm({open, formData, formErrors = {}, onChan
                         <InputLabel>Gender</InputLabel>
                         <Select
                             name="gender"
-                            value={formData.gender || ''}
+                            value={formData.gender ? formData.gender.toUpperCase() : ''}
                             onChange={handleChange}
                             label="Gender"
                         >

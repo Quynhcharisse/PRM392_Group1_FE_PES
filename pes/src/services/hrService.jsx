@@ -64,8 +64,8 @@ export const hrService = {
             });
 
             // Create blob from response
-            const blob = new Blob([response.data], { 
-                type: response.headers['content-type'] || 'application/octet-stream' 
+            const blob = new Blob([response.data], {
+                type: response.headers['content-type'] || 'application/octet-stream'
             });
 
             // Get filename from Content-Disposition header or use default
@@ -83,11 +83,11 @@ export const hrService = {
             const link = document.createElement('a');
             link.href = url;
             link.download = filename;
-            
+
             // Trigger download
             document.body.appendChild(link);
             link.click();
-            
+
             // Cleanup
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
@@ -108,7 +108,7 @@ export const hrService = {
     async banAccount(accountId) {
         try {
             const response = await axiosClient.delete(`/Hr/ban/${accountId}`);
-            
+
             // Handle 204 No Content response
             if (response && response.status === 204) {
                 return {
@@ -134,7 +134,7 @@ export const hrService = {
     async unbanAccount(accountId) {
         try {
             const response = await axiosClient.delete(`/Hr/unban/${accountId}`);
-            
+
             // Handle 204 No Content response
             if (response && response.status === 204) {
                 return {
@@ -182,8 +182,8 @@ export const hrService = {
             });
 
             // Create blob from response
-            const blob = new Blob([response.data], { 
-                type: response.headers['content-type'] || 'application/octet-stream' 
+            const blob = new Blob([response.data], {
+                type: response.headers['content-type'] || 'application/octet-stream'
             });
 
             // Get filename from Content-Disposition header or use default
@@ -201,11 +201,11 @@ export const hrService = {
             const link = document.createElement('a');
             link.href = url;
             link.download = filename;
-            
+
             // Trigger download
             document.body.appendChild(link);
             link.click();
-            
+
             // Cleanup
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
