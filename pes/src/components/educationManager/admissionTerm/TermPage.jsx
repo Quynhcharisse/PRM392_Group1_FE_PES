@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import {Add, FilterList} from '@mui/icons-material';
 import {useEffect, useState} from "react";
-import {getTermYears} from "@services/educationService.jsx";
+import {getTermYears} from "@services/EducationService.jsx";
 import {enqueueSnackbar} from "notistack";
 import TermTable from "./TermTable.jsx";
 

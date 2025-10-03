@@ -27,7 +27,7 @@ import {
     AccountCircle as AccountIcon,
     Close as CloseIcon
 } from '@mui/icons-material'
-import {hrService} from '@services/hrService.jsx'
+import {HRService} from '@services/HRService.jsx'
 
 export default function TeacherDetail({open, onClose, teacherId}) {
     const [teacher, setTeacher] = useState(null)
@@ -45,7 +45,7 @@ export default function TeacherDetail({open, onClose, teacherId}) {
             setLoading(true)
             setError('')
             
-            const response = await hrService.getTeacherDetail(teacherId)
+            const response = await HRService.getTeacherDetail(teacherId)
             
             if (response.success) {
                 setTeacher(response.data)

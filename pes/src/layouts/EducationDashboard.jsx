@@ -64,13 +64,8 @@ const NAVIGATION = [
     { segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon/>, path: '/education/dashboard' },
     { segment: 'admission-term', title: 'Admission Term', icon: <AutorenewIcon/>, path: '/education/admission-term' },
     { segment: 'process-form', title: 'Process Form', icon: <AutorenewIcon/>, path: '/education/process-form' },
-    { segment: 'transaction-list', title: 'Transaction List', icon: <ListAltIcon/>, path: '/education/transactions' },
-    { segment: 'transaction-chart', title: 'Transaction Chart', icon: <ShowChartIcon/>, path: '/education/transactions/chart' },
     { segment: 'syllabus', title: 'Syllabus', icon: <SchoolIcon/>, path: '/education/syllabus' },
-    { segment: 'lessons', title: 'Lessons', icon: <MenuBookIcon/>, path: '/education/lessons' },
-    { segment: 'events', title: 'Events', icon: <EventIcon/>, path: '/education/events' },
     { segment: 'class', title: 'Class Management', icon: <ListAltIcon/>, path: '/education/classes' },
-    { segment: 'reports', title: 'Education Reports', icon: <TimelineIcon/>, path: '/education/reports' },
     { segment: 'profile', title: 'Profile', icon: <AccountCircleIcon/>, path: '/education/profile' }
 ];
 

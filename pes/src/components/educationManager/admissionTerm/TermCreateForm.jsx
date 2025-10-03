@@ -31,7 +31,7 @@ import {useEffect, useState} from "react";
 import {
     createTerm,
     getDefaultGrade
-} from "@services/educationService.jsx";
+} from "@services/EducationService.jsx";
 import {enqueueSnackbar, useSnackbar} from "notistack";
 import {formatVND} from "@/components/none-shared/formatVND.jsx";
 import {DateTimePicker} from "@mui/x-date-pickers/DateTimePicker";

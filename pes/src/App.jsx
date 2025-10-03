@@ -17,6 +17,10 @@ const MobileInfo = lazy(() => import('./components/auth/MobileInfo.jsx'))
 const UserProfile = lazy(() => import('./components/account/UserProfile.jsx'))
 const TeacherList = lazy(() => import('./components/hrManager/teacher/TeacherList.jsx'))
 const ParentList = lazy(() => import('./components/hrManager/parent/ParentList.jsx'))
+const Syllabus = lazy(() => import('./components/educationManager/syllabus/Syllabus.jsx'))
+const ClassList = lazy(() => import('./components/educationManager/class/ClassList.jsx'));
+const ClassDetail = lazy(() => import('./components/educationManager/class/ClassDetail.jsx'));
+const CreateClass = lazy(() => import('./components/educationManager/class/CreateClass.jsx'));
 
 const LoadingFallback = () => (<div style={{
     display: 'flex',
@@ -219,84 +223,116 @@ const router = createBrowserRouter([{
                 </Suspense>
             )
         }],
-    }, 
-    {
-        path: 'mobile-info',
-        element: (
-            <Suspense fallback={<LoadingFallback/>}>
-                <MobileInfo/>
-            </Suspense>
-        )
     },
-     {
-        path: 'hr',
-        element: (
-            <Suspense fallback={<LoadingFallback/>}>
-                <ProtectedRoute allowRoles={["HR"]}>
-                    <Suspense fallback={<LoadingFallback/>}>
-                        <HRDashboard/>
-                    </Suspense>
-                </ProtectedRoute>
-            </Suspense>
-        ),
-        children: [{
-            index: true,
-            element: <Navigate to={'/hr/dashboard'}/>
+        {
+            path: 'mobile-info',
+            element: (
+                <Suspense fallback={<LoadingFallback/>}>
+                    <MobileInfo/>
+                </Suspense>
+            )
         },
-            {
-                path: 'dashboard',
-                element: <h1>Dashboard Pannel</h1>
+        {
+            path: 'hr',
+            element: (
+                <Suspense fallback={<LoadingFallback/>}>
+                    <ProtectedRoute allowRoles={["HR"]}>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <HRDashboard/>
+                        </Suspense>
+                    </ProtectedRoute>
+                </Suspense>
+            ),
+            children: [{
+                index: true,
+                element: <Navigate to={'/hr/dashboard'}/>
             },
-            {
-                path: 'teachers',
-                element: (<Suspense fallback={<LoadingFallback/>}>
-                    <TeacherList/>
-                </Suspense>)
-            },
-            {
-                path: 'parents',
-                element: (<Suspense fallback={<LoadingFallback/>}>
-                    <ParentList/>
-                </Suspense>)
-            },
-            {
-                path: 'profile',
-                element: (<Suspense fallback={<LoadingFallback/>}>
-                    <UserProfile/>
-                </Suspense>)
-            }]
-    }, 
-    {
-        path: 'education',
-        element: (
-            <Suspense fallback={<LoadingFallback/>}>
-                <ProtectedRoute allowRoles={["EDUCATION"]}>
-                    <Suspense fallback={<LoadingFallback/>}>
-                        <EducationDashboard/>
-                    </Suspense>
-                </ProtectedRoute>
-            </Suspense>
-        ),
-        children: [{
-            index: true,
-            element: <Navigate to={'/education/dashboard'}/>
-        },
-            {
-                path: 'dashboard',
-                element: <h1>Dashboard Pannel</h1>
-            },
-            {
-                path: 'profile',
-                element: (
-                    <Suspense fallback={<LoadingFallback/>}>
+                {
+                    path: 'dashboard',
+                    element: <h1>Dashboard Pannel</h1>
+                },
+                {
+                    path: 'teachers',
+                    element: (<Suspense fallback={<LoadingFallback/>}>
+                        <TeacherList/>
+                    </Suspense>)
+                },
+                {
+                    path: 'parents',
+                    element: (<Suspense fallback={<LoadingFallback/>}>
+                        <ParentList/>
+                    </Suspense>)
+                },
+                {
+                    path: 'profile',
+                    element: (<Suspense fallback={<LoadingFallback/>}>
                         <UserProfile/>
-                    </Suspense>
-                )
-            }]
-    }, {
-        path: 'profile',
-        element: <Navigate to="/buyer/profile"/>
-    },
+                    </Suspense>)
+                }]
+        },
+        {
+            path: 'education',
+            element: (
+                <Suspense fallback={<LoadingFallback/>}>
+                    <ProtectedRoute allowRoles={["EDUCATION"]}>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <EducationDashboard/>
+                        </Suspense>
+                    </ProtectedRoute>
+                </Suspense>
+            ),
+            children: [{
+                index: true,
+                element: <Navigate to={'/education/dashboard'}/>
+            },
+                {
+                    path: 'dashboard',
+                    element: <h1>Dashboard Pannel</h1>
+                },
+                {
+                    path: 'syllabus',
+                    element: (
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <Syllabus/>
+                        </Suspense>
+                    )
+                },
+                {
+                    path: 'classes',
+                    element: (
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <ClassList/>
+                        </Suspense>
+                    )
+                },
+                {
+                    path: 'classes/create',
+                    element: (
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <CreateClass/>
+                        </Suspense>
+                    )
+                },
+                {
+                    path: 'classes/:id',
+                    element: (
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <ClassDetail/>
+                        </Suspense>
+                    )
+                },
+                {
+                    path: 'profile',
+                    element: (
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <UserProfile/>
+                        </Suspense>
+                    )
+                }]
+        }, {
+            path: 'profile',
+            element: <Navigate to="/buyer/profile"/>
+        },
         {
             path: '*',
             element: <Navigate to="/"/>

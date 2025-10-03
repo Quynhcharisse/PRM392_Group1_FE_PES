@@ -13,7 +13,7 @@ import {
     Typography,
     alpha
 } from '@mui/material'
-import {hrService} from '@services/hrService.jsx'
+import {HRService} from '@services/HRService.jsx'
 
 export default function CreateTeacher({open, onClose}) {
     const [form, setForm] = useState({
@@ -84,7 +84,7 @@ export default function CreateTeacher({open, onClose}) {
             setError('')
             setSuccess('')
             
-            const response = await hrService.createTeacher(form)
+            const response = await HRService.createTeacher(form)
             
             if (response.success) {
                 setSuccess(response.message || 'Teacher created successfully!')

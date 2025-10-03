@@ -71,7 +71,7 @@ export default function SignUp() {
         setIsLoading(true)
         try {
             // Import authService dynamically
-            const { authService } = await import('@services/authService.jsx');
+            const { authService } = await import('@services/AuthService.jsx');
             
             const result = await authService.register({
                 email: formData.email,

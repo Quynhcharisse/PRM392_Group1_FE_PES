@@ -12,7 +12,7 @@ import {
     alpha
 } from '@mui/material'
 import {Download as DownloadIcon} from '@mui/icons-material'
-import {hrService} from '@services/hrService.jsx'
+import {HRService} from '@services/HRService.jsx'
 
 export default function ExportTeacher({open, onClose}) {
     const [loading, setLoading] = useState(false)
@@ -25,7 +25,7 @@ export default function ExportTeacher({open, onClose}) {
             setError('')
             setSuccess('')
             
-            const response = await hrService.exportTeacher()
+            const response = await HRService.exportTeacher()
             
             if (response.success) {
                 setSuccess(`File "${response.filename}" downloaded successfully!`)

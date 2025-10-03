@@ -33,7 +33,7 @@ import {useEffect, useMemo, useState} from "react";
 import {
     createExtraTerm,
     updateTermStatus
-} from "@services/educationService.jsx";
+} from "@services/EducationService.jsx";
 import {enqueueSnackbar, useSnackbar} from "notistack";
 import {formatVND} from "@/components/none-shared/formatVND.jsx";
 import {DateTimePicker} from "@mui/x-date-pickers/DateTimePicker";
