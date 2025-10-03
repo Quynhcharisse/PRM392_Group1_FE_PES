@@ -1,94 +1,69 @@
-import {useEffect, useState} from "react";
-import {getTermList} from "@services/EducationService.jsx";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {viVN} from '@mui/x-date-pickers/locales';
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import TermPage from "./TermPage.jsx";
-import TermCreateForm from "./TermCreateForm.jsx";
-import TermFormDetail from "./TermFormDetail.jsx";
+import React, { useEffect, useState } from 'react';
+import Button from '@mui/material/Button';
+import educationService from '@services/EducationService.jsx';
+import CreateTermDialog from './CreateTermDialog.jsx';
+import TermTable from './TermTable.jsx';
+import TermDetail from './TermDetail.jsx';
 
 export default function TermAdmission() {
-    const [popUp, setPopUp] = useState({
-        isOpen: false,
-        type: '', // 'form' or 'view'
-        term: null
-    });
+    const [terms, setTerms] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+    const [selectedTerm, setSelectedTerm] = useState(null);
 
-    const handleOpenPopUp = (type) => {
-        setPopUp({...popUp, isOpen: true, type: type})
-    }
+    const loadTerms = async () => {
+        setLoading(true);
+        try {
+            const res = await educationService.getTermList();
+            if (res?.statusResponseCode?.toLowerCase?.() === 'ok') {
+                setTerms(res?.data || []);
+            } else {
+                setError(res?.message || "Failed to load terms");
+            }
+        } catch (err) {
+            setError(err?.response?.data?.message || err?.message || "Failed to load terms");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const handleClosePopUp = () => {
-        setPopUp({...popUp, isOpen: false, type: ''})
-        GetTerm(); //gọi lại api để cập nhật data
-    }
-
-    //tạo useState data của BE để sài (dành cho form)
-    const [data, setData] = useState({
-        terms: [],
-    })
-
-    const [selectedTerm, setSelectedTerm] = useState(null) // tuong trung cho 1 cai selected
-
-    function HandleSelectedTerm(term) {
-        setSelectedTerm(term)
-    }
-
-    //useEffcet sẽ chạy lần đầu tiên, or sẽ chạy khi có thay đổi
     useEffect(() => {
-        //lấy data lên và lưu data vào getForm
-        GetTerm()
+        loadTerms();
     }, []);
 
-    //gọi API form list //save trực tiếp data
-    async function GetTerm() {
-        const response = await getTermList()
-        if (response && response.success) {
-            setData({
-                ...data,
-                terms: response.data
-            })
-        }
-    }
-
-    const handleDetailClick = (term, type) => {
-        HandleSelectedTerm(term);
-        handleOpenPopUp('view');
+    const handleView = (term) => {
+        setSelectedTerm(term);
+        setDetailDialogOpen(true);
     };
 
-    const handleCreateClick = () => {
-        handleOpenPopUp('form');
-    };
-
-    const handleCreateSuccess = () => {
-        GetTerm();
-    };
+    if (loading) return <div style={{ padding: 24 }}>Loading terms...</div>;
+    if (error) return <div style={{ padding: 24, color: "#c62828" }}>{error}</div>;
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'vi-VN'}
-                              localeText={viVN.components.MuiLocalizationProvider.defaultProps.localeText}>
-            <TermPage
-                terms={data.terms}
-                onDetailClick={handleDetailClick}
-                onCreateClick={handleCreateClick}
+        <div style={{ padding: 24 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <h2 style={{ fontWeight: 700 }}>Admission Terms</h2>
+                <Button variant="contained" color="primary" onClick={() => setCreateDialogOpen(true)}>
+                    Create Term
+                </Button>
+            </div>
+            <TermTable 
+                terms={terms} 
+                onView={handleView}
             />
-
-            {popUp.isOpen && popUp.type === 'form' && (
-                <TermCreateForm
-                    isOpen={popUp.isOpen}
-                    onClose={handleClosePopUp}
-                    onSuccess={handleCreateSuccess}
-                    existingTerms={data.terms}
-                />
-            )}
-            {popUp.isOpen && popUp.type === 'view' && (
-                <TermFormDetail
-                    isOpen={popUp.isOpen}
-                    onClose={handleClosePopUp}
-                    selectedTerm={selectedTerm}
-                    onRefresh={GetTerm}
-                />
-            )}
-        </LocalizationProvider>
+            <CreateTermDialog
+                open={createDialogOpen}
+                onClose={() => setCreateDialogOpen(false)}
+                onSuccess={loadTerms}
+            />
+            <TermDetail
+                open={detailDialogOpen}
+                onClose={() => setDetailDialogOpen(false)}
+                term={selectedTerm}
+            />
+        </div>
     );
 }
+
