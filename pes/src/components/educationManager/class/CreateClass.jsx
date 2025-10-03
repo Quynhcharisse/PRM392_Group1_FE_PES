@@ -10,6 +10,8 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import TeacherSelectorDialog from './TeacherSelectorDialog.jsx';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const SLOTS = [
@@ -36,6 +38,10 @@ export default function CreateClass() {
     const [syllabusError, setSyllabusError] = useState("");
     const [teacherDialogOpen, setTeacherDialogOpen] = useState(false);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
+    const [selectedSyllabus, setSelectedSyllabus] = useState(null);
+    const [selectedSyllabusName, setSelectedSyllabusName] = useState("");
+    const navigate = useNavigate();
+    const [ruleMessage, setRuleMessage] = useState("");
 
     useEffect(() => {
         const load = async () => {
@@ -70,14 +76,30 @@ export default function CreateClass() {
 
     const totalActivities = activities.length;
 
+    // Helper: get weekday index (0=Sunday, 1=Monday, ...)
+    const getStartDayIndex = () => {
+        if (!startDate) return 0;
+        const d = dayjs(startDate);
+        // MUI DatePicker/JS: 0=Sunday, 1=Monday, ...
+        return d.day();
+    };
+    const startDayIndex = getStartDayIndex();
+
     const canAddToDay = (day) => {
-        // rules: <=4 per week, <=2 per day
+        // rules: <=4 per week, <=2 per day, and not before start day in first week
         if (totalActivities >= 4) return false;
         if ((activitiesByDay[day] || []).length >= 2) return false;
+        // Only allow add from start day in first week
+        const dayIndex = DAYS.indexOf(day);
+        if (startDateObj && dayIndex < ((startDayIndex === 0 ? 6 : startDayIndex - 1))) return false;
         return true;
     };
 
     const toggleActivity = (day, slot) => {
+        if (!selectedSyllabusName) {
+            setMessage('Please choose a syllabus before adding activities.');
+            return;
+        }
         const exists = activities.some(
             (a) => a.dayOfWeek === day && a.startTime === slot.startTime && a.endTime === slot.endTime
         );
@@ -85,10 +107,22 @@ export default function CreateClass() {
             setActivities((prev) => prev.filter(
                 (a) => !(a.dayOfWeek === day && a.startTime === slot.startTime && a.endTime === slot.endTime)
             ));
+            setRuleMessage("");
             return;
         }
-        if (!canAddToDay(day)) return;
-        setActivities((prev) => prev.concat([{dayOfWeek: day, startTime: slot.startTime, endTime: slot.endTime}]));
+        if (!canAddToDay(day)) {
+            // Hiển thị rule message khi vi phạm
+            if (totalActivities >= 4) setRuleMessage('Each week, students may participate in a maximum of 4 activities.');
+            else if ((activitiesByDay[day] || []).length >= 2) setRuleMessage('No more than 2 activities are allowed per day.');
+            else setRuleMessage('You cannot add activity for this day.');
+            return;
+        }
+        setRuleMessage("");
+        if (activities.length >= 4) {
+            setRuleMessage('Each week, students may participate in a maximum of 4 activities.');
+            return;
+        }
+        setActivities((prev) => prev.concat([{dayOfWeek: day, startTime: slot.startTime, endTime: slot.endTime, syllabusName: selectedSyllabusName}]));
     };
 
     const handleSubmit = async (e) => {
@@ -139,6 +173,7 @@ export default function CreateClass() {
     };
     const handleChooseSyllabus = (syllabus) => {
         setSyllabusId(syllabus.id);
+        setSelectedSyllabusName(syllabus.name);
         setSyllabusDialogOpen(false);
     };
 
@@ -155,6 +190,9 @@ export default function CreateClass() {
 
     return (
         <div style={{padding: 24}}>
+            <Button onClick={() => navigate('/education/classes')} startIcon={<ArrowBackIcon />} variant="contained" sx={{ mb: 2 }}>
+                Back
+            </Button>
             <h2 style={{fontWeight: 700, textAlign: "center", marginBottom: 16}}>CREATE CLASS</h2>
             <form onSubmit={handleSubmit} style={{maxWidth: 1000, margin: "0 auto"}}>
                 <div style={{display: "flex", gap: 24, justifyContent: "space-between", marginBottom: 16}}>
@@ -173,8 +211,8 @@ export default function CreateClass() {
                     <div style={{display: "flex", flexDirection: "column", gap: 6}}>
                         <label>Syllabus</label>
                         <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
-                            <Button variant="outlined" size="small" onClick={() => setSyllabusDialogOpen(true)}>Choose
-                                Syllabus</Button>
+                            <Button variant="outlined" size="small" onClick={() => setSyllabusDialogOpen(true)}>Choose Syllabus</Button>
+                            {selectedSyllabusName && <span style={{marginLeft: 8, color: '#1976d2', fontWeight: 600}}>{selectedSyllabusName}</span>}
                         </div>
                     </div>
                     <div style={{display: "flex", flexDirection: "column", gap: 6}}>
@@ -186,11 +224,9 @@ export default function CreateClass() {
                     </div>
                 </div>
 
-                <p style={{marginBottom: 12}}>
-                    <strong>Note:</strong> Each week, students may participate in a maximum of 4 activities. To ensure
-                    balanced learning
-                    and avoid overload, no more than 2 activities are allowed per day.
-                </p>
+                {ruleMessage && (
+                    <div style={{ color: '#c62828', marginBottom: 12, fontWeight: 500 }}>{ruleMessage}</div>
+                )}
 
                 <div style={{overflowX: "auto", background: "#e7f5b0", padding: 12, borderRadius: 8}}>
                     <table style={{width: "100%", borderCollapse: "collapse"}}>
@@ -224,13 +260,13 @@ export default function CreateClass() {
                                                     borderRadius: 8,
                                                     border: "1px solid #555",
                                                     cursor: disabled ? "not-allowed" : "pointer",
-                                                    background: selected ? "#8bd17c" : "#fff",
+                                                    background: isSelected(day, slot) ? "#8bd17c" : "#fff",
                                                     fontSize: 20,
                                                     lineHeight: "20px",
                                                 }}
-                                                aria-label={selected ? "Remove activity" : "Add activity"}
+                                                aria-label={isSelected(day, slot) ? "Remove activity" : `Add activity for ${selectedSyllabusName}`}
                                             >
-                                                {selected ? "−" : "+"}
+                                                {isSelected(day, slot) ? "−" : "+"}
                                             </button>
                                         </td>
                                     );
@@ -259,7 +295,7 @@ export default function CreateClass() {
             <SyllabusSelectorDialog
                 open={syllabusDialogOpen}
                 onClose={() => setSyllabusDialogOpen(false)}
-                onSelect={(syllabus) => setSyllabusId(syllabus.id)}
+                onSelect={handleChooseSyllabus}
             />
             <TeacherSelectorDialog
                 open={teacherDialogOpen}

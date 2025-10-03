@@ -47,7 +47,7 @@ export default function ClassList() {
                     Create Class
                 </Button>
             </div>
-            <ClassTable classes={classes} onView={(c) => navigate(`/education/classes/${c.id}`)} />
+            <ClassTable classes={classes} onView={(c) => navigate(`/education/classes/${c.id}`, { state: { classData: c } })} />
         </div>
     );
 }

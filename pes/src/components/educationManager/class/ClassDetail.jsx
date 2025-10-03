@@ -1,31 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Chip, CircularProgress, Card, CardContent, Avatar, Stack, Button } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import SchoolIcon from '@mui/icons-material/School';
 import educationService from '@services/EducationService.jsx';
 
 export default function ClassDetail({ classData: propClassData }) {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [classData, setClassData] = useState(propClassData || null);
-    const [loading, setLoading] = useState(!propClassData);
+    const location = useLocation();
+    let initialClassData = propClassData;
+    if (!initialClassData && location.state && location.state.classData) {
+        initialClassData = location.state.classData;
+    }
+    const [classData, setClassData] = useState(initialClassData || null);
+    const [loading, setLoading] = useState(!initialClassData);
     const [error, setError] = useState("");
 
     useEffect(() => {
-        if (propClassData) return;
+        if (classData) return;
         if (!id) return;
         setLoading(true);
-        educationService.getClassDetail?.(id)
+        educationService.getClassDetail(id)
             .then(res => {
-                if (res?.statusResponseCode?.toLowerCase?.() === 'ok') {
-                    setClassData(res.data);
+                if (res?.statusResponseCode?.toLowerCase?.() === 'ok' || res?.status === 'ok') {
+                    setClassData(res.data || res);
                 } else {
                     setError(res?.message || 'Failed to load class detail');
                 }
             })
             .catch(err => setError(err?.response?.data?.message || err?.message || 'Failed to load class detail'))
             .finally(() => setLoading(false));
-    }, [id, propClassData]);
+    }, [id, classData]);
 
     if (loading) return <Box p={4} textAlign="center"><CircularProgress /></Box>;
     if (error) return <Box p={4} color="#c62828">{error}</Box>;

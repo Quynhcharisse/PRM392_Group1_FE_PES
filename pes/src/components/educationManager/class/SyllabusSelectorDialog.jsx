@@ -50,6 +50,9 @@ export default function SyllabusSelectorDialog({ open, onClose, onSelect }) {
                                         <Typography variant="caption" color="#f57c00">Hours: <b>{s.hoursOfSyllabus}</b></Typography>
                                     </Stack>
                                 </CardContent>
+                                <CardActions>
+                                    <Button variant="contained" color="primary" sx={{ borderRadius: 2, minWidth: 90, fontWeight: 600 }} onClick={() => { onSelect(s); onClose(); }}>Choose</Button>
+                                </CardActions>
                             </Card>
                         ))}
                     </Stack>
