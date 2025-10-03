@@ -22,7 +22,7 @@ import {Add, Search, Upload, Visibility, Block, RemoveCircle} from '@mui/icons-m
 
 import ExportParent from './ExportParent.jsx'
 import ParentDetail from './ParentDetail.jsx'
-import {hrService} from '@services/hrService.jsx'
+import {HRService} from '@services/HRService.jsx'
 
 const colors = {
   primary: '#0b3f31',
@@ -185,7 +185,7 @@ export default function ParentList() {
     try {
       setLoading(true)
       setError('')
-      const response = await hrService.getParentList()
+      const response = await HRService.getParentList()
       
       if (response.success) {
         setParents(response.data || [])
@@ -204,7 +204,7 @@ export default function ParentList() {
     
     try {
       setActionLoading(true)
-      const response = await hrService.banAccount(parent.id)
+      const response = await HRService.banAccount(parent.id)
       
       if (response.success) {
         setSnackbar({
@@ -242,7 +242,7 @@ export default function ParentList() {
     
     try {
       setActionLoading(true)
-      const response = await hrService.unbanAccount(parent.id)
+      const response = await HRService.unbanAccount(parent.id)
       
       if (response.success) {
         setSnackbar({

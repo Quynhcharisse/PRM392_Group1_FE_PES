@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {getTermList} from "@services/educationService.jsx";
+import {getTermList} from "@services/EducationService.jsx";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {viVN} from '@mui/x-date-pickers/locales';
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";

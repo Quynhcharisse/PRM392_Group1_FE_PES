@@ -23,7 +23,7 @@ import {Add, Search, Upload, Visibility, Block, RemoveCircle} from '@mui/icons-m
 import CreateTeacher from './CreateTeacher.jsx'
 import ExportTeacher from './ExportTeacher.jsx'
 import TeacherDetail from './TeacherDetail.jsx'
-import {hrService} from '@services/hrService.jsx'
+import {HRService} from '@services/HRService.jsx'
 
 const colors = {
   primary: '#0b3f31',
@@ -191,7 +191,7 @@ export default function TeacherList() {
     try {
       setLoading(true)
       setError('')
-      const response = await hrService.getTeacherList()
+      const response = await HRService.getTeacherList()
       
       if (response.success) {
         setTeachers(response.data || [])
@@ -210,7 +210,7 @@ export default function TeacherList() {
     
     try {
       setActionLoading(true)
-      const response = await hrService.banAccount(teacher.id)
+      const response = await HRService.banAccount(teacher.id)
       
       if (response.success) {
         setSnackbar({
@@ -248,7 +248,7 @@ export default function TeacherList() {
     
     try {
       setActionLoading(true)
-      const response = await hrService.unbanAccount(teacher.id)
+      const response = await HRService.unbanAccount(teacher.id)
       
       if (response.success) {
         setSnackbar({

@@ -1,7 +1,7 @@
 import {getDashboardRoute} from "@/constants/routes";
 import {Button, Spinner} from "@atoms";
-import {authService} from "@services/authService";
-import {accountService} from "@services/accountService.jsx";
+import {authService} from "@services/AuthService.jsx";
+import {accountService} from "@services/AccountService.jsx";
 import {getCurrentTokenData} from "@services/JWTService";
 import {PageTemplate} from "@templates";
 import {

@@ -1,9 +1,9 @@
 import axiosClient from "@config/APIConfig.jsx";
 
-export const hrService = {
+export const HRService = {
     async getTeacherList() {
         try {
-            const response = await axiosClient.get('/Hr/teacher');
+            const response = await axiosClient.get('/auth-api/api/Hr/teacher');
             return {
                 success: true,
                 data: response.data
@@ -24,7 +24,7 @@ export const hrService = {
                 password: teacherData.password
             };
 
-            const response = await axiosClient.post('/Hr/teacher', payload);
+            const response = await axiosClient.post('/auth-api/api/Hr/teacher', payload);
             return {
                 success: true,
                 data: response.data,
@@ -41,7 +41,7 @@ export const hrService = {
 
     async getTeacherDetail(teacherId) {
         try {
-            const response = await axiosClient.get(`/Hr/teacher/${teacherId}`);
+            const response = await axiosClient.get(`/auth-api/api/Hr/teacher/${teacherId}`);
             return {
                 success: true,
                 data: response.data
@@ -56,7 +56,7 @@ export const hrService = {
 
     async exportTeacher() {
         try {
-            const response = await axiosClient.get('/Hr/teacher/export', {
+            const response = await axiosClient.get('/auth-api/api/Hr/teacher/export', {
                 responseType: 'blob', // Important for file downloads
                 headers: {
                     'Accept': 'application/octet-stream'
@@ -107,7 +107,7 @@ export const hrService = {
 
     async banAccount(accountId) {
         try {
-            const response = await axiosClient.delete(`/Hr/ban/${accountId}`);
+            const response = await axiosClient.delete(`/auth-api/api/Hr/ban/${accountId}`);
 
             // Handle 204 No Content response
             if (response && response.status === 204) {
@@ -133,7 +133,7 @@ export const hrService = {
 
     async unbanAccount(accountId) {
         try {
-            const response = await axiosClient.delete(`/Hr/unban/${accountId}`);
+            const response = await axiosClient.delete(`/auth-api/api/Hr/unban/${accountId}`);
 
             // Handle 204 No Content response
             if (response && response.status === 204) {
@@ -159,7 +159,7 @@ export const hrService = {
 
     async getParentList() {
         try {
-            const response = await axiosClient.get('/Hr/parent');
+            const response = await axiosClient.get('/auth-api/api/Hr/parent');
             return {
                 success: true,
                 data: response.data
@@ -174,7 +174,7 @@ export const hrService = {
 
     async exportParent() {
         try {
-            const response = await axiosClient.get('/Hr/parent/export', {
+            const response = await axiosClient.get('/auth-api/api/Hr/parent/export', {
                 responseType: 'blob', // Important for file downloads
                 headers: {
                     'Accept': 'application/octet-stream'

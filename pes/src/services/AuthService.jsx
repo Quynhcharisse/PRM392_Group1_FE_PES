@@ -5,7 +5,7 @@ export const authService = {
   // Login with email and password
   async login(email, password) {
     try {
-      const response = await axiosClient.post('/auth/login', {
+      const response = await axiosClient.post('/auth-api/api/auth/login', {
         email,
         password
       });
@@ -56,7 +56,7 @@ export const authService = {
         role: 'PARENT'
       };
 
-      const response = await axiosClient.post('/auth/register', payload);
+      const response = await axiosClient.post('/auth-api/api/auth/register', payload);
       const result = response?.data ?? {};
 
       return {

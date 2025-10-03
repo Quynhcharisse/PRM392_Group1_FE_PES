@@ -42,7 +42,7 @@ export default function SignIn() {
         
         try {
             // Import authService dynamically to avoid circular dependency
-            const { authService } = await import('@services/authService.jsx');
+            const { authService } = await import('@services/AuthService.jsx');
             
             const result = await authService.login(email, password);
             
