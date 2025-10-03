@@ -58,6 +58,19 @@ const syllabusService = {
     async getTeacherList() {
         const res = await axiosClient.get('/auth-api/api/Hr/teacher');
         return res?.data ?? [];
+    },
+    async createTerm(payload) {
+        const body = {
+            startDate: payload.startDate,
+            endDate: payload.endDate,
+            classIds: payload.classIds || []
+        };
+        const res = await axiosClient.post('/class-api/api/term', body);
+        return res?.data ?? null;
+    },
+    async getTermList() {
+        const res = await axiosClient.get('/class-api/api/term/list');
+        return res?.data ?? null;
     }
 };
 

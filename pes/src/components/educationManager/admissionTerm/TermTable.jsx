@@ -1,188 +1,76 @@
-import {
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TablePagination,
-    TableRow,
-    Tooltip,
-    Typography,
-    IconButton
-} from "@mui/material";
-import {Visibility} from '@mui/icons-material';
-import {useState} from "react";
-import dayjs from "dayjs";
+import React from 'react';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import dayjs from 'dayjs';
 
-export default function TermTable({terms, onDetailClick}) {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    }
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(event.target.value)
-        setPage(0)
-    }
-
-    const handleDetailClick = (term, type) => {
-        onDetailClick(term, type);
-    }
-
-    const columns = [
-        {label: 'No', minWidth: 80, align: 'center', key: 'no'},
-        {label: 'Academic Year', minWidth: 120, align: 'center', key: 'year'},
-        {label: 'Start Date', minWidth: 200, align: 'center', key: 'startDate'},
-        {label: 'End Date', minWidth: 200, align: 'center', key: 'endDate'},
-        {label: 'Status', minWidth: 200, align: 'center', key: 'status'},
-        {label: 'Action', minWidth: 80, align: 'center', key: 'action'},
-    ];
+export default function TermTable({ terms, onView }) {
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        return dayjs(dateString).format('DD/MM/YYYY');
+    };
 
     return (
-        <Paper sx={{
-            width: '100%',
-            minHeight: 400,
-            maxHeight: 'calc(100vh - 200px)',
-            borderRadius: 3,
-            overflow: 'visible',
-            backgroundColor: '#fff',
-            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-            border: '2px solid rgb(254, 254, 253)',
-            display: 'flex',
-            flexDirection: 'column'
-        }}>
-            <TableContainer sx={{
-                flex: 1,
-                maxHeight: 'calc(100vh - 300px)',
-                overflow: 'auto',
-                '&::-webkit-scrollbar': {
-                    width: '8px',
-                    height: '8px',
-                },
-                '&::-webkit-scrollbar-track': {
-                    background: '#f1f1f1',
-                    borderRadius: '4px',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                    background: '#888',
-                    borderRadius: '4px',
-                    '&:hover': {
-                        background: '#555',
-                    },
-                },
-            }}>
-                <Table stickyHeader>
-                    <TableHead>
+        <TableContainer component={Paper} sx={{ boxShadow: 2, borderRadius: 2 }}>
+            <Table>
+                <TableHead sx={{ bgcolor: '#f5f5f5' }}>
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 700 }}>ID</TableCell>
+                        <TableCell sx={{ fontWeight: 700 }}>Academic Year</TableCell>
+                        <TableCell sx={{ fontWeight: 700 }}>Start Date</TableCell>
+                        <TableCell sx={{ fontWeight: 700 }}>End Date</TableCell>
+                        <TableCell sx={{ fontWeight: 700 }}>Registered</TableCell>
+                        <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+                        <TableCell sx={{ fontWeight: 700 }} align="center">Actions</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {terms.length === 0 ? (
                         <TableRow>
-                            {columns.map(col => (
-                                <TableCell
-                                    key={col.key}
-                                    align={col.align}
-                                    sx={{
-                                        minWidth: col.minWidth,
-                                        fontWeight: 'bold',
-                                        backgroundColor: '#f8faf8',
-                                        color: '#07663a',
-                                        borderBottom: '2px solid #e0e0e0',
-                                        fontSize: '0.95rem',
-                                        padding: '16px',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.5px'
-                                    }}
-                                >
-                                    {col.label}
-                                </TableCell>
-                            ))}
+                            <TableCell colSpan={7} align="center" sx={{ color: '#666', py: 4 }}>
+                                No admission terms found
+                            </TableCell>
                         </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {terms.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((term, idx) => (
-                                <TableRow
-                                    key={term.id}
-                                    sx={{
-                                        '&:nth-of-type(odd)': {
-                                            backgroundColor: '#fafafa',
-                                        },
-                                        '&:hover': {
-                                            backgroundColor: '#f5f5f5',
-                                            transition: 'background-color 0.2s ease',
-                                        },
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    <TableCell align="center">{idx + 1}</TableCell>
-                                    <TableCell align="center">{term.year}</TableCell>
-                                    <TableCell align="center">{dayjs(term.startDate).format('HH:mm DD/MM/YYYY')}</TableCell>
-                                    <TableCell align="center">{dayjs(term.endDate).format('HH:mm DD/MM/YYYY')}</TableCell>
-                                    <TableCell align="center">
-                                        <Typography
-                                            component="span"
-                                            sx={{
-                                                color:
-                                                    term.status === "active" ? "#07663a"
-                                                        : term.status === "inactive" ? "#b27a00"
-                                                            : term.status === "locked" ? "#d32f2f"
-                                                                : "#333",
-                                                fontWeight: 600,
-                                                padding: '6px 16px',
-                                                backgroundColor:
-                                                    term.status === "active" ? "rgba(7, 102, 58, 0.08)"
-                                                        : term.status === "inactive" ? "rgba(255, 193, 7, 0.12)"
-                                                            : term.status === "locked" ? "rgba(211, 47, 47, 0.10)"
-                                                                : "transparent",
-                                                borderRadius: '20px',
-                                                fontSize: '0.89rem',
-                                                letterSpacing: 1,
-                                                textTransform: "capitalize",
-                                                minWidth: 90,
-                                                display: "inline-block",
-                                                textAlign: "center"
-                                            }}
-                                        >
-                                            {term.status}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        <Tooltip title="View">
-                                            <IconButton
-                                                color="primary"
-                                                onClick={() => handleDetailClick(term, 'view')}
-                                                sx={{mr: 1}}
-                                            >
-                                                <Visibility/>
-                                            </IconButton>
-                                        </Tooltip>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                component="div"
-                rowsPerPageOptions={[5, 10, 15]}
-                count={terms?.length}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                sx={{
-                    borderTop: '1px solid #e0e0e0',
-                    '.MuiTablePagination-select': {
-                        borderRadius: '8px',
-                        padding: '4px 8px',
-                        marginRight: '8px'
-                    },
-                    backgroundColor: '#fff',
-                    position: 'sticky',
-                    bottom: 0,
-                    zIndex: 2
-                }}
-            />
-        </Paper>
-    )
+                    ) : (
+                        terms.map((term) => (
+                            <TableRow key={term.id} hover>
+                                <TableCell>{term.id}</TableCell>
+                                <TableCell>{term.academicYear}</TableCell>
+                                <TableCell>{formatDate(term.startDate)}</TableCell>
+                                <TableCell>{formatDate(term.endDate)}</TableCell>
+                                <TableCell>
+                                    {term.currentRegisteredStudents || 0} / {term.maxNumberRegistration || 0}
+                                </TableCell>
+                                <TableCell>
+                                    <Chip 
+                                        label={String(term.status || 'active').charAt(0).toUpperCase() + String(term.status || 'active').slice(1)} 
+                                        color={term.status === 'active' ? 'success' : 'default'} 
+                                        size="small"
+                                    />
+                                </TableCell>
+                                <TableCell align="center">
+                                    <IconButton 
+                                        aria-label="View" 
+                                        size="small" 
+                                        color="primary"
+                                        onClick={() => onView && onView(term)}
+                                    >
+                                        <VisibilityIcon fontSize="small" />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
 }
+
