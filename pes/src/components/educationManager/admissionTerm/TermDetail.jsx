@@ -3,7 +3,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
@@ -17,8 +16,9 @@ import SchoolIcon from '@mui/icons-material/School';
 import PeopleIcon from '@mui/icons-material/People';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import dayjs from 'dayjs';
+import ButtonClose from "@components/customButton/ButtonClose.jsx";
 
-export default function TermDetail({ open, onClose, term }) {
+export default function TermDetail({open, onClose, term}) {
     if (!term) return null;
 
     const formatDate = (dateString) => {
@@ -27,22 +27,22 @@ export default function TermDetail({ open, onClose, term }) {
     };
 
     return (
-        <Dialog 
-            open={open} 
-            onClose={onClose} 
-            maxWidth="md" 
+        <Dialog
+            open={open}
+            onClose={onClose}
+            maxWidth="md"
             fullWidth
-            PaperProps={{
-                sx: {
+            slotProps={{
+                paper: {
                     borderRadius: 4,
                     boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
                 }
             }}
         >
-            <DialogTitle 
-                sx={{ 
-                    fontWeight: 700, 
-                    color: '#1976d2', 
+            <DialogTitle
+                sx={{
+                    fontWeight: 700,
+                    color: '#1976d2',
                     textAlign: 'center',
                     fontSize: '1.5rem',
                     pt: 3,
@@ -51,69 +51,67 @@ export default function TermDetail({ open, onClose, term }) {
                 }}
             >
                 <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
-                    <EventIcon sx={{ fontSize: 32, color: '#1976d2' }} />
+                    <EventIcon sx={{fontSize: 32, color: '#1976d2'}}/>
                     <Typography variant="h5" fontWeight={700}>Admission Term Details</Typography>
                 </Stack>
             </DialogTitle>
-            <Divider />
-            <DialogContent sx={{ pt: 3, pb: 2 }}>
+            <Divider/>
+            <DialogContent sx={{pt: 3, pb: 2}}>
                 <Stack spacing={3}>
                     {/* Basic Information */}
                     <Box>
-                        <Typography variant="h6" color="primary" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <CalendarTodayIcon fontSize="small" />
+                        <Typography variant="h6"
+                                    color="primary"
+                                    sx={{mb: 2, display: 'flex', alignItems: 'center', gap: 1}}
+                        >
+                            <CalendarTodayIcon fontSize="small"/>
                             Basic Information
                         </Typography>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <Stack spacing={1}>
-                                    <Typography variant="body2" color="text.secondary">Term ID</Typography>
-                                    <Typography variant="body1" fontWeight={600}>#{term.id}</Typography>
-                                </Stack>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Stack spacing={1}>
-                                    <Typography variant="body2" color="text.secondary">Academic Year</Typography>
-                                    <Typography variant="body1" fontWeight={600}>{term.academicYear}</Typography>
-                                </Stack>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Stack spacing={1}>
-                                    <Typography variant="body2" color="text.secondary">Start Date</Typography>
-                                    <Typography variant="body1" fontWeight={600}>{formatDate(term.startDate)}</Typography>
-                                </Stack>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Stack spacing={1}>
-                                    <Typography variant="body2" color="text.secondary">End Date</Typography>
-                                    <Typography variant="body1" fontWeight={600}>{formatDate(term.endDate)}</Typography>
-                                </Stack>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Stack spacing={1}>
-                                    <Typography variant="body2" color="text.secondary">Status</Typography>
-                                    <Chip 
-                                        label={String(term.status || 'active').charAt(0).toUpperCase() + String(term.status || 'active').slice(1)}
-                                        color={term.status === 'active' ? 'success' : 'default'}
-                                        size="small"
-                                        sx={{ width: 'fit-content' }}
-                                    />
-                                </Stack>
-                            </Grid>
-                        </Grid>
+                        <Box container spacing={2}>
+                            <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1}}>
+                                <Typography variant="body2" color="text.secondary">Term ID:</Typography>
+                                <Typography variant="body1" fontWeight={600}>#{term.id}</Typography>
+                            </Box>
+
+                            <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1}}>
+                                <Typography variant="body2" color="text.secondary">Academic Year</Typography>
+                                <Typography variant="body1" fontWeight={600}>{term.academicYear}</Typography>
+                            </Box>
+
+                            <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1}}>
+                                <Typography variant="body2" color="text.secondary">Start Date</Typography>
+                                <Typography variant="body1" fontWeight={600}>{formatDate(term.startDate)}</Typography>
+                            </Box>
+
+                            <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1}}>
+                                <Typography variant="body2" color="text.secondary">End Date</Typography>
+                                <Typography variant="body1" fontWeight={600}>{formatDate(term.endDate)}</Typography>
+                            </Box>
+
+                            <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1}}>
+                                <Typography variant="body2" color="text.secondary">Status</Typography>
+                                <Chip
+                                    label={String(term.status || 'active').charAt(0).toUpperCase() + String(term.status || 'active').slice(1)}
+                                    color={term.status === 'active' ? 'success' : 'default'}
+                                    size="small"
+                                    sx={{width: 'fit-content'}}
+                                />
+                            </Box>
+                        </Box>
                     </Box>
 
-                    <Divider />
+                    <Divider/>
 
                     {/* Registration Information */}
                     <Box>
-                        <Typography variant="h6" color="primary" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <PeopleIcon fontSize="small" />
+                        <Typography variant="h6" color="primary"
+                                    sx={{mb: 2, display: 'flex', alignItems: 'center', gap: 1}}>
+                            <PeopleIcon fontSize="small"/>
                             Registration Information
                         </Typography>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
-                                <Card sx={{ bgcolor: '#e3f2fd', borderRadius: 2, boxShadow: 1 }}>
+                                <Card sx={{bgcolor: '#e3f2fd', borderRadius: 2, boxShadow: 1}}>
                                     <CardContent>
                                         <Typography variant="body2" color="text.secondary" gutterBottom>
                                             Current Registered
@@ -125,7 +123,7 @@ export default function TermDetail({ open, onClose, term }) {
                                 </Card>
                             </Grid>
                             <Grid item xs={4}>
-                                <Card sx={{ bgcolor: '#f3e5f5', borderRadius: 2, boxShadow: 1 }}>
+                                <Card sx={{bgcolor: '#f3e5f5', borderRadius: 2, boxShadow: 1}}>
                                     <CardContent>
                                         <Typography variant="body2" color="text.secondary" gutterBottom>
                                             Maximum Capacity
@@ -137,7 +135,7 @@ export default function TermDetail({ open, onClose, term }) {
                                 </Card>
                             </Grid>
                             <Grid item xs={4}>
-                                <Card sx={{ bgcolor: '#e8f5e9', borderRadius: 2, boxShadow: 1 }}>
+                                <Card sx={{bgcolor: '#e8f5e9', borderRadius: 2, boxShadow: 1}}>
                                     <CardContent>
                                         <Typography variant="body2" color="text.secondary" gutterBottom>
                                             Available Slots
@@ -151,21 +149,22 @@ export default function TermDetail({ open, onClose, term }) {
                         </Grid>
                     </Box>
 
-                    <Divider />
+                    <Divider/>
 
                     {/* Classes Information */}
                     <Box>
-                        <Typography variant="h6" color="primary" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <SchoolIcon fontSize="small" />
+                        <Typography variant="h6" color="primary"
+                                    sx={{mb: 2, display: 'flex', alignItems: 'center', gap: 1}}>
+                            <SchoolIcon fontSize="small"/>
                             Classes ({term.numberOfClasses || 0})
                         </Typography>
                         {term.classDtos && term.classDtos.length > 0 ? (
                             <Stack spacing={2}>
                                 {term.classDtos.map((cls) => (
-                                    <Card 
-                                        key={cls.id} 
-                                        sx={{ 
-                                            borderRadius: 2, 
+                                    <Card
+                                        key={cls.id}
+                                        sx={{
+                                            borderRadius: 2,
                                             boxShadow: 1,
                                             border: '1px solid #e0e0e0',
                                             '&:hover': {
@@ -175,12 +174,13 @@ export default function TermDetail({ open, onClose, term }) {
                                         }}
                                     >
                                         <CardContent>
-                                            <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                            <Box direction="row" justifyContent="space-between" alignItems="center">
                                                 <Box flex={1}>
-                                                    <Typography variant="subtitle1" fontWeight={600} color="primary" gutterBottom>
+                                                    <Typography variant="subtitle1" fontWeight={600} color="primary"
+                                                                gutterBottom>
                                                         {cls.name}
                                                     </Typography>
-                                                    <Stack direction="row" spacing={2} flexWrap="wrap">
+                                                    <Box direction="row" spacing={2} flexWrap="wrap">
                                                         <Typography variant="body2" color="text.secondary">
                                                             <strong>ID:</strong> {cls.id}
                                                         </Typography>
@@ -193,36 +193,34 @@ export default function TermDetail({ open, onClose, term }) {
                                                         <Typography variant="body2" color="text.secondary">
                                                             <strong>Weeks:</strong> {cls.numberOfWeeks}
                                                         </Typography>
-                                                    </Stack>
+                                                    </Box>
                                                 </Box>
-                                                <Chip 
+                                                <Chip
                                                     label={String(cls.status).charAt(0).toUpperCase() + String(cls.status).slice(1)}
                                                     color={cls.status === 'enrolling' ? 'success' : 'default'}
                                                     size="small"
                                                 />
-                                            </Stack>
+                                            </Box>
                                         </CardContent>
                                     </Card>
                                 ))}
                             </Stack>
                         ) : (
-                            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                            <Typography variant="body2" color="text.secondary" sx={{textAlign: 'center', py: 2}}>
                                 No classes assigned to this term
                             </Typography>
                         )}
                     </Box>
                 </Stack>
             </DialogContent>
-            <Divider />
-            <DialogActions sx={{ p: 3, justifyContent: 'center', background: '#fafafa' }}>
-                <Button 
-                    variant="contained" 
-                    color="primary" 
+            <Divider/>
+            <DialogActions sx={{p: 3, justifyContent: 'center', background: '#fafafa'}}>
+                <ButtonClose
                     onClick={onClose}
-                    sx={{ borderRadius: 2, px: 4, fontWeight: 600 }}
+                    sx={{borderRadius: 2, px: 4, fontWeight: 600}}
                 >
                     Close
-                </Button>
+                </ButtonClose>
             </DialogActions>
         </Dialog>
     );

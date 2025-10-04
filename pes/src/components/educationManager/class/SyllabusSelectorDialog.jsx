@@ -14,7 +14,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 
-export default function SyllabusSelectorDialog({ open, onClose, onSelect }) {
+export default function SyllabusSelectorDialog({ open, onClose}) {
     const [syllabuses, setSyllabuses] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
