@@ -4,11 +4,10 @@ import {
     AppBar,
     Avatar,
     Box,
+    Button,
     Card,
     CardContent,
-    Button,
     Chip,
-    Divider,
     Drawer,
     Grid,
     IconButton,
@@ -22,24 +21,21 @@ import {
     Stack,
     Toolbar,
     Typography,
-    useTheme
 } from '@mui/material';
 import {
+    AccessTimeFilled,
     AccountCircle as AccountCircleIcon,
+    Assessment as AssessmentIcon,
+    Autorenew as AutorenewIcon,
     Dashboard as DashboardIcon,
-    Event as EventIcon,
     ListAlt as ListAltIcon,
     Logout as LogoutIcon,
     Menu as MenuIcon,
-    MenuBook as MenuBookIcon,
+    Notifications as NotificationsIcon,
     People as PeopleIcon,
     School as SchoolIcon,
     Timeline as TimelineIcon,
-    Visibility as VisibilityIcon,
-    Assessment as AssessmentIcon,
-    Notifications as NotificationsIcon,
-    Autorenew as AutorenewIcon,
-    ShowChart as ShowChartIcon
+    Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 
@@ -61,12 +57,12 @@ const colors = {
 
 // Navigation configuration (EDUCATION)
 const NAVIGATION = [
-    { segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon/>, path: '/education/dashboard' },
-    { segment: 'admission-term', title: 'Admission Term', icon: <AutorenewIcon/>, path: '/education/admission-term' },
-    { segment: 'process-form', title: 'Process Form', icon: <AutorenewIcon/>, path: '/education/process-form' },
-    { segment: 'syllabus', title: 'Syllabus', icon: <SchoolIcon/>, path: '/education/syllabus' },
-    { segment: 'class', title: 'Class Management', icon: <ListAltIcon/>, path: '/education/classes' },
-    { segment: 'profile', title: 'Profile', icon: <AccountCircleIcon/>, path: '/education/profile' }
+    {segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon/>, path: '/education/dashboard'},
+    {segment: 'admission-term', title: 'Admission Term', icon: <AccessTimeFilled/>, path: '/education/admission-term'},
+    {segment: 'process-form', title: 'Process Form', icon: <AutorenewIcon/>, path: '/education/process-form'},
+    {segment: 'syllabus', title: 'Syllabus', icon: <SchoolIcon/>, path: '/education/syllabus'},
+    {segment: 'class', title: 'Class Management', icon: <ListAltIcon/>, path: '/education/classes'},
+    {segment: 'profile', title: 'Profile', icon: <AccountCircleIcon/>, path: '/education/profile'}
 ];
 
 function MetricCard({title, value, subtitle, icon}) {
@@ -126,7 +122,8 @@ function ApplicationItem({name, statusLabel, statusColor, program, parent, date}
                 <Box>
                     <Typography variant="subtitle1" sx={{fontWeight: 700, color: colors.primary}}>
                         {name}
-                        <Chip size="small" label={statusLabel} sx={{ml: 1, backgroundColor: alpha(statusColor, 0.1), color: statusColor}}/>
+                        <Chip size="small" label={statusLabel}
+                              sx={{ml: 1, backgroundColor: alpha(statusColor, 0.1), color: statusColor}}/>
                     </Typography>
                     <Typography variant="body2" color="text.secondary">Program: {program}</Typography>
                     <Typography variant="body2" color="text.secondary">Parent: {parent}</Typography>
@@ -183,10 +180,14 @@ function EducationDashboardContent({session}) {
 
             {/* Top metrics */}
             <Grid container spacing={3} sx={{mb: 3}}>
-                <Grid item xs={12} md={3}><MetricCard title="Total Applications" value="45" subtitle="All registrations" icon={<ListAltIcon/>}/></Grid>
-                <Grid item xs={12} md={3}><MetricCard title="Pending Review" value="12" subtitle="Need processing" icon={<NotificationsIcon/>}/></Grid>
-                <Grid item xs={12} md={3}><MetricCard title="Under Review" value="8" subtitle="In progress" icon={<PeopleIcon/>}/></Grid>
-                <Grid item xs={12} md={3}><MetricCard title="This Week" value="7" subtitle="New applications" icon={<TimelineIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Total Applications" value="45" subtitle="All registrations"
+                                                      icon={<ListAltIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Pending Review" value="12" subtitle="Need processing"
+                                                      icon={<NotificationsIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Under Review" value="8" subtitle="In progress"
+                                                      icon={<PeopleIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="This Week" value="7" subtitle="New applications"
+                                                      icon={<TimelineIcon/>}/></Grid>
             </Grid>
 
             {/* Main Content Grid */}
@@ -196,64 +197,16 @@ function EducationDashboardContent({session}) {
                     <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
                         <CardContent>
                             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{mb: 2}}>
-                                <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary}}>Applications Needing Review</Typography>
+                                <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary}}>Applications
+                                    Needing Review</Typography>
                                 <Button size="small" sx={{textTransform: 'none'}}>View all</Button>
                             </Stack>
                             <Stack spacing={2}>
-                                <ApplicationItem name="Emma Johnson" statusLabel="Chờ xem xét" statusColor={colors.warning} program="Toddler Program" parent="Sarah Johnson" date="6/1/2025"/>
-                                <ApplicationItem name="Liam Smith" statusLabel="Đang xem xét" statusColor={colors.info} program="Pre-K Program" parent="Mike Smith" date="6/2/2025"/>
-                            </Stack>
-                        </CardContent>
-                    </Card>
-
-                    <Card sx={{mt: 3, borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
-                        <CardContent>
-                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Recent Activities</Typography>
-                            <Stack spacing={2}>
-                                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                    <Stack direction="row" spacing={2} alignItems="center">
-                                        <Box sx={{width: 36, height: 36, borderRadius: 1, backgroundColor: alpha(colors.primary, 0.1), display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                            <ListAltIcon fontSize="small"/>
-                                        </Box>
-                                        <Box>
-                                            <Typography variant="subtitle2" sx={{fontWeight: 600}}>Emma Johnson</Typography>
-                                            <Typography variant="caption" color="text.secondary">Application pending_review</Typography>
-                                        </Box>
-                                    </Stack>
-                                    <Stack direction="row" spacing={1} alignItems="center">
-                                        <Chip size="small" label="Chờ xem xét" sx={{backgroundColor: alpha(colors.warning, 0.1), color: colors.warning}}/>
-                                        <Typography variant="caption" color="text.secondary">6/1/2025</Typography>
-                                    </Stack>
-                                </Stack>
-                                <Divider/>
-                                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                    <Stack direction="row" spacing={2} alignItems="center">
-                                        <Box sx={{width: 36, height: 36, borderRadius: 1, backgroundColor: alpha(colors.primary, 0.1), display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                            <ListAltIcon fontSize="small"/>
-                                        </Box>
-                                        <Box>
-                                            <Typography variant="subtitle2" sx={{fontWeight: 600}}>Liam Smith</Typography>
-                                            <Typography variant="caption" color="text.secondary">Application under_review</Typography>
-                                        </Box>
-                                    </Stack>
-                                    <Stack direction="row" spacing={1} alignItems="center">
-                                        <Chip size="small" label="Đang xem xét" sx={{backgroundColor: alpha(colors.info, 0.1), color: colors.info}}/>
-                                        <Typography variant="caption" color="text.secondary">6/2/2025</Typography>
-                                    </Stack>
-                                </Stack>
-                                <Divider/>
-                                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                    <Stack direction="row" spacing={2} alignItems="center">
-                                        <Box sx={{width: 36, height: 36, borderRadius: 1, backgroundColor: alpha(colors.primary, 0.1), display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                            <ListAltIcon fontSize="small"/>
-                                        </Box>
-                                        <Box>
-                                            <Typography variant="subtitle2" sx={{fontWeight: 600}}>Sophia Brown</Typography>
-                                            <Typography variant="caption" color="text.secondary">Application approved</Typography>
-                                        </Box>
-                                    </Stack>
-                                    <Chip size="small" label="Đã duyệt" sx={{backgroundColor: alpha(colors.success, 0.1), color: colors.success}}/>
-                                </Stack>
+                                <ApplicationItem name="Emma Johnson" statusLabel="Chờ xem xét"
+                                                 statusColor={colors.warning} program="Toddler Program"
+                                                 parent="Sarah Johnson" date="6/1/2025"/>
+                                <ApplicationItem name="Liam Smith" statusLabel="Đang xem xét" statusColor={colors.info}
+                                                 program="Pre-K Program" parent="Mike Smith" date="6/2/2025"/>
                             </Stack>
                         </CardContent>
                     </Card>
@@ -263,7 +216,8 @@ function EducationDashboardContent({session}) {
                 <Grid item xs={12} md={4}>
                     <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`, mb: 3}}>
                         <CardContent>
-                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Status Overview</Typography>
+                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Status
+                                Overview</Typography>
                             <Stack spacing={1.5}>
                                 <Stack direction="row" alignItems="center" justifyContent="space-between">
                                     <Typography variant="body2">Pending Review:</Typography>
@@ -287,20 +241,29 @@ function EducationDashboardContent({session}) {
 
                     <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
                         <CardContent>
-                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Quick Actions</Typography>
+                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Quick
+                                Actions</Typography>
                             <Stack spacing={1.5}>
-                                <Button fullWidth variant="outlined" startIcon={<NotificationsIcon/>} sx={{
-                                    justifyContent: 'flex-start', textTransform: 'none', borderColor: alpha(colors.primary, 0.2)
-                                }}>Pending Applications</Button>
+                                <Button fullWidth variant="outlined" startIcon={<AccessTimeFilled/>} sx={{
+                                    justifyContent: 'flex-start',
+                                    textTransform: 'none',
+                                    borderColor: alpha(colors.primary, 0.2)
+                                }}>Admission term</Button>
+                                <Button fullWidth variant="outlined" startIcon={<AutorenewIcon/>} sx={{
+                                    justifyContent: 'flex-start',
+                                    textTransform: 'none',
+                                    borderColor: alpha(colors.primary, 0.2)
+                                }}>Process Form</Button>
+                                <Button fullWidth variant="outlined" startIcon={<SchoolIcon/>} sx={{
+                                    justifyContent: 'flex-start',
+                                    textTransform: 'none',
+                                    borderColor: alpha(colors.primary, 0.2)
+                                }}>Syllabus</Button>
                                 <Button fullWidth variant="outlined" startIcon={<ListAltIcon/>} sx={{
-                                    justifyContent: 'flex-start', textTransform: 'none', borderColor: alpha(colors.primary, 0.2)
-                                }}>All Applications</Button>
-                                <Button fullWidth variant="outlined" startIcon={<AssessmentIcon/>} sx={{
-                                    justifyContent: 'flex-start', textTransform: 'none', borderColor: alpha(colors.primary, 0.2)
-                                }}>Statistical Reports</Button>
-                                <Button fullWidth variant="outlined" startIcon={<NotificationsIcon/>} sx={{
-                                    justifyContent: 'flex-start', textTransform: 'none', borderColor: alpha(colors.primary, 0.2)
-                                }}>Notifications</Button>
+                                    justifyContent: 'flex-start',
+                                    textTransform: 'none',
+                                    borderColor: alpha(colors.primary, 0.2)
+                                }}>Class</Button>
                             </Stack>
                         </CardContent>
                     </Card>
@@ -311,7 +274,7 @@ function EducationDashboardContent({session}) {
 }
 
 export default function EducationDashboard() {
-    const theme = useTheme();
+    // const theme = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -440,7 +403,7 @@ export default function EducationDashboard() {
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                     }}>
-                       EDUCATION
+                        EDUCATION
                     </Typography>
                 </Box>
             </Toolbar>
@@ -509,10 +472,12 @@ export default function EducationDashboard() {
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={item.title}
-                                    primaryTypographyProps={{
-                                        fontWeight: isActiveRoute(item.path) ? 600 : 500,
-                                        fontSize: '0.9rem'
-                                    }}
+                                    slotProps={{
+                                            primary: {
+                                                fontWeight: isActiveRoute(item.path) ? 600 : 500,
+                                                fontSize: '0.9rem'
+                                            }
+                                        }}
                                 />
                             </ListItemButton>
                         </ListItem>

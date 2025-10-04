@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton, Stack } from '@mui/material';
-import { Edit as EditIcon } from '@mui/icons-material';
+import { Edit as EditIcon, Visibility as VisibilityIcon } from '@mui/icons-material';
 
-export default function SyllabusTable({ rows = [], onEdit }) {
+export default function SyllabusTable({ rows = [], onEdit, onView }) {
     const getStatusChip = (isActive) => (
         <Chip size="small" label={isActive === 'true' ? 'Active' : 'Inactive'} color={isActive === 'true' ? 'success' : 'default'} />
     );
@@ -34,6 +34,9 @@ export default function SyllabusTable({ rows = [], onEdit }) {
                                     <IconButton size="small" onClick={() => onEdit?.(row)}>
                                         <EditIcon fontSize="small" />
                                     </IconButton>
+                                    <IconButton size="small" onClick={() => onView?.(row)}>
+                                        <VisibilityIcon fontSize="small" />
+                                    </IconButton>
                                 </Stack>
                             </TableCell>
                         </TableRow>
@@ -43,5 +46,3 @@ export default function SyllabusTable({ rows = [], onEdit }) {
         </TableContainer>
     );
 }
-
-

@@ -20,13 +20,12 @@ export default function Syllabus() {
 
             <Divider sx={{my: 4}}/>
 
-            <SyllabusList/>
-
             <CreateSyllabusDialog
                 open={openCreate}
                 onClose={() => setOpenCreate(false)}
                 onCreated={() => setOpenCreate(false)}
             />
+            <SyllabusList/>
         </Box>
     );
 }
