@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Chip, CircularProgress, Card, Avatar, Stack, Button, FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import SchoolIcon from '@mui/icons-material/School';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import educationService from '@services/EducationService.jsx';
 
 export default function ClassDetail({ classData: propClassData }) {
@@ -197,32 +198,7 @@ export default function ClassDetail({ classData: propClassData }) {
     if (error) return <Box p={4} color="#c62828">{error}</Box>;
     if (!classData) return null;
     return (
-        <Box minHeight="80vh" display="flex" flexDirection="column" alignItems="center" justifyContent="center" bgcolor="#f7fbff" p={3} position="relative">
-            <Button 
-                variant="contained" 
-                color="primary" 
-                sx={{ 
-                    position: 'absolute',
-                    top: 20,
-                    left: 20,
-                    borderRadius: 3, 
-                    px: 3,
-                    py: 1,
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    textTransform: 'none',
-                    boxShadow: 3,
-                    zIndex: 10,
-                    '&:hover': {
-                        boxShadow: 6,
-                        transform: 'translateY(-2px)',
-                        transition: 'all 0.3s ease'
-                    }
-                }} 
-                onClick={() => navigate('/education/classes')}
-            >
-                Back to Class List
-            </Button>
+        <Box minHeight="80vh" display="flex" flexDirection="column" alignItems="center" justifyContent="center" bgcolor="#f7fbff" p={3}>
             <Card sx={{ 
                 maxWidth: 1200, 
                 width: '100%', 
@@ -231,8 +207,39 @@ export default function ClassDetail({ classData: propClassData }) {
                 boxShadow: 6, 
                 borderRadius: 6, 
                 p: 4,
-                background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)'
+                background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                position: 'relative'
             }}>
+                <Button 
+                    variant="contained" 
+                    color="primary" 
+                    sx={{ 
+                        position: 'absolute',
+                        top: 20,
+                        left: 20,
+                        borderRadius: 2, 
+                        px: 4,
+                        py: 1.5,
+                        minWidth: 100,
+                        fontSize: '0.95rem',
+                        fontWeight: 600,
+                        textTransform: 'none',
+                        boxShadow: 2,
+                        zIndex: 10,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        '&:hover': {
+                            boxShadow: 4,
+                            transform: 'translateY(-1px)',
+                            transition: 'all 0.2s ease'
+                        }
+                    }} 
+                    onClick={() => navigate('/education/classes')}
+                    startIcon={<ArrowBackIcon />}
+                >
+                    Back
+                </Button>
                 <Stack direction="column" alignItems="center" spacing={3}>
                     <Avatar sx={{ 
                         bgcolor: '#8bd17c', 
@@ -411,7 +418,7 @@ export default function ClassDetail({ classData: propClassData }) {
                                                                                 {formattedDate}
                                                                             </Typography>
                                                                         )}
-                                                                    </Stack>
+                            </Stack>
                                                                 </TableCell>
                                                             );
                                                         })}
