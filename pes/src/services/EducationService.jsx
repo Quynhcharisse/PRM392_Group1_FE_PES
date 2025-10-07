@@ -1,4 +1,3 @@
-
 import axiosClient from "@/config/APIConfig.jsx";
 
 const syllabusService = {
@@ -71,13 +70,23 @@ const syllabusService = {
     async getTermList() {
         const res = await axiosClient.get('/class-api/api/term/list');
         return res?.data ?? null;
+    },
+
+    async viewWeekList(classId) {
+        // Lấy danh sách tuần theo classId
+        const res = await axiosClient.get(`/class-api/api/week/list`, {
+            params: { classId }
+        });
+        return res?.data?.data ?? [];
+    },
+
+    async viewActivityList(scheduleId) {
+        // Lấy danh sách activity theo scheduleId
+        const res = await axiosClient.get(`/class-api/api/activity/list`, {
+            params: { scheduleId }
+        });
+        return res?.data?.data ?? [];
     }
 };
 
 export default syllabusService;
-
-
-
-
-
-

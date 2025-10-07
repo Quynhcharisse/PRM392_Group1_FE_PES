@@ -1,21 +1,13 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import educationService from "@services/EducationService.jsx";
 import ClassTable from "./ClassTable.jsx";
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import CreateClass from './CreateClass.jsx';
-import ClassDetail from './ClassDetail.jsx';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 export default function ClassList() {
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [selectedClass, setSelectedClass] = useState(null);
-    const [detailOpen, setDetailOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,17 +29,18 @@ export default function ClassList() {
     }, []);
 
     if (loading) return <div>Loading classes...</div>;
-    if (error) return <div style={{ color: "#c62828" }}>{error}</div>;
+    if (error) return <div style={{color: "#c62828"}}>{error}</div>;
 
     return (
-        <div style={{ padding: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <h2 style={{ fontWeight: 700 }}>Classes</h2>
+        <div style={{padding: 24}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16}}>
+                <h2 style={{fontWeight: 700}}>Classes</h2>
                 <Button variant="contained" color="primary" onClick={() => navigate('/education/classes/create')}>
                     Create Class
                 </Button>
             </div>
-            <ClassTable classes={classes} onView={(c) => navigate(`/education/classes/${c.id}`, { state: { classData: c } })} />
+            <ClassTable classes={classes}
+                        onView={(c) => navigate(`/education/classes/${c.id}`, {state: {classData: c}})}/>
         </div>
     );
 }
