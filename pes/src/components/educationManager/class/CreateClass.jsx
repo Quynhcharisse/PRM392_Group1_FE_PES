@@ -148,6 +148,8 @@ export default function CreateClass() {
                 setMessage("Create class successfully");
                 // Reset form
                 setActivities([]);
+                // Điều hướng về danh sách lớp sau khi tạo thành công
+                navigate('/education/classes');
             } else {
                 setMessage(res?.message || "Failed to create class");
             }
@@ -211,7 +213,7 @@ export default function CreateClass() {
                     <div style={{display: "flex", flexDirection: "column", gap: 6}}>
                         <label>Syllabus</label>
                         <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
-                            <Button variant="outlined" size="small" onClick={() => setSyllabusDialogOpen(true)}>Choose Syllabus</Button>
+                            <Button variant="outlined" size="small" onClick={handleOpenSyllabusDialog}>Choose Syllabus</Button>
                             {selectedSyllabusName && <span style={{marginLeft: 8, color: '#1976d2', fontWeight: 600}}>{selectedSyllabusName}</span>}
                         </div>
                     </div>
@@ -296,6 +298,9 @@ export default function CreateClass() {
                 open={syllabusDialogOpen}
                 onClose={() => setSyllabusDialogOpen(false)}
                 onSelect={handleChooseSyllabus}
+                syllabuses={activeSyllabuses}
+                loading={syllabusLoading}
+                error={syllabusError}
             />
             <TeacherSelectorDialog
                 open={teacherDialogOpen}
@@ -306,5 +311,3 @@ export default function CreateClass() {
         </div>
     );
 }
-
-

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import syllabusService from '@services/EducationService.jsx';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
@@ -14,19 +13,12 @@ import SchoolIcon from '@mui/icons-material/School';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 
-export default function SyllabusSelectorDialog({ open, onClose}) {
-    const [syllabuses, setSyllabuses] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-
+export default function SyllabusSelectorDialog({ open, onClose, onSelect, syllabuses = [], loading = false, error = "" }) {
     useEffect(() => {
+        // Không tự gọi API nữa, chỉ reset error khi mở dialog
         if (!open) return;
-        setLoading(true);
-        setError("");
-        syllabusService.getActiveSyllabuses()
-            .then(data => setSyllabuses(data))
-            .catch(err => setError(err?.response?.data?.message || err?.message || "Failed to load syllabuses"))
-            .finally(() => setLoading(false));
+        // Nếu muốn reset error khi mở dialog, có thể giữ lại dòng sau:
+        // setError("");
     }, [open]);
 
     return (
