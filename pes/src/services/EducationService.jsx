@@ -75,7 +75,7 @@ const syllabusService = {
     async viewWeekList(classId) {
         // Lấy danh sách tuần theo classId
         const res = await axiosClient.get(`/class-api/api/week/list`, {
-            params: { classId }
+            params: {classId}
         });
         return res?.data?.data ?? [];
     },
@@ -83,7 +83,7 @@ const syllabusService = {
     async viewActivityList(scheduleId) {
         // Lấy danh sách activity theo scheduleId
         const res = await axiosClient.get(`/class-api/api/activity/list`, {
-            params: { scheduleId }
+            params: {scheduleId}
         });
         return res?.data?.data ?? [];
     },
@@ -91,7 +91,7 @@ const syllabusService = {
     async processForm(payload) {
         const body = {
             id: Number(payload.id),
-            action: payload.action, 
+            action: payload.action,
             cancelReason: payload.cancelReason || ""
         };
         const res = await axiosClient.put(`/class-api/api/form`, body);
@@ -99,12 +99,12 @@ const syllabusService = {
     },
     async getProcessForm(admissionTermId) {
         const res = await axiosClient.get(`/class-api/api/form`, {
-            params: { admissionTermId }
+            params: {admissionTermId}
         });
         return res?.data?.data ?? [];
     },
 
-    async getTerm (admissionTermId) {
+    async getTerm() {
         const res = await axiosClient.get(`/class-api/api/term/comboBox`);
         return res?.data?.data ?? [];
     },
