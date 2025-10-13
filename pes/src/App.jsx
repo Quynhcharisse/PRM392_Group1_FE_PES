@@ -22,6 +22,7 @@ const ClassList = lazy(() => import('./components/educationManager/class/ClassLi
 const ClassDetail = lazy(() => import('./components/educationManager/class/ClassDetail.jsx'));
 const CreateClass = lazy(() => import('./components/educationManager/class/CreateClass.jsx'));
 const TermAdmission = lazy(() => import('./components/educationManager/admissionTerm/TermAdmission.jsx'));
+const ProcessForm = lazy(() => import('./components/educationManager/admissionForm/ProcessForm.jsx'));
 
 const LoadingFallback = () => (<div style={{
     display: 'flex',
@@ -327,6 +328,14 @@ const router = createBrowserRouter([{
                     element: (
                         <Suspense fallback={<LoadingFallback/>}>
                             <TermAdmission/>
+                        </Suspense>
+                    )
+                },
+                {
+                    path: 'process-forms/*',
+                    element: (
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <ProcessForm/>
                         </Suspense>
                     )
                 },

@@ -1,198 +1,248 @@
+import React, { useEffect, useState } from 'react';
 import {
-    Button,
-    Chip,
-    Paper,
+    Box,
+    Typography,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TablePagination,
-    TableRow
-} from "@mui/material";
-import {Info} from '@mui/icons-material';
-import {useState} from "react";
+    TableRow,
+    Paper,
+    IconButton,
+    Chip,
+    CircularProgress,
+    Alert,
+    Card,
+    CardContent,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Stack
+} from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import educationService from '@services/EducationService.jsx';
+import ProcessFormDetailWrapper from './ProcessFormDetail';
 
-export default function ProcessFormTable({forms, onDetailClick}) {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+export default function ProcessFormTable() {
+    const [processFormList, setProcessFormList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [termList, setTermList] = useState([]);
+    const [selectedTermId, setSelectedTermId] = useState('');
+    const [termLoading, setTermLoading] = useState(false);
+    const [selectedFormId, setSelectedFormId] = useState(null);
+    const [selectedFormData, setSelectedFormData] = useState(null);
+    const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+    useEffect(() => {
+        loadTermList();
+    }, []);
+
+    useEffect(() => {
+        if (selectedTermId) {
+            loadProcessFormList();
+        }
+    }, [selectedTermId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const loadTermList = async () => {
+        try {
+            setTermLoading(true);
+            const response = await educationService.getTerm();
+            setTermList(response || []);
+            // Auto select first term if available
+            if (response && response.length > 0) {
+                setSelectedTermId(response[0].id.toString());
+            }
+        } catch (err) {
+            setError(err?.response?.data?.message || err?.message || 'Failed to load term list');
+        } finally {
+            setTermLoading(false);
+        }
+    };
+
+    const loadProcessFormList = async () => {
+        if (!selectedTermId) return;
+        
+        try {
+            setLoading(true);
+            setError('');
+            const response = await educationService.getProcessForm(parseInt(selectedTermId));
+            setProcessFormList(response || []);
+        } catch (err) {
+            setError(err?.response?.data?.message || err?.message || 'Failed to load process forms');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getStatusColor = (status) => {
+        switch (status?.toLowerCase()) {
+            case 'waiting_for_payment':
+                return 'warning';
+            case 'done':
+                return 'success';
+            case 'rejected':
+                return 'error';
+            default:
+                return 'default';
+        }
+    };
+
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        return new Date(dateString).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    };
+
+    const handleViewDetail = (formId) => {
+        const formData = processFormList.find(form => form.id === formId);
+        setSelectedFormId(formId);
+        setSelectedFormData(formData);
+        setDetailDialogOpen(true);
+    };
+
+    const handleCloseDetail = () => {
+        setDetailDialogOpen(false);
+        setSelectedFormId(null);
+        setSelectedFormData(null);
+        // Reload the form list to get updated data
+        if (selectedTermId) {
+            loadProcessFormList();
+        }
+    };
+
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+                <CircularProgress />
+            </Box>
+        );
     }
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(event.target.value)
-        setPage(0)
+    if (error) {
+        return (
+            <Box p={3}>
+                <Alert severity="error">{error}</Alert>
+            </Box>
+        );
     }
-
-    const handleDetailClick = (form) => {
-        onDetailClick(form);
-    }
-
-    const filteredForms = forms?.filter(form => form.status !== "cancelled" && (form.status !== "refilled")) || [];
 
     return (
-        <Paper sx={{
-            width: '100%',
-            minHeight: 400,
-            maxHeight: 'calc(100vh - 200px)',
-            borderRadius: 3,
-            overflow: 'visible',
-            backgroundColor: '#fff',
-            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-            border: '2px solid rgb(254, 254, 253)',
-            display: 'flex',
-            flexDirection: 'column'
-        }}>
-            <TableContainer sx={{flex: 1, maxHeight: 'calc(100vh - 300px)', overflow: 'auto'}}>
-                <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center" sx={{
-                                fontWeight: 'bold',
-                                minWidth: 80,
-                                backgroundColor: '#f8faf8',
-                                color: '#07663a',
-                                fontSize: '0.95rem',
-                                borderBottom: '2px solid #e0e0e0'
-                            }}>No</TableCell>
-                            <TableCell align="center" sx={{
-                                fontWeight: 'bold',
-                                minWidth: 160,
-                                backgroundColor: '#f8faf8',
-                                color: '#07663a',
-                                fontSize: '0.95rem',
-                                borderBottom: '2px solid #e0e0e0'
-                            }}>Child Name</TableCell>
-                            <TableCell align="center" sx={{
-                                fontWeight: 'bold',
-                                minWidth: 140,
-                                backgroundColor: '#f8faf8',
-                                color: '#07663a',
-                                fontSize: '0.95rem',
-                                borderBottom: '2px solid #e0e0e0'
-                            }}>Submit Date</TableCell>
-                            <TableCell align="center" sx={{
-                                fontWeight: 'bold',
-                                minWidth: 160,
-                                backgroundColor: '#f8faf8',
-                                color: '#07663a',
-                                fontSize: '0.95rem',
-                                borderBottom: '2px solid #e0e0e0'
-                            }}>Cancel Reason</TableCell>
-                            <TableCell align="center" sx={{
-                                fontWeight: 'bold',
-                                minWidth: 120,
-                                backgroundColor: '#f8faf8',
-                                color: '#07663a',
-                                fontSize: '0.95rem',
-                                borderBottom: '2px solid #e0e0e0'
-                            }}>Status</TableCell>
-                            <TableCell align="center" sx={{
-                                fontWeight: 'bold',
-                                minWidth: 120,
-                                backgroundColor: '#f8faf8',
-                                color: '#07663a',
-                                fontSize: '0.95rem',
-                                borderBottom: '2px solid #e0e0e0'
-                            }}>Note</TableCell>
-                            <TableCell align="center" sx={{
-                                fontWeight: 'bold',
-                                minWidth: 120,
-                                backgroundColor: '#f8faf8',
-                                color: '#07663a',
-                                fontSize: '0.95rem',
-                                borderBottom: '2px solid #e0e0e0'
-                            }}>Action</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredForms
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((form, index) => (
-                                <TableRow
-                                    key={index}
-                                    sx={{
-                                        '&:hover': {
-                                            backgroundColor: '#f8faf8',
-                                        },
-                                        transition: 'background-color 0.2s'
-                                    }}
-                                >
-                                    <TableCell align="center">{index + 1}</TableCell>
-                                    <TableCell align="center">{form.studentName}</TableCell>
-                                    <TableCell align="center">{form.submittedDate}</TableCell>
-                                    <TableCell align="center">{form.cancelReason || "N/A"}</TableCell>
-                                    <TableCell align="center">
-                                        <Chip
-                                            label={form.status === "approved paid" ? "Approved & Paid" : form.status}
-                                            sx={{
-                                                backgroundColor:
-                                                    form.status === "approved" ? "rgba(7, 102, 58, 0.1)" :
-                                                        form.status === "approved paid" ? "rgba(46, 125, 50, 0.1)" :
-                                                            form.status === "rejected" || form.status === "cancelled" ? "rgba(220, 53, 69, 0.1)" :
-                                                                form.status === "pending approval" || form.status === "pending" ? "rgba(13, 110, 253, 0.1)" :
-                                                                    form.status === "waiting payment" ? "rgba(0, 0, 128, 0.1)" :
-                                                                        "transparent",
-                                                color:
-                                                    form.status === "approved" ? "#07663a" :
-                                                        form.status === "approved paid" ? "#2E7D32" :
-                                                            form.status === "rejected" || form.status === "cancelled" ? "#dc3545" :
-                                                                form.status === "pending approval" || form.status === "pending" ? "#0d6efd" :
-                                                                    form.status === "waiting payment" ? "#000080" :
-                                                                        "black",
-                                                fontWeight: "600",
-                                                borderRadius: '20px',
-                                                textTransform: "capitalize"
-                                            }}
-                                        />
-                                    </TableCell>
-                                    <TableCell align="center">{form.note || "N/A"}</TableCell>
-                                    <TableCell align="center">
-                                        <Button
-                                            variant="contained"
-                                            startIcon={<Info/>}
-                                            onClick={() => handleDetailClick(form)}
-                                            sx={{
-                                                backgroundColor: '#07663a',
-                                                '&:hover': {
-                                                    backgroundColor: 'rgba(7, 102, 58, 0.85)'
-                                                },
-                                                textTransform: 'none',
-                                                borderRadius: '8px',
-                                                boxShadow: 'none'
-                                            }}
-                                        >
-                                            Info
-                                        </Button>
-                                    </TableCell>
+        <Box p={3}>
+            <Card>
+                <CardContent>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+                        <Typography variant="h5" fontWeight={600}>
+                            Process Form List
+                        </Typography>
+                        
+                        <FormControl sx={{ minWidth: 300 }}>
+                            <InputLabel>Select Term</InputLabel>
+                            <Select
+                                value={selectedTermId}
+                                label="Select Term"
+                                onChange={(e) => setSelectedTermId(e.target.value)}
+                                disabled={termLoading}
+                            >
+                                {termList.map((term) => (
+                                    <MenuItem key={term.id} value={term.id.toString()}>
+                                        {term.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Stack>
+                    
+                    <TableContainer component={Paper} sx={{ boxShadow: 2 }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow sx={{ bgcolor: '#f5f5f5' }}>
+                                    <TableCell sx={{ fontWeight: 600 }}>ID</TableCell>
+                                    <TableCell sx={{ fontWeight: 600 }}>Student Name</TableCell>
+                                    <TableCell sx={{ fontWeight: 600 }}>Parent Name</TableCell>
+                                    <TableCell sx={{ fontWeight: 600 }}>Parent Email</TableCell>
+                                    <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                                    <TableCell sx={{ fontWeight: 600 }}>Submitted Date</TableCell>
+                                    <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>
                                 </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                component="div"
-                rowsPerPageOptions={[5, 10, 15]}
-                count={filteredForms?.length}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                sx={{
-                    borderTop: '1px solid #e0e0e0',
-                    '.MuiTablePagination-select': {
-                        borderRadius: '8px',
-                        padding: '4px 8px',
-                        marginRight: '8px'
-                    },
-                    backgroundColor: '#fff',
-                    position: 'sticky',
-                    bottom: 0,
-                    zIndex: 2
-                }}
+                            </TableHead>
+                            <TableBody>
+                                {processFormList.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
+                                            <Typography variant="body1" color="text.secondary">
+                                                No process forms found
+                                            </Typography>
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    processFormList.map((form) => (
+                                        <TableRow key={form.id} hover>
+                                            <TableCell>{form.id}</TableCell>
+                                            <TableCell>
+                                                <Typography variant="body2" fontWeight={500}>
+                                                    {form.student?.name || 'N/A'}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography variant="body2">
+                                                    {form.parentAccount?.name || 'N/A'}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography variant="body2">
+                                                    {form.parentAccount?.email || 'N/A'}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    label={form.status || 'Unknown'}
+                                                    color={getStatusColor(form.status)}
+                                                    size="small"
+                                                    variant="outlined"
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography variant="body2">
+                                                    {formatDate(form.submittedDate)}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <IconButton
+                                                    color="primary"
+                                                    onClick={() => handleViewDetail(form.id)}
+                                                    sx={{
+                                                        '&:hover': {
+                                                            bgcolor: 'primary.light',
+                                                            color: 'white'
+                                                        }
+                                                    }}
+                                                >
+                                                    <VisibilityIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </CardContent>
+            </Card>
+            
+            {/* Process Form Detail Dialog */}
+            <ProcessFormDetailWrapper
+                open={detailDialogOpen}
+                onClose={handleCloseDetail}
+                formId={selectedFormId}
+                formData={selectedFormData}
+                selectedTermId={selectedTermId}
             />
-        </Paper>
-    )
+        </Box>
+    );
 }
