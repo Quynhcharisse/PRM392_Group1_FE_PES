@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="2787666c-687a-4c19-b5bc-67d2411ae2c4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/class/ClassList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/class/ClassList.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessForm.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessFormDetail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessFormDetail.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessFormPage.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessFormTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessFormTable.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/layouts/EducationDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/layouts/EducationDashboard.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pes/src/services/EducationService.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/services/EducationService.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,21 +22,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Quynhcharisse"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Quynhcharisse&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Quynhcharisse/PRM392_Group1_FE_PES.git",
-    "accountId": "c31ba104-612b-4400-8f58-773d8265fa0c"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Quynhcharisse/PRM392_Group1_FE_PES.git&quot;,
+    &quot;accountId&quot;: &quot;c31ba104-612b-4400-8f58-773d8265fa0c&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="33jevbwCJtC9NQsuNX6NEBrRChA" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -43,7 +48,7 @@
     "git-widget-placeholder": "feature-design-component-ui",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/JAVA/Curriculum/Semester 7/SWD392/Project_SWD392_SU25/Summer2025SWD392_SE1753_Group1_FE",
+    "last_opened_file_path": "D:/Semester 8/PRM392/Preschool Enrollment System/Project",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -86,7 +91,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1759835139658</updated>
-      <workItem from="1759835140716" duration="2198000" />
+      <workItem from="1759835140716" duration="4910000" />
+      <workItem from="1759853777255" duration="240000" />
+      <workItem from="1760355403958" duration="3616000" />
     </task>
     <servers />
   </component>

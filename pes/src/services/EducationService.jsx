@@ -86,7 +86,30 @@ const syllabusService = {
             params: { scheduleId }
         });
         return res?.data?.data ?? [];
-    }
+    },
+
+    async processForm(payload) {
+        const body = {
+            id: Number(payload.id),
+            action: payload.action, 
+            cancelReason: payload.cancelReason || ""
+        };
+        const res = await axiosClient.put(`/class-api/api/form`, body);
+        return res?.data ?? null;
+    },
+    async getProcessForm(admissionTermId) {
+        const res = await axiosClient.get(`/class-api/api/form`, {
+            params: { admissionTermId }
+        });
+        return res?.data?.data ?? [];
+    },
+
+    async getTerm (admissionTermId) {
+        const res = await axiosClient.get(`/class-api/api/term/comboBox`);
+        return res?.data?.data ?? [];
+    },
+
 };
+
 
 export default syllabusService;

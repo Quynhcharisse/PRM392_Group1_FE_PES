@@ -59,7 +59,7 @@ const colors = {
 const NAVIGATION = [
     {segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon/>, path: '/education/dashboard'},
     {segment: 'admission-term', title: 'Admission Term', icon: <AccessTimeFilled/>, path: '/education/admission-term'},
-    {segment: 'process-form', title: 'Process Form', icon: <AutorenewIcon/>, path: '/education/process-form'},
+    {segment: 'process-form', title: 'Process Form', icon: <AutorenewIcon/>, path: '/education/process-forms'},
     {segment: 'syllabus', title: 'Syllabus', icon: <SchoolIcon/>, path: '/education/syllabus'},
     {segment: 'class', title: 'Class Management', icon: <ListAltIcon/>, path: '/education/classes'},
     {segment: 'profile', title: 'Profile', icon: <AccountCircleIcon/>, path: '/education/profile'}
