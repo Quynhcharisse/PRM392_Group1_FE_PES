@@ -4,6 +4,7 @@ import IntroContentSections from './IntroContentSections'
 import TeamContentSections from './TeamContentSections'
 import EducationContentSections from './EducationContentSections'
 import TuyenSinhContentSections from './TuyenSinhContentSections'
+import ChatbotContainer from '../chatbot/ChatbotContainer'
 import { Box } from '@mui/material'
 
 export default function Home() {
@@ -47,6 +48,7 @@ export default function Home() {
     <Box>
       <SlideBar />
       {renderCurrentSection()}
+      <ChatbotContainer />
     </Box>
   )
 }
