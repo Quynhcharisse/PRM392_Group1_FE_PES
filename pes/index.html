@@ -28,59 +28,6 @@
       defer>
     </script>
     
-  
-    <script>
-      // Chỉ tắt console warnings, không ảnh hưởng đến chatbot
-      const originalError = console.error;
-      const originalWarn = console.warn;
-      
-      console.error = function(...args) {
-        const message = args[0] ? args[0].toString() : '';
-        if (message.includes('Content Security Policy') || 
-            message.includes('sentry') || 
-            message.includes('Sentry') ||
-            message.includes('429') ||
-            message.includes('Too Many Requests')) {
-          return; // Bỏ qua các warnings không cần thiết
-        }
-        originalError.apply(console, args);
-      };
-      
-      console.warn = function(...args) {
-        const message = args[0] ? args[0].toString() : '';
-        if (message.includes('sentry') || 
-            message.includes('Sentry') ||
-            message.includes('429') ||
-            message.includes('Too Many Requests')) {
-          return; // Bỏ qua các warnings không cần thiết
-        }
-        originalWarn.apply(console, args);
-      };
-      
-      // Đảm bảo chatbot config được set đúng
-      console.log('Dify config:', window.difyChatbotConfig);
-      
-      // Debug chatbot sau khi load
-      setTimeout(() => {
-        console.log('=== CHATBOT DEBUG ===');
-        const chatbotButton = document.querySelector('#dify-chatbot-bubble-button');
-        const chatbotWindow = document.querySelector('#dify-chatbot-bubble-window');
-        
-        console.log('Chatbot button:', chatbotButton);
-        console.log('Chatbot window:', chatbotWindow);
-        
-        if (chatbotButton) {
-          console.log('Button visible:', chatbotButton.style.display);
-          console.log('Button position:', chatbotButton.style.position);
-        }
-        
-        if (!chatbotButton) {
-          console.log('❌ Chatbot button not found!');
-        } else {
-          console.log('✅ Chatbot button found!');
-        }
-      }, 5000);
-    </script>
     
     <style>
       /* Minimal chatbot styling - chỉ giữ những gì cần thiết */
