@@ -1,0 +1,279 @@
+/* Dify Chatbot Custom Styles */
+#dify-chatbot-bubble-button {
+  background-color: #1C64F2 !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 12px rgba(28, 100, 242, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+#dify-chatbot-bubble-button:hover {
+  background-color: #1557b0 !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 16px rgba(28, 100, 242, 0.4) !important;
+}
+
+#dify-chatbot-bubble-window {
+  width: 24rem !important;
+  height: 40rem !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid #e5e7eb !important;
+  overflow: hidden !important;
+}
+
+/* Ẩn container bao bọc xấu */
+#dify-chatbot-bubble-window .dify-chatbot-container,
+#dify-chatbot-bubble-window .dify-chatbot-wrapper,
+#dify-chatbot-bubble-window .dify-chatbot-border,
+#dify-chatbot-bubble-window .dify-chatbot-shadow {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: none !important;
+}
+
+/* Chatbot header */
+#dify-chatbot-bubble-window .dify-chatbot-header {
+  background: linear-gradient(135deg, #1C64F2 0%, #3B82F6 100%) !important;
+  border-radius: 12px 12px 0 0 !important;
+  padding: 16px !important;
+  position: relative !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  min-height: 60px !important;
+}
+
+/* Nút close ở góc phải header */
+#dify-chatbot-bubble-window .dify-chatbot-close-button {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  color: white !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  z-index: 10 !important;
+}
+
+#dify-chatbot-bubble-window .dify-chatbot-close-button:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.1) !important;
+}
+
+/* Tiêu đề chatbot */
+#dify-chatbot-bubble-window .dify-chatbot-title,
+#dify-chatbot-bubble-window .system-md-semibold {
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  margin: 0 !important;
+  padding-right: 50px !important;
+}
+
+/* Override title text */
+#dify-chatbot-bubble-window .system-md-semibold.truncate {
+  color: white !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+/* Thay đổi nội dung title */
+#dify-chatbot-bubble-window .system-md-semibold.truncate::after {
+  content: "Trường Mầm non Song ngữ MerryStar" !important;
+  color: white !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+/* Ẩn text gốc */
+#dify-chatbot-bubble-window .system-md-semibold.truncate {
+  font-size: 0 !important; 
+}
+
+/* Nội dung chat */
+#dify-chatbot-bubble-window .dify-chatbot-messages {
+  padding: 16px !important;
+  background: #f8f9fa !important;
+  height: calc(100% - 120px) !important;
+  overflow-y: auto !important;
+}
+
+/* Chatbot messages */
+#dify-chatbot-bubble-window .dify-chatbot-message {
+  border-radius: 12px !important;
+  margin: 8px 0 !important;
+  padding: 12px 16px !important;
+  max-width: 80% !important;
+  word-wrap: break-word !important;
+}
+
+#dify-chatbot-bubble-window .dify-chatbot-message.user {
+  background: linear-gradient(135deg, #1C64F2 0%, #3B82F6 100%) !important;
+  color: white !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  border-bottom-right-radius: 4px !important;
+}
+
+#dify-chatbot-bubble-window .dify-chatbot-message.bot {
+  background: white !important;
+  color: #333 !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  border: 1px solid #e9ecef !important;
+  border-bottom-left-radius: 4px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Input area */
+#dify-chatbot-bubble-window .dify-chatbot-input {
+  border-top: 1px solid #e5e7eb !important;
+  padding: 16px !important;
+  background: white !important;
+  border-radius: 0 0 12px 12px !important;
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+#dify-chatbot-bubble-window .dify-chatbot-input input {
+  flex: 1 !important;
+  border-radius: 20px !important;
+  border: 1px solid #d1d5db !important;
+  padding: 12px 16px !important;
+  font-size: 14px !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+}
+
+#dify-chatbot-bubble-window .dify-chatbot-input input:focus {
+  border-color: #1C64F2 !important;
+  box-shadow: 0 0 0 3px rgba(28, 100, 242, 0.1) !important;
+}
+
+/* Send button */
+#dify-chatbot-bubble-window .dify-chatbot-send-button {
+  background: linear-gradient(135deg, #1C64F2 0%, #3B82F6 100%) !important;
+  border-radius: 50% !important;
+  border: none !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 8px rgba(28, 100, 242, 0.3) !important;
+}
+
+#dify-chatbot-bubble-window .dify-chatbot-send-button:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(28, 100, 242, 0.4) !important;
+}
+
+/* Loading animation */
+#dify-chatbot-bubble-window .dify-chatbot-loading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  color: #6b7280 !important;
+  font-size: 14px !important;
+}
+
+#dify-chatbot-bubble-window .dify-chatbot-loading::after {
+  content: '' !important;
+  width: 16px !important;
+  height: 16px !important;
+  border: 2px solid #e5e7eb !important;
+  border-top: 2px solid #1C64F2 !important;
+  border-radius: 50% !important;
+  animation: spin 1s linear infinite !important;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #dify-chatbot-bubble-window {
+    width: calc(100vw - 32px) !important;
+    height: calc(100vh - 100px) !important;
+    max-width: 24rem !important;
+  }
+}
+
+/* Predefined Questions Styles */
+.predefined-questions-container {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 16px 0;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.predefined-questions-title {
+  color: #1C64F2;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.25rem;
+}
+
+.predefined-questions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.predefined-question-button {
+  background: white;
+  border: 2px solid #1C64F2;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #1C64F2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.predefined-question-button:hover {
+  background: #1C64F2;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(28, 100, 242, 0.3);
+}
+
+.predefined-question-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.predefined-questions-note {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  font-size: 0.9rem;
+  margin-top: 16px;
+}
