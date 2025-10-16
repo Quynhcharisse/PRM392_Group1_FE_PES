@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2787666c-687a-4c19-b5bc-67d2411ae2c4" name="Changes" comment="" />
+    <list default="true" id="2787666c-687a-4c19-b5bc-67d2411ae2c4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/pes/index.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,7 +42,7 @@
     &quot;git-widget-placeholder&quot;: &quot;feature-design-component-ui&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Semester 8/PRM392/Preschool Enrollment System/Project&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/JAVA/Curriculum/Semester 7/SWD392/Project_SWD392_SU25/Summer2025SWD392_SE1753_Group1_BE/PES&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -87,7 +90,7 @@
       <workItem from="1760355403958" duration="4210000" />
       <workItem from="1760366963002" duration="685000" />
       <workItem from="1760375412673" duration="649000" />
-      <workItem from="1760508856156" duration="1722000" />
+      <workItem from="1760508856156" duration="2858000" />
     </task>
     <servers />
   </component>
