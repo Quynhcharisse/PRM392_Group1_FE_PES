@@ -316,8 +316,59 @@ export default function ClassDetail({ classData: propClassData }) {
                                 }}>
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                         <Typography variant="subtitle1" fontWeight={600} color="#424242">Students:</Typography>
-                                        <Typography variant="h6" fontWeight={700} color="#2e7d32">{classData.numberStudent}</Typography>
+                                        <Typography variant="h6" fontWeight={700} color="#2e7d32">{classData.numberStudent || 0}</Typography>
+                                    </Stack>
+                                </Box>
+
+                                <Box sx={{ 
+                                    p: 2, 
+                                    borderRadius: 2, 
+                                    bgcolor: '#f5f5f5',
+                                    border: '1px solid #e0e0e0',
+                                    flex: 1
+                                }}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Start Date:</Typography>
+                                        <Typography variant="h6" fontWeight={700} color="#1976d2">{formatDate(classData.startDate)}</Typography>
+                                    </Stack>
+                                </Box>
+
+                                <Box sx={{ 
+                                    p: 2, 
+                                    borderRadius: 2, 
+                                    bgcolor: '#f5f5f5',
+                                    border: '1px solid #e0e0e0',
+                                    flex: 1
+                                }}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Cost:</Typography>
+                                        <Typography variant="h6" fontWeight={700} color="#d32f2f">
+                                            {classData.cost ? new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(classData.cost) : 'N/A'}
+                                        </Typography>
+                                    </Stack>
+                                </Box>
                             </Stack>
+
+                            <Stack direction="row" spacing={2}>
+                                <Box sx={{ 
+                                    p: 2, 
+                                    borderRadius: 2, 
+                                    bgcolor: '#f5f5f5',
+                                    border: '1px solid #e0e0e0',
+                                    flex: 1
+                                }}>
+                                    <Stack direction="column" spacing={1}>
+                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Teacher:</Typography>
+                                        <Typography variant="body1" fontWeight={500} color="#424242">
+                                            {classData.teacherName || 'N/A'}
+                                        </Typography>
+                                        <Typography variant="body2" color="#666">
+                                            {classData.teacherEmail || 'N/A'}
+                                        </Typography>
+                                    </Stack>
                                 </Box>
 
                                 <Box sx={{ 
@@ -359,7 +410,7 @@ export default function ClassDetail({ classData: propClassData }) {
                                                 )}
                                             </Select>
                                         </FormControl>
-                            </Stack>
+                                    </Stack>
                                 </Box>
                             </Stack>
 
