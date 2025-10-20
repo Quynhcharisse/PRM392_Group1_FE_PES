@@ -10,19 +10,19 @@ export const authService = {
         password
       });
 
-      if (response.data && response.data.token) {
+      if (response.data && response.data.data.token) {
         // Store token in localStorage
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('token', response.data.data.token);
         
         // Decode token to get user info
-        const decodedToken = jwtDecode(response.data.token);
+        const decodedToken = jwtDecode(response.data.data.token);
         
         // Store user data
         const userData = {
           id: decodedToken.sub,
           email: decodedToken.email,
           role: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || response.data.role,
-          token: response.data.token,
+          token: response.data.data.token,
           tokenExpiry: decodedToken.exp * 1000, // Convert to milliseconds
         };
 
@@ -31,7 +31,7 @@ export const authService = {
         return {
           success: true,
           data: userData,
-          token: response.data.token
+          token: response.data.data.token
         };
       }
 
