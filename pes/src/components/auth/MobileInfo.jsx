@@ -14,6 +14,8 @@ export default function MobileInfo() {
         document.cookie.split(";").forEach(function (c) {
             document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
         });
+        // Dispatch event to notify SiteHeader
+        window.dispatchEvent(new CustomEvent('userLoggedOut'));
         window.location.href = '/';
     };
     return (

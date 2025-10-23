@@ -33,19 +33,42 @@ export default function SiteHeader() {
     const tuyenSinhMenuOpen = Boolean(tuyenSinhMenuAnchor)
 
     useEffect(() => {
-        const raw = localStorage.getItem('user')
+        const loadUser = () => {
+            const raw = localStorage.getItem('user')
 
-        if (!raw || raw === 'undefined') {
-            setCurrentUser(null)
-            return
+            if (!raw || raw === 'undefined') {
+                setCurrentUser(null)
+                return
+            }
+
+            try {
+                const parsed = JSON.parse(raw)
+                setCurrentUser(parsed || null)
+            } catch (error) {
+                setCurrentUser(null)
+                localStorage.removeItem('user') // Remove invalid data
+            }
         }
 
-        try {
-            const parsed = JSON.parse(raw)
-            setCurrentUser(parsed || null)
-        } catch (error) {
-            setCurrentUser(null)
-            localStorage.removeItem('user') // Remove invalid data
+        // Load user on mount and route change
+        loadUser()
+
+        // Listen for storage changes (when localStorage is cleared from other tabs/components)
+        const handleStorageChange = (e) => {
+            if (e.key === 'user' || e.key === null) { // null means localStorage.clear()
+                loadUser()
+            }
+        }
+
+        window.addEventListener('storage', handleStorageChange)
+        
+        // Also listen for custom events (for same-tab localStorage changes)
+        const handleUserChange = () => loadUser()
+        window.addEventListener('userLoggedOut', handleUserChange)
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange)
+            window.removeEventListener('userLoggedOut', handleUserChange)
         }
     }, [location.pathname])
 
