@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2787666c-687a-4c19-b5bc-67d2411ae2c4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/pes/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/services/AuthService.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/services/AuthService.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/config/APIConfig.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/config/APIConfig.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +94,8 @@
       <workItem from="1760508856156" duration="2858000" />
       <workItem from="1760639007295" duration="261000" />
       <workItem from="1760687732642" duration="23000" />
-      <workItem from="1760955138379" duration="345000" />
+      <workItem from="1760955138379" duration="590000" />
+      <workItem from="1761212144072" duration="302000" />
     </task>
     <servers />
   </component>
