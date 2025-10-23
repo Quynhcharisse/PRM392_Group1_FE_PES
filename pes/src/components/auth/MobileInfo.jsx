@@ -6,8 +6,15 @@ export default function MobileInfo() {
     const navigate = useNavigate();
     
     const handleBackToHome = () => {
-        authService.logout();
-        navigate('/');
+        // Clear all localStorage data completely
+        localStorage.clear();
+        // Also clear sessionStorage
+        sessionStorage.clear();
+        // Clear cookies
+        document.cookie.split(";").forEach(function (c) {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+        window.location.href = '/';
     };
     return (
         <Box
