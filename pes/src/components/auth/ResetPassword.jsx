@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {Link, useNavigate, useSearchParams} from "react-router-dom";
 import {
     Alert,
     Avatar,
@@ -16,48 +16,89 @@ import {
     Typography,
     Zoom
 } from "@mui/material";
-import {ArrowBack, CheckCircle, Email, Lock, Refresh, Send} from "@mui/icons-material";
+import {ArrowBack, CheckCircle, Lock, LockReset, Visibility, VisibilityOff} from "@mui/icons-material";
 import {useSnackbar} from 'notistack';
 import { authService } from '@services/AuthService.jsx';
 
-const ForgotPassword = () => {
-    const [email, setEmail] = useState("");
+const ResetPassword = () => {
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const {enqueueSnackbar} = useSnackbar();
+    
+    const [formData, setFormData] = useState({
+        newPassword: "",
+        confirmPassword: ""
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState("");
-    const {enqueueSnackbar} = useSnackbar();
-    const navigate = useNavigate();
+    
+    const token = searchParams.get('token');
+    const email = searchParams.get('email');
 
-    const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+    useEffect(() => {
+        if (!token || !email) {
+            setError("Invalid reset link. Please request a new password reset.");
+        }
+    }, [token, email]);
+
+    const validatePassword = (password) => {
+        // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
+        return passwordRegex.test(password);
+    };
+
+    const handleInputChange = (field) => (e) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: e.target.value
+        }));
+        setError(""); // Clear error when user starts typing
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
-        if (!email.trim()) {
-            setError("Please enter your email");
+        // Validation
+        if (!formData.newPassword.trim()) {
+            setError("Please enter a new password");
             return;
         }
 
-        if (!validateEmail(email)) {
-            setError("Invalid email format");
+        if (!formData.confirmPassword.trim()) {
+            setError("Please confirm your password");
+            return;
+        }
+
+        if (!validatePassword(formData.newPassword)) {
+            setError("Password must be at least 8 characters with uppercase, lowercase, and number");
+            return;
+        }
+
+        if (formData.newPassword !== formData.confirmPassword) {
+            setError("Passwords do not match");
+            return;
+        }
+
+        if (!token || !email) {
+            setError("Invalid reset link. Please request a new password reset.");
             return;
         }
 
         setLoading(true);
 
         try {
-            const result = await authService.forgotPassword(email);
+            const result = await authService.resetPassword(token, formData.newPassword);
             
             if (result.success) {
                 setSuccess(true);
-                enqueueSnackbar(result.message || "Password reset email sent successfully!", {variant: "success"});
+                enqueueSnackbar(result.message || "Password reset successful!", {variant: "success"});
             } else {
-                setError(result.error || "Something went wrong. Please try again later.");
-                enqueueSnackbar(result.error || "Something went wrong. Please try again later.", {variant: "error"});
+                setError(result.error || "Failed to reset password. Please try again.");
+                enqueueSnackbar(result.error || "Failed to reset password. Please try again.", {variant: "error"});
             }
         } catch (error) {
             const errorMessage = "Something went wrong. Please try again later.";
@@ -66,12 +107,6 @@ const ForgotPassword = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleResendEmail = () => {
-        setSuccess(false);
-        setEmail("");
-        setError("");
     };
 
     const handleBackToLogin = () => {
@@ -124,78 +159,42 @@ const ForgotPassword = () => {
                                             mb: 0.5
                                         }}
                                     >
-                                        Email Sent Successfully!
+                                        Password Reset Successful!
                                     </Typography>
 
                                     <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>
-                                        We've sent a password reset link to:
+                                        Your password has been successfully reset. You can now log in with your new password.
                                     </Typography>
 
-                                    <Box
-                                        sx={{
-                                            bgcolor: 'grey.50',
-                                            borderRadius: 2,
-                                            p: 1.5,
-                                            border: '1px solid',
-                                            borderColor: 'success.main',
-                                            width: '100%'
-                                        }}
-                                    >
-                                        <Typography variant="body2" color="success.main" fontWeight="600">
-                                            {email}
-                                        </Typography>
-                                    </Box>
-
                                     <Alert
-                                        severity="info"
+                                        severity="success"
                                         sx={{
                                             width: '100%',
                                             borderRadius: 2,
                                             fontSize: '0.875rem'
                                         }}
                                     >
-                                        Please check your inbox and spam folder for the reset link.
+                                        Please log in with your new password.
                                     </Alert>
 
-                                    <Stack direction="row" spacing={1.5} width="100%">
-                                        <Button
-                                            variant="outlined"
-                                            fullWidth
-                                            onClick={handleResendEmail}
-                                            startIcon={<Refresh/>}
-                                            sx={{
-                                                borderRadius: 2,
-                                                py: 1,
-                                                fontSize: '0.875rem',
-                                                borderColor: 'primary.main',
-                                                color: 'primary.main',
-                                                '&:hover': {
-                                                    borderColor: 'primary.dark',
-                                                    bgcolor: 'primary.50'
-                                                }
-                                            }}
-                                        >
-                                            Resend
-                                        </Button>
-
-                                        <Button
-                                            variant="contained"
-                                            fullWidth
-                                            onClick={handleBackToLogin}
-                                            startIcon={<ArrowBack/>}
-                                            sx={{
-                                                borderRadius: 2,
-                                                py: 1,
-                                                fontSize: '0.875rem',
-                                                bgcolor: '#FF8C42',
-                                                '&:hover': {
-                                                    bgcolor: '#E67E22'
-                                                }
-                                            }}
-                                        >
-                                            Back to Login
-                                        </Button>
-                                    </Stack>
+                                    <Button
+                                        variant="contained"
+                                        fullWidth
+                                        onClick={handleBackToLogin}
+                                        startIcon={<ArrowBack/>}
+                                        sx={{
+                                            borderRadius: 2,
+                                            py: 1.2,
+                                            fontSize: '0.875rem',
+                                            fontWeight: 600,
+                                            bgcolor: '#FF8C42',
+                                            '&:hover': {
+                                                bgcolor: '#2980B9'
+                                            }
+                                        }}
+                                    >
+                                        Back to Login
+                                    </Button>
                                 </Stack>
                             </CardContent>
                         </Card>
@@ -213,7 +212,7 @@ const ForgotPassword = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: 'linear-gradient(135deg,rgb(241, 211, 191) 0%, #F5F5F5 50%,rgb(235, 223, 213) 100%)',
+                background: 'linear-gradient(135deg, #FF8C42 0%, #F5F5F5 50%, #E8E8E8 100%)',
                 padding: 2
             }}
         >
@@ -242,7 +241,7 @@ const ForgotPassword = () => {
                                             mb: 1.5
                                         }}
                                     >
-                                        <Lock sx={{fontSize: 24}}/>
+                                        <LockReset sx={{fontSize: 24}}/>
                                     </Avatar>
 
                                     <Typography
@@ -253,12 +252,29 @@ const ForgotPassword = () => {
                                             mb: 0.5
                                         }}
                                     >
-                                        Forgot Password?
+                                        Reset Password
                                     </Typography>
 
                                     <Typography variant="body2" color="text.secondary">
-                                        Enter your email and we'll send you a reset link
+                                        Enter your new password below
                                     </Typography>
+
+                                    {email && (
+                                        <Box
+                                            sx={{
+                                                bgcolor: 'grey.50',
+                                                borderRadius: 2,
+                                                p: 1.5,
+                                                border: '1px solid',
+                                                borderColor: 'grey.300',
+                                                mt: 1
+                                            }}
+                                        >
+                                            <Typography variant="body2" color="text.secondary" fontWeight="600">
+                                                {email}
+                                            </Typography>
+                                        </Box>
+                                    )}
                                 </Box>
 
                                 {/* Form */}
@@ -266,16 +282,25 @@ const ForgotPassword = () => {
                                     <Stack spacing={2}>
                                         <TextField
                                             fullWidth
-                                            type="email"
-                                            label="Email Address"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            type={showPassword ? "text" : "password"}
+                                            label="New Password"
+                                            value={formData.newPassword}
+                                            onChange={handleInputChange('newPassword')}
                                             error={!!error}
                                             disabled={loading}
                                             size="medium"
                                             InputProps={{
                                                 startAdornment: (
-                                                    <Email sx={{color: 'text.secondary', mr: 1, fontSize: 20}}/>
+                                                    <Lock sx={{color: 'text.secondary', mr: 1, fontSize: 20}}/>
+                                                ),
+                                                endAdornment: (
+                                                    <Button
+                                                        type="button"
+                                                        onClick={() => setShowPassword(!showPassword)}
+                                                        sx={{minWidth: 'auto', p: 0.5}}
+                                                    >
+                                                        {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                                    </Button>
                                                 )
                                             }}
                                             sx={{
@@ -297,7 +322,53 @@ const ForgotPassword = () => {
                                                     }
                                                 }
                                             }}
-                                            placeholder="Enter your email address"
+                                            placeholder="Enter new password"
+                                            helperText="At least 8 characters with uppercase, lowercase, and number"
+                                        />
+
+                                        <TextField
+                                            fullWidth
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            label="Confirm New Password"
+                                            value={formData.confirmPassword}
+                                            onChange={handleInputChange('confirmPassword')}
+                                            error={!!error}
+                                            disabled={loading}
+                                            size="medium"
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <Lock sx={{color: 'text.secondary', mr: 1, fontSize: 20}}/>
+                                                ),
+                                                endAdornment: (
+                                                    <Button
+                                                        type="button"
+                                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                        sx={{minWidth: 'auto', p: 0.5}}
+                                                    >
+                                                        {showConfirmPassword ? <VisibilityOff/> : <Visibility/>}
+                                                    </Button>
+                                                )
+                                            }}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    borderRadius: 2,
+                                                    '& fieldset': {
+                                                        borderColor: 'rgba(0, 0, 0, 0.23)'
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: '#FF8C42'
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: '#FF8C42'
+                                                    }
+                                                },
+                                                '& .MuiInputLabel-root': {
+                                                    '&.Mui-focused': {
+                                                        color: '#FF8C42'
+                                                    }
+                                                }
+                                            }}
+                                            placeholder="Confirm new password"
                                         />
 
                                         {error && (
@@ -318,8 +389,8 @@ const ForgotPassword = () => {
                                             type="submit"
                                             variant="contained"
                                             fullWidth
-                                            disabled={loading}
-                                            startIcon={loading ? <CircularProgress size={18}/> : <Send/>}
+                                            disabled={loading || !token || !email}
+                                            startIcon={loading ? <CircularProgress size={18}/> : <LockReset/>}
                                             sx={{
                                                 borderRadius: 2,
                                                 py: 1.2,
@@ -334,7 +405,7 @@ const ForgotPassword = () => {
                                                 }
                                             }}
                                         >
-                                            {loading ? 'Sending...' : 'Send Reset Link'}
+                                            {loading ? 'Resetting...' : 'Reset Password'}
                                         </Button>
                                     </Stack>
                                 </Box>
@@ -382,4 +453,4 @@ const ForgotPassword = () => {
     );
 };
 
-export default ForgotPassword;
+export default ResetPassword;

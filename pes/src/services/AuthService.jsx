@@ -132,7 +132,7 @@ export const authService = {
   // Forgot password
   async forgotPassword(email) {
     try {
-      const response = await axiosClient.post('/auth/pass/forgot', { email });
+      const response = await axiosClient.post('/auth-api/api/auth/pass/forgot', { email });
       return {
         success: true,
         message: response.data?.message || 'Password reset link sent to your email'
@@ -149,7 +149,7 @@ export const authService = {
   // Reset password
   async resetPassword(token, newPassword) {
     try {
-      const response = await axiosClient.post('/auth/pass/reset', {
+      const response = await axiosClient.post('/auth-api/api/auth/pass/reset', {
         token,
         newPassword
       });

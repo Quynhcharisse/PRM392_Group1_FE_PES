@@ -12,6 +12,8 @@ const ProtectedRoute = lazy(() => import('./config/ProtectedRoute.jsx'))
 const Home = lazy(() => import('./components/auth/Home.jsx'))
 const SignIn = lazy(() => import('./components/auth/SignIn.jsx'))
 const SignUp = lazy(() => import('./components/auth/SignUp.jsx'))
+const ForgotPassword = lazy(() => import('./components/auth/ForgotPassword.jsx'))
+const ResetPassword = lazy(() => import('./components/auth/ResetPassword.jsx'))
 const MobileInfo = lazy(() => import('./components/auth/MobileInfo.jsx'))
 
 const UserProfile = lazy(() => import('./components/account/UserProfile.jsx'))
@@ -222,6 +224,20 @@ const router = createBrowserRouter([{
             element: (
                 <Suspense fallback={<LoadingFallback/>}>
                     <SignUp/>
+                </Suspense>
+            )
+        }, {
+            path: 'forgot-password',
+            element: (
+                <Suspense fallback={<LoadingFallback/>}>
+                    <ForgotPassword/>
+                </Suspense>
+            )
+        }, {
+            path: 'reset-password',
+            element: (
+                <Suspense fallback={<LoadingFallback/>}>
+                    <ResetPassword/>
                 </Suspense>
             )
         }],
