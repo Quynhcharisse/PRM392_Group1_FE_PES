@@ -1,7 +1,7 @@
 import axios from "axios"
 
 // Set base URL from environment configuration
-axios.defaults.baseURL = "https://pesapp.orangeglacier-1e02abb7.southeastasia.azurecontainerapps.io/"
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 
 const axiosClient = axios.create({
     baseURL: axios.defaults.baseURL, 
