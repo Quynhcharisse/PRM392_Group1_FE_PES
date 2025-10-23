@@ -6,13 +6,21 @@
   <component name="ChangeListManager">
     <list default="true" id="2787666c-687a-4c19-b5bc-67d2411ae2c4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/.env" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/config/APIConfig.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/config/APIConfig.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/account/ChangePassword.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/account/ChangePassword.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/account/UserProfile.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/account/UserProfile.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/templates/PageTemplate.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/templates/PageTemplate.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JSX File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -37,23 +45,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature-design-component-ui",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Semester 8/PRM392/Preschool Enrollment System/Project",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.dev.executor": "Run",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.2.6\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature-design-component-ui&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Semester 8/PRM392/Preschool Enrollment System/Project&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.2.6\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Semester 8\PRM392\Preschool Enrollment System\Project\pes" />
@@ -101,7 +109,9 @@
       <workItem from="1760639007295" duration="261000" />
       <workItem from="1760687732642" duration="23000" />
       <workItem from="1760955138379" duration="590000" />
-      <workItem from="1761212144072" duration="3478000" />
+      <workItem from="1761212144072" duration="4035000" />
+      <workItem from="1761216966089" duration="3766000" />
+      <workItem from="1761232273664" duration="1954000" />
     </task>
     <servers />
   </component>

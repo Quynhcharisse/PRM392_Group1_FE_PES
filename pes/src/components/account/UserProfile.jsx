@@ -1,6 +1,5 @@
 import {getDashboardRoute} from "@/constants/routes";
-import {Button, Spinner} from "@atoms";
-import {authService} from "@services/AuthService.jsx";
+import {Spinner} from "@atoms";
 import {accountService} from "@services/AccountService.jsx";
 import {getCurrentTokenData} from "@services/JWTService";
 import {PageTemplate} from "@templates";
@@ -13,19 +12,14 @@ import {
     Card,
     CardContent,
     Chip,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
     IconButton,
     Stack,
-    TextField,
     Tooltip,
-    Typography
+    Typography,
+    Button
 } from "@mui/material";
 import {
     AccountCircle as AccountIcon,
-    Close as CloseIcon,
     CreditCard as IdCardIcon,
     Edit as EditIcon,
     Email as EmailIcon,
@@ -38,6 +32,7 @@ import {
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import EditProfileForm from "./EditProfileForm.jsx";
+import ChangePassword from "./ChangePassword.jsx";
 
 // Validation rules
 const VALIDATION_RULES = {
@@ -109,13 +104,6 @@ const UserProfile = () => {
         avatarUrl: "",
     });
 
-    // Password reset form
-    const [passwordData, setPasswordData] = useState({
-        email: "",
-        password: "",
-        confirmPassword: "",
-    });
-
     useEffect(() => {
         loadProfile();
     }, []);
@@ -144,11 +132,7 @@ const UserProfile = () => {
                 avatarUrl: profileData.avatarUrl || "",
             });
 
-            setPasswordData((prev) => ({
-                ...prev,
-                email: profileData.email || "",
-            }));
-
+            // eslint-disable-next-line no-unused-vars
         } catch (error) {
             setError("Failed to load profile. Please try again.");
         } finally {
@@ -237,36 +221,14 @@ const UserProfile = () => {
         }
     };
 
-    const handlePasswordReset = async () => {
-        try {
-            // Validate passwords
-            if (passwordData.password !== passwordData.confirmPassword) {
-                setError("Passwords do not match!");
-                return;
-            }
-
-            if (passwordData.password.length < 6) {
-                setError("Password must be at least 6 characters!");
-                return;
-            }
-
-            setSaving(true);
-            setError("");
-
-            await authService.resetPassword({
-                email: passwordData.email,
-                password: passwordData.password,
-                confirmPassword: passwordData.confirmPassword,
-            });
-
-            setSuccess("Password changed successfully!");
-            setShowPasswordReset(false);
+    const handlePasswordChangeSuccess = (success) => {
+        if (success) {
             setIsFirstLogin(false);
-        } catch (error) {
-            setError("Password reset failed. Please try again.");
-        } finally {
-            setSaving(false);
+            setSuccess("Password changed successfully!");
+            // Clear success message after 3 seconds
+            setTimeout(() => setSuccess(""), 3000);
         }
+        setShowPasswordReset(false);
     };
 
     const handleContinueToDashboard = () => {
@@ -289,21 +251,6 @@ const UserProfile = () => {
             return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
         } catch {
             return 'N/A';
-        }
-    };
-
-    const getRoleColor = (role) => {
-        switch (role?.toUpperCase()) {
-            case 'HR':
-                return '#e91e63';
-            case 'EDUCATION':
-                return '#2196f3';
-            case 'PARENT':
-                return '#4caf50';
-            case 'TEACHER':
-                return '#ff9800';
-            default:
-                return '#757575';
         }
     };
 
@@ -376,14 +323,25 @@ const UserProfile = () => {
             }
             actions={
                 <Button
-                    variant="outline"
                     onClick={() => setShowPasswordReset(true)}
+                    variant="primary"
+                    startIcon={<KeyIcon sx={{ fontSize: '1rem' }} />}
                     sx={{
-                        borderRadius: 2,
+                        borderRadius: '80px',
+                        px: 3,
+                        py: 1.5,
+                        fontWeight: 600,
                         textTransform: 'none',
-                        fontWeight: 600
+                        fontSize: '0.875rem',
+                        borderColor: '#0038A5',
+                        color: 'white',
+                        backgroundColor: 'blue',
+                        '&:hover': {
+                            borderColor: '#0038A5',
+                            backgroundColor: '#f0f4ff',
+                            color: '#0038A5'
+                        }
                     }}
-                    startIcon={<KeyIcon/>}
                 >
                     Change Password
                 </Button>
@@ -467,7 +425,6 @@ const UserProfile = () => {
                                             identityNumber: profile?.identityNumber || "",
                                             avatarUrl: profile?.avatarUrl || "",
                                         };
-                                        console.log('🚀 Opening Edit Form with data:', newFormData);
                                         setFormData(newFormData);
                                         setFormErrors({}); // Clear any previous errors
                                         setEditing(true);
@@ -484,7 +441,6 @@ const UserProfile = () => {
 
                         <CardContent sx={{p: 3}}>
                             <Stack spacing={3}>
-                                {/* First Login Alert */}
                                 {isFirstLogin && (
                                     <Alert severity="warning" sx={{borderRadius: 2}}>
                                         <AlertTitle>First Time Login</AlertTitle>
@@ -676,125 +632,12 @@ const UserProfile = () => {
                     </Card>
                 </Box>
             </Box>
-
-            {/* Password Reset Dialog */}
-            <Dialog
+            {/* Change Password Dialog */}
+            <ChangePassword
                 open={showPasswordReset}
-                onClose={() => !isFirstLogin && setShowPasswordReset(false)}
-                maxWidth="sm"
-                fullWidth
-                slotProps={{
-                    paper: {
-                        sx: {
-                            borderRadius: 3,
-                            boxShadow: '0 24px 48px rgba(0,0,0,0.12)'
-                        }
-                    }
-                }}
-            >
-                <DialogTitle sx={{
-                    pb: 2,
-                    borderBottom: `1px solid ${alpha(brandColor, 0.12)}`,
-                    background: alpha(brandColor, 0.03)
-                }}>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
-                        <KeyIcon sx={{color: brandColor}}/>
-                        <Typography variant="h6" sx={{fontWeight: 700, color: brandColor}}>
-                            Change Password
-                        </Typography>
-                        {!isFirstLogin && (
-                            <IconButton
-                                onClick={() => setShowPasswordReset(false)}
-                                sx={{ml: 'auto'}}
-                            >
-                                <CloseIcon/>
-                            </IconButton>
-                        )}
-                    </Box>
-                </DialogTitle>
-
-                <DialogContent sx={{p: 3}}>
-                    <Stack spacing={3} sx={{mt: 1}}>
-                        <TextField
-                            fullWidth
-                            label="Email"
-                            type="email"
-                            value={passwordData.email}
-                            disabled
-                            variant="outlined"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: 2,
-                                    backgroundColor: 'grey.50'
-                                }
-                            }}
-                        />
-
-                        <TextField
-                            fullWidth
-                            label="New Password"
-                            type="password"
-                            value={passwordData.password}
-                            onChange={(e) =>
-                                setPasswordData((prev) => ({
-                                    ...prev,
-                                    password: e.target.value,
-                                }))
-                            }
-                            variant="outlined"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: 2
-                                }
-                            }}
-                        />
-
-                        <TextField
-                            fullWidth
-                            label="Confirm Password"
-                            type="password"
-                            value={passwordData.confirmPassword}
-                            onChange={(e) =>
-                                setPasswordData((prev) => ({
-                                    ...prev,
-                                    confirmPassword: e.target.value,
-                                }))
-                            }
-                            variant="outlined"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: 2
-                                }
-                            }}
-                        />
-                    </Stack>
-                </DialogContent>
-
-                <DialogActions sx={{p: 3, gap: 2}}>
-                    {!isFirstLogin && (
-                        <Button
-                            variant="outline"
-                            onClick={() => setShowPasswordReset(false)}
-                            sx={{borderRadius: 2, textTransform: 'none'}}
-                        >
-                            Cancel
-                        </Button>
-                    )}
-                    <Button
-                        variant="primary"
-                        onClick={handlePasswordReset}
-                        loading={saving}
-                        sx={{
-                            borderRadius: 2,
-                            textTransform: 'none',
-                            fontWeight: 600,
-                            px: 4
-                        }}
-                    >
-                        Change Password
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                onClose={handlePasswordChangeSuccess}
+                isFirstLogin={isFirstLogin}
+            />
 
             {/* Edit Profile Form */}
             <EditProfileForm

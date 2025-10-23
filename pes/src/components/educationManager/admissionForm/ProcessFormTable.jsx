@@ -1,29 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import {
     Box,
-    Typography,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    IconButton,
     Chip,
-    CircularProgress,
-    Alert,
-    Card,
-    CardContent,
+    IconButton,
     FormControl,
     InputLabel,
     Select,
     MenuItem,
-    Stack
+    Stack,
+    Tooltip
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import educationService from '@services/EducationService.jsx';
 import ProcessFormDetailWrapper from './ProcessFormDetail';
+import { CustomDataTable, PageHeader } from '@components/templates';
 
 export default function ProcessFormTable() {
     const [processFormList, setProcessFormList] = useState([]);
@@ -44,14 +35,13 @@ export default function ProcessFormTable() {
         if (selectedTermId) {
             loadProcessFormList();
         }
-    }, [selectedTermId]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [selectedTermId]);
 
     const loadTermList = async () => {
         try {
             setTermLoading(true);
             const response = await educationService.getTerm();
             setTermList(response || []);
-            // Auto select first term if available
             if (response && response.length > 0) {
                 setSelectedTermId(response[0].id.toString());
             }
@@ -99,10 +89,9 @@ export default function ProcessFormTable() {
         });
     };
 
-    const handleViewDetail = (formId) => {
-        const formData = processFormList.find(form => form.id === formId);
-        setSelectedFormId(formId);
-        setSelectedFormData(formData);
+    const handleViewDetail = (row) => {
+        setSelectedFormId(row.id);
+        setSelectedFormData(row);
         setDetailDialogOpen(true);
     };
 
@@ -110,130 +99,152 @@ export default function ProcessFormTable() {
         setDetailDialogOpen(false);
         setSelectedFormId(null);
         setSelectedFormData(null);
-        // Reload the form list to get updated data
         if (selectedTermId) {
             loadProcessFormList();
         }
     };
 
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
-                <CircularProgress />
-            </Box>
-        );
-    }
+    // Define table columns
+    const columns = [
+        {
+            id: 'id',
+            label: 'ID',
+            minWidth: 80,
+            sortable: true
+        },
+        {
+            id: 'student.name',
+            label: 'Student Name',
+            minWidth: 170,
+            sortable: true,
+            render: (value) => value || 'N/A'
+        },
+        {
+            id: 'parentAccount.name',
+            label: 'Parent Name',
+            minWidth: 170,
+            sortable: true,
+            render: (value) => value || 'N/A'
+        },
+        {
+            id: 'parentAccount.email',
+            label: 'Parent Email',
+            minWidth: 200,
+            sortable: true,
+            render: (value) => value || 'N/A'
+        },
+        {
+            id: 'status',
+            label: 'Status',
+            minWidth: 150,
+            align: 'center',
+            sortable: true,
+            render: (value) => (
+                <Chip
+                    label={value || 'Unknown'}
+                    color={getStatusColor(value)}
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontWeight: 600 }}
+                />
+            )
+        },
+        {
+            id: 'submittedDate',
+            label: 'Submitted Date',
+            minWidth: 150,
+            sortable: true,
+            render: (value) => formatDate(value)
+        }
+    ];
 
-    if (error) {
-        return (
-            <Box p={3}>
-                <Alert severity="error">{error}</Alert>
-            </Box>
-        );
-    }
+    // Render action buttons for each row
+    const renderActions = (row) => (
+        <Tooltip title="View Details">
+            <IconButton
+                color="primary"
+                onClick={() => handleViewDetail(row)}
+                size="small"
+                sx={{
+                    '&:hover': {
+                        bgcolor: 'primary.light',
+                        color: 'white',
+                        transform: 'scale(1.1)'
+                    },
+                    transition: 'all 0.2s'
+                }}
+            >
+                <VisibilityIcon />
+            </IconButton>
+        </Tooltip>
+    );
 
     return (
-        <Box p={3}>
-            <Card>
-                <CardContent>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
-                        <Typography variant="h5" fontWeight={600}>
-                            Process Form List
-                        </Typography>
-                        
-                        <FormControl sx={{ minWidth: 300 }}>
-                            <InputLabel>Select Term</InputLabel>
-                            <Select
-                                value={selectedTermId}
-                                label="Select Term"
-                                onChange={(e) => setSelectedTermId(e.target.value)}
-                                disabled={termLoading}
-                            >
-                                {termList.map((term) => (
-                                    <MenuItem key={term.id} value={term.id.toString()}>
-                                        {term.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Stack>
-                    
-                    <TableContainer component={Paper} sx={{ boxShadow: 2 }}>
-                        <Table>
-                            <TableHead>
-                                <TableRow sx={{ bgcolor: '#f5f5f5' }}>
-                                    <TableCell sx={{ fontWeight: 600 }}>ID</TableCell>
-                                    <TableCell sx={{ fontWeight: 600 }}>Student Name</TableCell>
-                                    <TableCell sx={{ fontWeight: 600 }}>Parent Name</TableCell>
-                                    <TableCell sx={{ fontWeight: 600 }}>Parent Email</TableCell>
-                                    <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                                    <TableCell sx={{ fontWeight: 600 }}>Submitted Date</TableCell>
-                                    <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {processFormList.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
-                                            <Typography variant="body1" color="text.secondary">
-                                                No process forms found
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    processFormList.map((form) => (
-                                        <TableRow key={form.id} hover>
-                                            <TableCell>{form.id}</TableCell>
-                                            <TableCell>
-                                                <Typography variant="body2" fontWeight={500}>
-                                                    {form.student?.name || 'N/A'}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Typography variant="body2">
-                                                    {form.parentAccount?.name || 'N/A'}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Typography variant="body2">
-                                                    {form.parentAccount?.email || 'N/A'}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Chip
-                                                    label={form.status || 'Unknown'}
-                                                    color={getStatusColor(form.status)}
-                                                    size="small"
-                                                    variant="outlined"
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <Typography variant="body2">
-                                                    {formatDate(form.submittedDate)}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell>
-                                                <IconButton
-                                                    color="primary"
-                                                    onClick={() => handleViewDetail(form.id)}
-                                                    sx={{
-                                                        '&:hover': {
-                                                            bgcolor: 'primary.light',
-                                                            color: 'white'
-                                                        }
-                                                    }}
-                                                >
-                                                    <VisibilityIcon />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </CardContent>
-            </Card>
+        <Box>
+            {/* Page Header */}
+            <PageHeader
+                title="Process Forms"
+                subtitle="Manage and review student admission forms"
+                icon={<AssignmentIcon sx={{ fontSize: 32, color: 'white' }} />}
+                breadcrumbs={[
+                    { label: 'Home', href: '/' },
+                    { label: 'Education Management' },
+                    { label: 'Process Forms' }
+                ]}
+            >
+                {/* Term Filter in Header */}
+                <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 2 }}>
+                    <FormControl sx={{ minWidth: 300 }} size="small">
+                        <InputLabel sx={{ color: 'white' }}>Select Term</InputLabel>
+                        <Select
+                            value={selectedTermId}
+                            label="Select Term"
+                            onChange={(e) => setSelectedTermId(e.target.value)}
+                            disabled={termLoading}
+                            sx={{
+                                color: 'white',
+                                '.MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'rgba(255, 255, 255, 0.5)'
+                                },
+                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'rgba(255, 255, 255, 0.8)'
+                                },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'white'
+                                },
+                                '.MuiSvgIcon-root': {
+                                    color: 'white'
+                                }
+                            }}
+                        >
+                            {termList.map((term) => (
+                                <MenuItem key={term.id} value={term.id.toString()}>
+                                    {term.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Stack>
+            </PageHeader>
+
+            {/* Data Table */}
+            <Box px={3}>
+                <CustomDataTable
+                    columns={columns}
+                    rows={processFormList}
+                    loading={loading}
+                    emptyMessage="No process forms found for the selected term"
+                    renderActions={renderActions}
+                    onRowClick={handleViewDetail}
+                    sortable={true}
+                    defaultOrderBy="submittedDate"
+                    defaultOrder="desc"
+                    sx={{
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                        borderRadius: 2
+                    }}
+                />
+            </Box>
             
             {/* Process Form Detail Dialog */}
             <ProcessFormDetailWrapper

@@ -1,18 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Chip, CircularProgress, Card, Avatar, Stack, Button, FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import {
+    Box,
+    Typography,
+    Chip,
+    CircularProgress,
+    Card,
+    Avatar,
+    Stack,
+    Button,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Grid
+} from '@mui/material';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import SchoolIcon from '@mui/icons-material/School';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import PeopleIcon from '@mui/icons-material/People';
 import educationService from '@services/EducationService.jsx';
+import { PageHeader } from '@components/templates';
 
 export default function ClassDetail({ classData: propClassData }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
+    
     let initialClassData = propClassData;
     if (!initialClassData && location.state && location.state.classData) {
         initialClassData = location.state.classData;
     }
+    
     const [classData, setClassData] = useState(initialClassData || null);
     const [loading, setLoading] = useState(!initialClassData);
     const [error, setError] = useState("");
@@ -30,7 +56,6 @@ export default function ClassDetail({ classData: propClassData }) {
             const response = await educationService.viewWeekList(classId);
             if (response && Array.isArray(response)) {
                 setWeekList(response);
-                // Set first week as default selection if available
                 if (response.length > 0) {
                     setSelectedWeek(response[0].id.toString());
                 }
@@ -74,22 +99,18 @@ export default function ClassDetail({ classData: propClassData }) {
             .finally(() => setLoading(false));
     }, [id, classData]);
 
-    // Load week list when classData is available
     useEffect(() => {
         if (classData && classData.id) {
             loadWeekList(classData.id);
         }
     }, [classData]);
 
-    // Load activity list when selectedWeek changes
     useEffect(() => {
         if (selectedWeek) {
             loadActivityList(selectedWeek);
         }
     }, [selectedWeek]);
 
-
-    // Helper function to format date
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-GB', {
@@ -99,38 +120,32 @@ export default function ClassDetail({ classData: propClassData }) {
         });
     };
 
-    // Helper function to format week display text
     const formatWeekDisplay = (week) => {
         const startDate = formatDate(week.startDate);
         const endDate = formatDate(week.endDate);
         return `${week.weekName} (${startDate} - ${endDate})`;
     };
 
-    // Helper function to generate time slots
     const generateTimeSlots = () => {
         return [
             "07:00-08:00",
-            "08:00-09:00", 
+            "08:00-09:00",
             "09:00-10:00",
             "14:00-15:00",
             "15:00-16:00"
         ];
     };
 
-    // Helper function to get days of week
     const getDaysOfWeek = () => {
         return ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"];
     };
 
-    // Helper function to check if activity exists for specific day and time
     const getActivityForSlot = (day, timeSlot) => {
         const [startTime, endTime] = timeSlot.split('-');
         const expectedStartTime = `${startTime}:00`;
         const expectedEndTime = `${endTime}:00`;
         
-        // Find activity that matches day and time
         const foundActivity = activityList.find(activity => {
-            // Convert both to lowercase for case-insensitive comparison
             const dayMatch = activity.dayOfWeek.toLowerCase() === day.toLowerCase();
             const startTimeMatch = activity.startTime === expectedStartTime;
             const endTimeMatch = activity.endTime === expectedEndTime;
@@ -141,48 +156,34 @@ export default function ClassDetail({ classData: propClassData }) {
         return foundActivity;
     };
 
-    // Helper function to get activity name for display
     const getActivityName = (day, timeSlot) => {
         const activity = getActivityForSlot(day, timeSlot);
         return activity ? activity.name : null;
     };
 
-    // Helper function to get date for a specific day
-    const getDateForDay = (day) => {
-        const activity = activityList.find(activity => 
-            activity.dayOfWeek.toLowerCase() === day.toLowerCase()
-        );
-        return activity ? activity.date : null;
-    };
-
-    // Helper function to get all dates for the week
     const getWeekDates = () => {
         if (activityList.length === 0) return {};
         
-        // Get the first activity date to determine the week
         const firstActivity = activityList[0];
         const startDate = new Date(firstActivity.date);
         
-        // Calculate the start of the week (Monday)
         const dayOfWeek = startDate.getDay();
-        const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Sunday = 0, Monday = 1
+        const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
         const mondayDate = new Date(startDate);
         mondayDate.setDate(startDate.getDate() + mondayOffset);
         
-        // Generate dates for the week
         const weekDates = {};
         const dayNames = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
         
         dayNames.forEach((dayName, index) => {
             const date = new Date(mondayDate);
             date.setDate(mondayDate.getDate() + index);
-            weekDates[dayName] = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+            weekDates[dayName] = date.toISOString().split('T')[0];
         });
         
         return weekDates;
     };
 
-    // Helper function to format date for display
     const formatDateForDisplay = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
@@ -193,351 +194,263 @@ export default function ClassDetail({ classData: propClassData }) {
         });
     };
 
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+                <CircularProgress />
+            </Box>
+        );
+    }
 
-    if (loading) return <Box p={4} textAlign="center"><CircularProgress /></Box>;
-    if (error) return <Box p={4} color="#c62828">{error}</Box>;
+    if (error) {
+        return (
+            <Box p={4} textAlign="center">
+                <Typography color="error">{error}</Typography>
+            </Box>
+        );
+    }
+
     if (!classData) return null;
+
     return (
-        <Box minHeight="80vh" display="flex" flexDirection="column" alignItems="center" justifyContent="center" bgcolor="#f7fbff" p={3}>
-            <Card sx={{ 
-                maxWidth: 1200, 
-                width: '100%', 
-                minHeight: 600,
-                mt: 4, 
-                boxShadow: 6, 
-                borderRadius: 6, 
-                p: 4,
-                background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                position: 'relative'
-            }}>
-                <Button 
-                    variant="contained" 
-                    color="primary" 
-                    sx={{ 
-                        position: 'absolute',
-                        top: 20,
-                        left: 20,
-                        borderRadius: 2, 
-                        px: 4,
-                        py: 1.5,
-                        minWidth: 100,
-                        fontSize: '0.95rem',
-                        fontWeight: 600,
-                        textTransform: 'none',
-                        boxShadow: 2,
-                        zIndex: 10,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                        '&:hover': {
-                            boxShadow: 4,
-                            transform: 'translateY(-1px)',
-                            transition: 'all 0.2s ease'
-                        }
-                    }} 
-                    onClick={() => navigate('/education/classes')}
-                    startIcon={<ArrowBackIcon />}
-                >
-                    Back
-                </Button>
-                <Stack direction="column" alignItems="center" spacing={3}>
-                    <Avatar sx={{ 
-                        bgcolor: '#8bd17c', 
-                        width: 90, 
-                        height: 90,
-                        boxShadow: 3,
-                        border: '4px solid #ffffff'
-                    }}>
-                        <SchoolIcon sx={{ fontSize: 40 }} />
-                    </Avatar>
-                    <Typography variant="h4" fontWeight={700} color="#1976d2" gutterBottom sx={{ textAlign: 'center' }}>
-                        Class Information
-                    </Typography>
-                    <Stack spacing={3} sx={{ width: '100%', px: 2 }}>
-                            <Stack direction="row" spacing={2}>
-                                <Box sx={{ 
-                                    p: 2, 
-                                    borderRadius: 2, 
-                                    bgcolor: '#f5f5f5',
-                                    border: '1px solid #e0e0e0',
-                                    flex: 2
-                                }}>
-                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Name:</Typography>
-                                        <Typography variant="body1" fontWeight={500} color="#424242" sx={{ maxWidth: '60%', textAlign: 'right' }}>
-                                            {classData.name}
-                                        </Typography>
-                                    </Stack>
-                                </Box>
+        <Box>
+            {/* Page Header */}
+            <PageHeader
+                title={classData.name || "Class Details"}
+                subtitle={`Academic Year: ${classData.academicYear} • ${classData.numberStudent || 0} Students`}
+                icon={<SchoolIcon sx={{ fontSize: 32, color: 'white' }} />}
+                breadcrumbs={[
+                    { label: 'Home', href: '/' },
+                    { label: 'Education Management' },
+                    { label: 'Classes', href: '/education/classes' },
+                    { label: classData.name || 'Detail' }
+                ]}
+                actions={[
+                    {
+                        label: 'Back to Classes',
+                        onClick: () => navigate('/education/classes'),
+                        variant: 'outlined',
+                        icon: <ArrowBackIcon />
+                    }
+                ]}
+                badge={
+                    <Chip
+                        label={String(classData.status).charAt(0).toUpperCase() + String(classData.status).slice(1)}
+                        color={classData.status === 'active' ? 'success' : 'default'}
+                        sx={{ bgcolor: 'rgba(255,255,255,0.9)', fontWeight: 600 }}
+                    />
+                }
+            />
 
-                                <Box sx={{ 
-                                    p: 2, 
-                                    borderRadius: 2, 
-                                    bgcolor: '#f5f5f5',
-                                    border: '1px solid #e0e0e0',
-                                    flex: 1
-                                }}>
-                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Academic Year:</Typography>
-                                        <Typography variant="h6" fontWeight={700} color="#1976d2">{classData.academicYear}</Typography>
-                                    </Stack>
-                                </Box>
-
-                                <Box sx={{ 
-                                    p: 2, 
-                                    borderRadius: 2, 
-                                    bgcolor: '#f5f5f5',
-                                    border: '1px solid #e0e0e0',
-                                    flex: 1
-                                }}>
-                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Status:</Typography>
-                                        <Chip 
-                                            label={String(classData.status).charAt(0).toUpperCase() + String(classData.status).slice(1)} 
-                                            color={classData.status === 'active' ? 'success' : 'default'}
-                                            sx={{ 
-                                                fontWeight: 600,
-                                                fontSize: '0.9rem',
-                                                height: 32,
-                                                px: 2
-                                            }} 
-                                        />
-                            </Stack>
-                                </Box>
-                            </Stack>
-
-                            <Stack direction="row" spacing={2}>
-                                <Box sx={{ 
-                                    p: 2, 
-                                    borderRadius: 2, 
-                                    bgcolor: '#f5f5f5',
-                                    border: '1px solid #e0e0e0',
-                                    flex: 1
-                                }}>
-                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Students:</Typography>
-                                        <Typography variant="h6" fontWeight={700} color="#2e7d32">{classData.numberStudent || 0}</Typography>
-                                    </Stack>
-                                </Box>
-
-                                <Box sx={{ 
-                                    p: 2, 
-                                    borderRadius: 2, 
-                                    bgcolor: '#f5f5f5',
-                                    border: '1px solid #e0e0e0',
-                                    flex: 1
-                                }}>
-                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Start Date:</Typography>
-                                        <Typography variant="h6" fontWeight={700} color="#1976d2">{formatDate(classData.startDate)}</Typography>
-                                    </Stack>
-                                </Box>
-
-                                <Box sx={{ 
-                                    p: 2, 
-                                    borderRadius: 2, 
-                                    bgcolor: '#f5f5f5',
-                                    border: '1px solid #e0e0e0',
-                                    flex: 1
-                                }}>
-                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Cost:</Typography>
-                                        <Typography variant="h6" fontWeight={700} color="#d32f2f">
-                                            {classData.cost ? new Intl.NumberFormat('vi-VN', {
-                                                style: 'currency',
-                                                currency: 'VND'
-                                            }).format(classData.cost) : 'N/A'}
-                                        </Typography>
-                                    </Stack>
-                                </Box>
-                            </Stack>
-
-                            <Stack direction="row" spacing={2}>
-                                <Box sx={{ 
-                                    p: 2, 
-                                    borderRadius: 2, 
-                                    bgcolor: '#f5f5f5',
-                                    border: '1px solid #e0e0e0',
-                                    flex: 1
-                                }}>
-                                    <Stack direction="column" spacing={1}>
-                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Teacher:</Typography>
-                                        <Typography variant="body1" fontWeight={500} color="#424242">
-                                            {classData.teacherName || 'N/A'}
-                                        </Typography>
-                                        <Typography variant="body2" color="#666">
-                                            {classData.teacherEmail || 'N/A'}
-                                        </Typography>
-                                    </Stack>
-                                </Box>
-
-                                <Box sx={{ 
-                                    p: 2, 
-                                    borderRadius: 2, 
-                                    bgcolor: '#f5f5f5',
-                                    border: '1px solid #e0e0e0',
-                                    flex: 2
-                                }}>
-                                    <Stack direction="column" spacing={2}>
-                                        <Typography variant="subtitle1" fontWeight={600} color="#424242">Weeks:</Typography>
-                                        <FormControl fullWidth>
-                                            <InputLabel>Select Week</InputLabel>
-                                        <Select
-                                            value={selectedWeek || ""}
-                                            onChange={(e) => setSelectedWeek(e.target.value)}
-                                            label="Select Week"
-                                            disabled={weekLoading || weekList.length === 0}
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 2,
-                                                    backgroundColor: '#ffffff'
-                                                }
-                                            }}
-                                        >
-                                                {weekLoading ? (
-                                                    <MenuItem disabled>
-                                                        <CircularProgress size={20} />
-                                                        <Typography variant="body2" sx={{ ml: 1 }}>Loading weeks...</Typography>
-                                                    </MenuItem>
-                                                ) : weekList.length === 0 ? (
-                                                    <MenuItem disabled>No weeks available</MenuItem>
-                                                ) : (
-                                                    weekList.map((week) => (
-                                                        <MenuItem key={week.id} value={week.id.toString()}>
-                                                            {formatWeekDisplay(week)}
-                                                        </MenuItem>
-                                                    ))
-                                                )}
-                                            </Select>
-                                        </FormControl>
-                                    </Stack>
-                                </Box>
-                            </Stack>
-
-                            {/* Schedule Table */}
-                            {selectedWeek && (
-                                <Box sx={{ 
-                                    mt: 3,
-                                    p: 2, 
-                                    borderRadius: 2, 
-                                    bgcolor: '#f5f5f5',
-                                    border: '1px solid #e0e0e0'
-                                }}>
-                                    <Typography variant="h6" fontWeight={600} color="#424242" sx={{ mb: 2 }}>
-                                        Weekly Schedule
+            {/* Content */}
+            <Box px={3}>
+                <Grid container spacing={3}>
+                    {/* Class Information Cards */}
+                    <Grid item xs={12} md={6}>
+                        <Card sx={{ p: 3, height: '100%', boxShadow: 3, borderRadius: 2 }}>
+                            <Stack spacing={2}>
+                                <Stack direction="row" alignItems="center" spacing={1}>
+                                    <CalendarMonthIcon color="primary" />
+                                    <Typography variant="h6" fontWeight={600} color="primary">
+                                        Class Information
                                     </Typography>
-                                    
-                                    {activityLoading ? (
-                                        <Box display="flex" justifyContent="center" p={3}>
-                                            <CircularProgress />
-                                            <Typography variant="body2" sx={{ ml: 2 }}>Loading schedule...</Typography>
-                                        </Box>
+                                </Stack>
+                                
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+                                    <Typography variant="body2" color="text.secondary">Start Date:</Typography>
+                                    <Typography variant="body1" fontWeight={600}>{formatDate(classData.startDate)}</Typography>
+                                </Box>
+                                
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+                                    <Typography variant="body2" color="text.secondary">Number of Weeks:</Typography>
+                                    <Chip label={classData.numberOfWeeks || 0} color="info" size="small" />
+                                </Box>
+                                
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+                                    <Typography variant="body2" color="text.secondary">Cost:</Typography>
+                                    <Typography variant="body1" fontWeight={700} color="error">
+                                        {classData.cost ? new Intl.NumberFormat('vi-VN', {
+                                            style: 'currency',
+                                            currency: 'VND'
+                                        }).format(classData.cost) : 'N/A'}
+                                    </Typography>
+                                </Box>
+                            </Stack>
+                        </Card>
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                        <Card sx={{ p: 3, height: '100%', boxShadow: 3, borderRadius: 2 }}>
+                            <Stack spacing={2}>
+                                <Stack direction="row" alignItems="center" spacing={1}>
+                                    <PeopleIcon color="primary" />
+                                    <Typography variant="h6" fontWeight={600} color="primary">
+                                        Teacher Information
+                                    </Typography>
+                                </Stack>
+                                
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+                                    <Typography variant="body2" color="text.secondary">Name:</Typography>
+                                    <Typography variant="body1" fontWeight={600}>{classData.teacherName || 'N/A'}</Typography>
+                                </Box>
+                                
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+                                    <Typography variant="body2" color="text.secondary">Email:</Typography>
+                                    <Typography variant="body1">{classData.teacherEmail || 'N/A'}</Typography>
+                                </Box>
+                            </Stack>
+                        </Card>
+                    </Grid>
+
+                    {/* Week Selector */}
+                    <Grid item xs={12}>
+                        <Card sx={{ p: 3, boxShadow: 3, borderRadius: 2 }}>
+                            <FormControl fullWidth>
+                                <InputLabel>Select Week</InputLabel>
+                                <Select
+                                    value={selectedWeek || ""}
+                                    onChange={(e) => setSelectedWeek(e.target.value)}
+                                    label="Select Week"
+                                    disabled={weekLoading || weekList.length === 0}
+                                >
+                                    {weekLoading ? (
+                                        <MenuItem disabled>
+                                            <CircularProgress size={20} />
+                                            <Typography variant="body2" sx={{ ml: 1 }}>Loading weeks...</Typography>
+                                        </MenuItem>
+                                    ) : weekList.length === 0 ? (
+                                        <MenuItem disabled>No weeks available</MenuItem>
                                     ) : (
-                                        <TableContainer component={Paper} sx={{ 
-                                            bgcolor: '#e8f5e8',
-                                            border: '2px solid #000',
-                                            borderRadius: 1
-                                        }}>
-                                            <Table>
-                                                <TableHead>
-                                                    <TableRow>
+                                        weekList.map((week) => (
+                                            <MenuItem key={week.id} value={week.id.toString()}>
+                                                {formatWeekDisplay(week)}
+                                            </MenuItem>
+                                        ))
+                                    )}
+                                </Select>
+                            </FormControl>
+                        </Card>
+                    </Grid>
+
+                    {/* Schedule Table */}
+                    {selectedWeek && (
+                        <Grid item xs={12}>
+                            <Card sx={{ p: 3, boxShadow: 3, borderRadius: 2 }}>
+                                <Typography variant="h6" fontWeight={600} color="primary" sx={{ mb: 3 }}>
+                                    Weekly Schedule
+                                </Typography>
+                                
+                                {activityLoading ? (
+                                    <Box display="flex" justifyContent="center" p={3}>
+                                        <CircularProgress />
+                                        <Typography variant="body2" sx={{ ml: 2 }}>Loading schedule...</Typography>
+                                    </Box>
+                                ) : (
+                                    <TableContainer component={Paper} sx={{ 
+                                        bgcolor: '#e8f5e8',
+                                        border: '2px solid #000',
+                                        borderRadius: 2
+                                    }}>
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell sx={{ 
+                                                        border: '1px solid #000',
+                                                        bgcolor: '#e8f5e8',
+                                                        fontWeight: 600,
+                                                        textAlign: 'center'
+                                                    }}></TableCell>
+                                                    {getDaysOfWeek().map((day) => {
+                                                        const weekDates = getWeekDates();
+                                                        const dateForDay = weekDates[day];
+                                                        const formattedDate = formatDateForDisplay(dateForDay);
+                                                        
+                                                        return (
+                                                            <TableCell key={day} sx={{ 
+                                                                border: '1px solid #000',
+                                                                bgcolor: '#e8f5e8',
+                                                                fontWeight: 600,
+                                                                textAlign: 'center',
+                                                                py: 2
+                                                            }}>
+                                                                <Stack direction="column" spacing={0.5}>
+                                                                    <Typography variant="body2" fontWeight={600}>
+                                                                        {day}
+                                                                    </Typography>
+                                                                    {formattedDate && (
+                                                                        <Typography variant="caption" color="#666" fontWeight={500}>
+                                                                            {formattedDate}
+                                                                        </Typography>
+                                                                    )}
+                                                                </Stack>
+                                                            </TableCell>
+                                                        );
+                                                    })}
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {generateTimeSlots().map((timeSlot) => (
+                                                    <TableRow key={timeSlot}>
                                                         <TableCell sx={{ 
                                                             border: '1px solid #000',
                                                             bgcolor: '#e8f5e8',
-                                                            fontWeight: 600,
+                                                            fontWeight: 500,
                                                             textAlign: 'center'
-                                                        }}></TableCell>
+                                                        }}>
+                                                            {timeSlot}
+                                                        </TableCell>
                                                         {getDaysOfWeek().map((day) => {
-                                                            const weekDates = getWeekDates();
-                                                            const dateForDay = weekDates[day] || getDateForDay(day);
-                                                            const formattedDate = formatDateForDisplay(dateForDay);
-                                                            
+                                                            const activityName = getActivityName(day, timeSlot);
                                                             return (
-                                                                <TableCell key={day} sx={{ 
+                                                                <TableCell key={`${day}-${timeSlot}`} sx={{ 
                                                                     border: '1px solid #000',
                                                                     bgcolor: '#e8f5e8',
-                                                                    fontWeight: 600,
                                                                     textAlign: 'center',
-                                                                    py: 2
+                                                                    p: 1
                                                                 }}>
-                                                                    <Stack direction="column" spacing={0.5}>
-                                                                        <Typography variant="body2" fontWeight={600}>
-                                                                            {day}
-                                                                        </Typography>
-                                                                        {formattedDate && (
-                                                                            <Typography variant="caption" color="#666" fontWeight={500}>
-                                                                                {formattedDate}
+                                                                    <Box sx={{
+                                                                        bgcolor: '#ffffff',
+                                                                        border: '1px solid #000',
+                                                                        borderRadius: 1,
+                                                                        p: 1,
+                                                                        minHeight: 40,
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'center'
+                                                                    }}>
+                                                                        {activityName ? (
+                                                                            <Typography 
+                                                                                variant="body2" 
+                                                                                fontWeight={500} 
+                                                                                sx={{ 
+                                                                                    textAlign: 'center',
+                                                                                    fontSize: '0.75rem',
+                                                                                    lineHeight: 1.2,
+                                                                                    wordBreak: 'break-word'
+                                                                                }}
+                                                                            >
+                                                                                {activityName}
+                                                                            </Typography>
+                                                                        ) : (
+                                                                            <Typography variant="h6" color="#666">
+                                                                                +
                                                                             </Typography>
                                                                         )}
-                            </Stack>
+                                                                    </Box>
                                                                 </TableCell>
                                                             );
                                                         })}
                                                     </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {generateTimeSlots().map((timeSlot) => (
-                                                        <TableRow key={timeSlot}>
-                                                            <TableCell sx={{ 
-                                                                border: '1px solid #000',
-                                                                bgcolor: '#e8f5e8',
-                                                                fontWeight: 500,
-                                                                textAlign: 'center'
-                                                            }}>
-                                                                {timeSlot}
-                                                            </TableCell>
-                                                            {getDaysOfWeek().map((day) => {
-                                                                const activityName = getActivityName(day, timeSlot);
-                                                                return (
-                                                                    <TableCell key={`${day}-${timeSlot}`} sx={{ 
-                                                                        border: '1px solid #000',
-                                                                        bgcolor: '#e8f5e8',
-                                                                        textAlign: 'center',
-                                                                        p: 1
-                                                                    }}>
-                                                                        <Box sx={{
-                                                                            bgcolor: '#ffffff',
-                                                                            border: '1px solid #000',
-                                                                            borderRadius: 1,
-                                                                            p: 1,
-                                                                            minHeight: 40,
-                                                                            display: 'flex',
-                                                                            alignItems: 'center',
-                                                                            justifyContent: 'center'
-                                                                        }}>
-                                                                            {activityName ? (
-                                                                                <Typography 
-                                                                                    variant="body2" 
-                                                                                    fontWeight={500} 
-                                                                                    sx={{ 
-                                                                                        textAlign: 'center',
-                                                                                        fontSize: '0.75rem',
-                                                                                        lineHeight: 1.2,
-                                                                                        wordBreak: 'break-word'
-                                                                                    }}
-                                                                                >
-                                                                                    {activityName}
-                                                                                </Typography>
-                                                                            ) : (
-                                                                                <Typography variant="h6" color="#666">
-                                                                                    +
-                                                                                </Typography>
-                                                                            )}
-                                                                        </Box>
-                                                                    </TableCell>
-                                                                );
-                                                            })}
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    )}
-                                </Box>
-                            )}
-                            </Stack>
-                </Stack>
-            </Card>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                )}
+                            </Card>
+                        </Grid>
+                    )}
+                </Grid>
+            </Box>
         </Box>
     );
 }

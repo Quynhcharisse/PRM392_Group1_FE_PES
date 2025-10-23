@@ -1,8 +1,14 @@
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { authService } from "@services/AuthService.jsx";
 
 export default function MobileInfo() {
     const navigate = useNavigate();
+    
+    const handleBackToHome = () => {
+        authService.logout();
+        navigate('/');
+    };
     return (
         <Box
             sx={{
@@ -22,8 +28,8 @@ export default function MobileInfo() {
                     Parents and Teachers should perform actions in the mobile application. If you
                     need web access, please contact the administrator.
                 </Typography>
-                <Button variant="contained" onClick={() => navigate('/login')}>
-                    Back to Login
+                <Button variant="contained" onClick={handleBackToHome}>
+                    Back to Home
                 </Button>
             </Paper>
         </Box>
