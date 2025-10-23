@@ -6,10 +6,10 @@ export default function MobileInfo() {
     const navigate = useNavigate();
     
     const handleBackToHome = () => {
-        // Clear all localStorage data completely
-        localStorage.clear();
-        // Also clear sessionStorage
+        // Clear all sessionStorage data (primary)
         sessionStorage.clear();
+        // Clear all localStorage data (backup)
+        localStorage.clear();
         // Clear cookies
         document.cookie.split(";").forEach(function (c) {
             document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");

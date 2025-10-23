@@ -196,7 +196,7 @@ export default function SignIn() {
                         variant="h4"
                         sx={{
                             fontWeight: 800,
-                            background: "linear-gradient(135deg, #FF6B35 0%, #3498DB 100%)",
+                            background: "linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%)",
                             backgroundClip: "text",
                             WebkitBackgroundClip: "text",
                             WebkitTextFillColor: "transparent",

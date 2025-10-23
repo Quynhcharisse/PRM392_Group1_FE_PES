@@ -13,7 +13,8 @@ const axiosClient = axios.create({
 // Request interceptor to add auth token
 axiosClient.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        // Try sessionStorage first, fallback to localStorage
+        const token = sessionStorage.getItem('token') || localStorage.getItem('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -29,6 +30,8 @@ axiosClient.interceptors.response.use(
     response => response,
     async error => {
         if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('user');
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             if (window.location.pathname !== '/login') {
