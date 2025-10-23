@@ -1,6 +1,5 @@
 import {getDashboardRoute} from "@/constants/routes";
-import {Button, Spinner} from "@atoms";
-import {authService} from "@services/AuthService.jsx";
+import {Spinner} from "@atoms";
 import {accountService} from "@services/AccountService.jsx";
 import {getCurrentTokenData} from "@services/JWTService";
 import {PageTemplate} from "@templates";
@@ -16,7 +15,8 @@ import {
     IconButton,
     Stack,
     Tooltip,
-    Typography
+    Typography,
+    Button
 } from "@mui/material";
 import {
     AccountCircle as AccountIcon,
@@ -132,6 +132,7 @@ const UserProfile = () => {
                 avatarUrl: profileData.avatarUrl || "",
             });
 
+            // eslint-disable-next-line no-unused-vars
         } catch (error) {
             setError("Failed to load profile. Please try again.");
         } finally {
@@ -253,21 +254,6 @@ const UserProfile = () => {
         }
     };
 
-    const getRoleColor = (role) => {
-        switch (role?.toUpperCase()) {
-            case 'HR':
-                return '#e91e63';
-            case 'EDUCATION':
-                return '#2196f3';
-            case 'PARENT':
-                return '#4caf50';
-            case 'TEACHER':
-                return '#ff9800';
-            default:
-                return '#757575';
-        }
-    };
-
     const getGenderDisplay = (gender) => {
         const g = (gender || "").toLowerCase();
         if (g === "male") return "Male";
@@ -338,52 +324,23 @@ const UserProfile = () => {
             actions={
                 <Button
                     onClick={() => setShowPasswordReset(true)}
-                    startIcon={<KeyIcon sx={{ fontSize: '1.2rem' }} />}
-                    variant="contained"
-                    disableElevation
+                    variant="primary"
+                    startIcon={<KeyIcon sx={{ fontSize: '1rem' }} />}
                     sx={{
-                        borderRadius: 2.5,
+                        borderRadius: '80px',
+                        px: 3,
+                        py: 1.5,
+                        fontWeight: 600,
                         textTransform: 'none',
-                        fontWeight: 700,
-                        fontSize: '0.95rem',
-                        px: 4,
-                        py: 1.75,
-                        color: 'white !important',
-                        backgroundColor: 'transparent !important',
-                        background: `linear-gradient(135deg, #1e88e5 0%, #5e35b1 100%) !important`,
-                        boxShadow: '0 8px 24px rgba(30, 136, 229, 0.35) !important',
-                        border: 'none !important',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        '&::before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%)',
-                            opacity: 0,
-                            transition: 'opacity 0.3s ease',
-                        },
+                        fontSize: '0.875rem',
+                        borderColor: '#0038A5',
+                        color: 'white',
+                        backgroundColor: 'blue',
                         '&:hover': {
-                            backgroundColor: 'transparent !important',
-                            background: `linear-gradient(135deg, #1976d2 0%, #5e35b1 100%) !important`,
-                            boxShadow: '0 12px 32px rgba(30, 136, 229, 0.45) !important',
-                            transform: 'translateY(-3px)',
-                            '&::before': {
-                                opacity: 1,
-                            }
-                        },
-                        '&:active': {
-                            transform: 'translateY(-1px)',
-                            boxShadow: '0 6px 16px rgba(30, 136, 229, 0.3) !important',
-                        },
-                        '&:focus': {
-                            backgroundColor: 'transparent !important',
-                            background: `linear-gradient(135deg, #1e88e5 0%, #5e35b1 100%) !important`,
-                        },
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            borderColor: '#0038A5',
+                            backgroundColor: '#f0f4ff',
+                            color: '#0038A5'
+                        }
                     }}
                 >
                     Change Password

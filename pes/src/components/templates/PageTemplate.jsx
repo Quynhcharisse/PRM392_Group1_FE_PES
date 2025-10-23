@@ -6,7 +6,7 @@ import { Box, Typography, Stack, Divider } from '@mui/material';
  * 
  * @param {String} title - Page title
  * @param {String} subtitle - Optional subtitle
- * @param {ReactNode} actions - Optional action buttons
+ * @param {JSX.Element} actions - Optional action buttons
  * @param {ReactNode} children - Page content
  * @param {Object} sx - Additional styles
  */
@@ -46,9 +46,13 @@ export default function PageTemplate({
                                 </Typography>
                             )}
                             {subtitle && (
-                                <Typography variant="body1" color="text.secondary">
+                                // <Typography variant="body1" color="text.secondary">
+                                //
+                                // </Typography>
+                                <>
                                     {subtitle}
-                                </Typography>
+                                </>
+
                             )}
                         </Box>
                         {actions && (

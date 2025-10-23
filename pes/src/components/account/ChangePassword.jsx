@@ -20,6 +20,8 @@ import {
     VisibilityOff as VisibilityOffIcon
 } from '@mui/icons-material';
 import { accountService } from '@services/AccountService.jsx';
+import ButtonCancel from '../customButton/ButtonCancel.jsx';
+import ButtonUpdate from '../customButton/ButtonUpdate.jsx';
 
 export default function ChangePassword({ open, onClose, isFirstLogin = false }) {
     const [passwordData, setPasswordData] = useState({
@@ -284,9 +286,8 @@ export default function ChangePassword({ open, onClose, isFirstLogin = false }) 
                         value={passwordData.newPassword}
                         onChange={(e) => handleChange('newPassword', e.target.value)}
                         disabled={loading}
-                        helperText="Minimum 6 characters, must be different from current password"
                         variant="outlined"
-                        InputProps={{
+                        slotProps={{
                             endAdornment: (
                                 <IconButton
                                     onClick={() => togglePasswordVisibility('new')}
@@ -361,51 +362,15 @@ export default function ChangePassword({ open, onClose, isFirstLogin = false }) 
                 background: 'rgba(248, 250, 252, 0.5)'
             }}>
                 {!isFirstLogin && (
-                    <Button
-                        variant="outlined"
+                    <ButtonCancel
                         onClick={handleClose}
                         disabled={loading}
-                        sx={{
-                            borderRadius: 3,
-                            px: 3,
-                            py: 1.5,
-                            fontWeight: 600,
-                            textTransform: 'none',
-                            borderColor: 'grey.300',
-                            color: 'text.secondary',
-                            '&:hover': {
-                                borderColor: 'grey.400',
-                                backgroundColor: 'grey.50'
-                            }
-                        }}
-                    >
-                        Cancel
-                    </Button>
+                    />
                 )}
-                <Button
-                    variant="contained"
+                <ButtonUpdate 
                     onClick={handleSubmit}
                     disabled={loading}
-                    sx={{
-                        borderRadius: 3,
-                        px: 4,
-                        py: 1.5,
-                        fontWeight: 600,
-                        textTransform: 'none',
-                        background: `linear-gradient(135deg, ${brandColor} 0%, ${brandColor}DD 100%)`,
-                        boxShadow: `0 4px 12px ${brandColor}40`,
-                        '&:hover': {
-                            background: `linear-gradient(135deg, ${brandColor}EE 0%, ${brandColor} 100%)`,
-                            boxShadow: `0 6px 16px ${brandColor}50`,
-                        },
-                        '&:disabled': {
-                            background: 'grey.300',
-                            color: 'grey.500'
-                        }
-                    }}
-                >
-                    {loading ? 'Changing...' : 'Change Password'}
-                </Button>
+                />
             </DialogActions>
         </Dialog>
     );

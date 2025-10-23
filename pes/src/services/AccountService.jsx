@@ -93,7 +93,7 @@ export const accountService = {
                 confirmPassword: passwordData.confirmPassword
             };
 
-            const response = await axiosClient.put('/auth-api/api/auth/change-password', payload);
+            const response = await axiosClient.post('/auth-api/api/auth/change-password', payload);
 
             // Handle 204 No Content or 200 OK
             if (response && (response.status === 204 || response.status === 200)) {
