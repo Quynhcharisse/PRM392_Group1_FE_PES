@@ -34,7 +34,13 @@ export default function SiteHeader() {
 
     useEffect(() => {
         const loadUser = () => {
-            const raw = localStorage.getItem('user')
+            // Try sessionStorage first (new approach)
+            let raw = sessionStorage.getItem('user')
+            
+            // Fallback to localStorage for backward compatibility
+            if (!raw) {
+                raw = localStorage.getItem('user')
+            }
 
             if (!raw || raw === 'undefined') {
                 setCurrentUser(null)
@@ -43,10 +49,21 @@ export default function SiteHeader() {
 
             try {
                 const parsed = JSON.parse(raw)
+                
+                // Check if token is expired
+                if (parsed.tokenExpiry && Date.now() > parsed.tokenExpiry) {
+                    console.log('Token expired, auto logout')
+                    sessionStorage.clear()
+                    localStorage.clear()
+                    setCurrentUser(null)
+                    return
+                }
+                
                 setCurrentUser(parsed || null)
             } catch (error) {
                 setCurrentUser(null)
-                localStorage.removeItem('user') // Remove invalid data
+                sessionStorage.removeItem('user')
+                localStorage.removeItem('user')
             }
         }
 
@@ -66,9 +83,32 @@ export default function SiteHeader() {
         const handleUserChange = () => loadUser()
         window.addEventListener('userLoggedOut', handleUserChange)
 
+        // Track user activity to reset inactivity timer
+        const updateActivity = () => {
+            localStorage.setItem('lastActivity', Date.now().toString())
+        }
+        
+        // Listen for user activity
+        window.addEventListener('click', updateActivity)
+        window.addEventListener('keypress', updateActivity)
+        window.addEventListener('scroll', updateActivity)
+
+        // Clear token when window is closed/refreshed
+        const handleBeforeUnload = () => {
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
+            localStorage.removeItem('lastActivity')
+        }
+        
+        window.addEventListener('beforeunload', handleBeforeUnload)
+
         return () => {
             window.removeEventListener('storage', handleStorageChange)
             window.removeEventListener('userLoggedOut', handleUserChange)
+            window.removeEventListener('click', updateActivity)
+            window.removeEventListener('keypress', updateActivity)
+            window.removeEventListener('scroll', updateActivity)
+            window.removeEventListener('beforeunload', handleBeforeUnload)
         }
     }, [location.pathname])
 

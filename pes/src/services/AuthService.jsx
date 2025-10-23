@@ -11,8 +11,8 @@ export const authService = {
       });
 
       if (response.data && response.data.data.token) {
-        // Store token in localStorage
-        localStorage.setItem('token', response.data.data.token);
+        // Store token in sessionStorage (auto-clear when tab closes)
+        sessionStorage.setItem('token', response.data.data.token);
         
         // Decode token to get user info
         const decodedToken = jwtDecode(response.data.data.token);
@@ -26,7 +26,7 @@ export const authService = {
           tokenExpiry: decodedToken.exp * 1000, // Convert to milliseconds
         };
 
-        localStorage.setItem('user', JSON.stringify(userData));
+        sessionStorage.setItem('user', JSON.stringify(userData));
         
         return {
           success: true,
@@ -82,18 +82,22 @@ export const authService = {
 
   // Logout user
   logout() {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
+    // Also clear localStorage for backward compatibility
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('lastActivity');
     // Clear all cookies
     document.cookie.split(";").forEach(function (c) {
       document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
   },
 
-  // Get current user from localStorage
+  // Get current user from sessionStorage
   getCurrentUser() {
     try {
-      const userData = localStorage.getItem('user');
+      const userData = sessionStorage.getItem('user');
       if (userData) {
         const user = JSON.parse(userData);
         
@@ -121,7 +125,7 @@ export const authService = {
 
   // Get authorization token
   getAuthToken() {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     return token;
   },
 
