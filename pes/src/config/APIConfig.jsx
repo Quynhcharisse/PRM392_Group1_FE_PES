@@ -1,6 +1,5 @@
 import axios from "axios"
 
-// Set base URL from environment configuration
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 
 const axiosClient = axios.create({
@@ -8,7 +7,7 @@ const axiosClient = axios.create({
     headers: {
         "Content-Type": "application/json",
     }, 
-    withCredentials: true,
+    withCredentials: false,
 });
 
 // Request interceptor to add auth token
