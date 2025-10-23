@@ -4,7 +4,7 @@ export const accountService = {
 
     async getProfile() {
         try {
-            const response = await axiosClient.get('/auth/profile');
+            const response = await axiosClient.get('/auth-api/api/auth/profile');
 
             // Sync local user (if exists) with latest profile fields
             try {
@@ -60,33 +60,21 @@ export const accountService = {
                 }
             });
 
+            const response = await axiosClient.put('/auth-api/api/auth/profile', payload);
 
-            const response = await axiosClient.put('/auth/profile', payload);
-
-            // On 204 No Content: treat as success with message
-            if (response && response.status === 204) {
-                // Sync local user
-                try {
-                    const raw = localStorage.getItem('user');
-                    if (raw) {
-                        const current = JSON.parse(raw);
-                        const updated = {
-                            ...current,
-                            ...payload,
-                        };
-                        localStorage.setItem('user', JSON.stringify(updated));
-                    }
-                } catch { /* ignore localStorage errors */
-                }
-
+            // Reload profile from server to ensure data sync
+            // This ensures we have all fields including status, createAt, firstLogin, etc.
+            const profileResponse = await this.getProfile();
+            
+            if (profileResponse.success) {
                 return {
                     success: true,
                     message: 'Update Profile Successfully',
-                    data: null,
+                    data: profileResponse.data,
                 };
             }
 
-            // Other success responses
+            // Fallback: if reload fails but update succeeded
             return {
                 success: true,
                 message: 'Update Profile Successfully',
@@ -94,6 +82,37 @@ export const accountService = {
             };
         } catch (error) {
             throw new Error(error.response?.data?.message || error.message || 'Failed to update profile');
+        }
+    },
+
+    async changePassword(passwordData) {
+        try {
+            const payload = {
+                currentPassword: passwordData.currentPassword,
+                newPassword: passwordData.newPassword,
+                confirmPassword: passwordData.confirmPassword
+            };
+
+            const response = await axiosClient.put('/auth-api/api/auth/change-password', payload);
+
+            // Handle 204 No Content or 200 OK
+            if (response && (response.status === 204 || response.status === 200)) {
+                return {
+                    success: true,
+                    message: response.data?.message || 'Password changed successfully'
+                };
+            }
+
+            return {
+                success: true,
+                message: response.data?.message || 'Password changed successfully',
+                data: response.data
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.response?.data?.message || error.message || 'Failed to change password'
+            };
         }
     }
 }

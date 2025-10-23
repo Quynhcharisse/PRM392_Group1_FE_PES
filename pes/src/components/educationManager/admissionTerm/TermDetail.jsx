@@ -69,11 +69,6 @@ export default function TermDetail({open, onClose, term}) {
                         </Typography>
                         <Box container spacing={2}>
                             <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1}}>
-                                <Typography variant="body2" color="text.secondary">Term ID:</Typography>
-                                <Typography variant="body1" fontWeight={600}>#{term.id}</Typography>
-                            </Box>
-
-                            <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1}}>
                                 <Typography variant="body2" color="text.secondary">Academic Year</Typography>
                                 <Typography variant="body1" fontWeight={600}>{term.academicYear}</Typography>
                             </Box>
@@ -181,9 +176,6 @@ export default function TermDetail({open, onClose, term}) {
                                                         {cls.name}
                                                     </Typography>
                                                     <Box direction="row" spacing={2} flexWrap="wrap">
-                                                        <Typography variant="body2" color="text.secondary">
-                                                            <strong>ID:</strong> {cls.id}
-                                                        </Typography>
                                                         <Typography variant="body2" color="text.secondary">
                                                             <strong>Students:</strong> {cls.numberStudent}
                                                         </Typography>

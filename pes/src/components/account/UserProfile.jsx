@@ -13,19 +13,13 @@ import {
     Card,
     CardContent,
     Chip,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
     IconButton,
     Stack,
-    TextField,
     Tooltip,
     Typography
 } from "@mui/material";
 import {
     AccountCircle as AccountIcon,
-    Close as CloseIcon,
     CreditCard as IdCardIcon,
     Edit as EditIcon,
     Email as EmailIcon,
@@ -38,6 +32,7 @@ import {
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import EditProfileForm from "./EditProfileForm.jsx";
+import ChangePassword from "./ChangePassword.jsx";
 
 // Validation rules
 const VALIDATION_RULES = {
@@ -109,13 +104,6 @@ const UserProfile = () => {
         avatarUrl: "",
     });
 
-    // Password reset form
-    const [passwordData, setPasswordData] = useState({
-        email: "",
-        password: "",
-        confirmPassword: "",
-    });
-
     useEffect(() => {
         loadProfile();
     }, []);
@@ -143,11 +131,6 @@ const UserProfile = () => {
                 identityNumber: profileData.identityNumber || "",
                 avatarUrl: profileData.avatarUrl || "",
             });
-
-            setPasswordData((prev) => ({
-                ...prev,
-                email: profileData.email || "",
-            }));
 
         } catch (error) {
             setError("Failed to load profile. Please try again.");
@@ -237,36 +220,14 @@ const UserProfile = () => {
         }
     };
 
-    const handlePasswordReset = async () => {
-        try {
-            // Validate passwords
-            if (passwordData.password !== passwordData.confirmPassword) {
-                setError("Passwords do not match!");
-                return;
-            }
-
-            if (passwordData.password.length < 6) {
-                setError("Password must be at least 6 characters!");
-                return;
-            }
-
-            setSaving(true);
-            setError("");
-
-            await authService.resetPassword({
-                email: passwordData.email,
-                password: passwordData.password,
-                confirmPassword: passwordData.confirmPassword,
-            });
-
-            setSuccess("Password changed successfully!");
-            setShowPasswordReset(false);
+    const handlePasswordChangeSuccess = (success) => {
+        if (success) {
             setIsFirstLogin(false);
-        } catch (error) {
-            setError("Password reset failed. Please try again.");
-        } finally {
-            setSaving(false);
+            setSuccess("Password changed successfully!");
+            // Clear success message after 3 seconds
+            setTimeout(() => setSuccess(""), 3000);
         }
+        setShowPasswordReset(false);
     };
 
     const handleContinueToDashboard = () => {
@@ -376,14 +337,54 @@ const UserProfile = () => {
             }
             actions={
                 <Button
-                    variant="outline"
                     onClick={() => setShowPasswordReset(true)}
+                    startIcon={<KeyIcon sx={{ fontSize: '1.2rem' }} />}
+                    variant="contained"
+                    disableElevation
                     sx={{
-                        borderRadius: 2,
+                        borderRadius: 2.5,
                         textTransform: 'none',
-                        fontWeight: 600
+                        fontWeight: 700,
+                        fontSize: '0.95rem',
+                        px: 4,
+                        py: 1.75,
+                        color: 'white !important',
+                        backgroundColor: 'transparent !important',
+                        background: `linear-gradient(135deg, #1e88e5 0%, #5e35b1 100%) !important`,
+                        boxShadow: '0 8px 24px rgba(30, 136, 229, 0.35) !important',
+                        border: 'none !important',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        '&::before': {
+                            content: '""',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%)',
+                            opacity: 0,
+                            transition: 'opacity 0.3s ease',
+                        },
+                        '&:hover': {
+                            backgroundColor: 'transparent !important',
+                            background: `linear-gradient(135deg, #1976d2 0%, #5e35b1 100%) !important`,
+                            boxShadow: '0 12px 32px rgba(30, 136, 229, 0.45) !important',
+                            transform: 'translateY(-3px)',
+                            '&::before': {
+                                opacity: 1,
+                            }
+                        },
+                        '&:active': {
+                            transform: 'translateY(-1px)',
+                            boxShadow: '0 6px 16px rgba(30, 136, 229, 0.3) !important',
+                        },
+                        '&:focus': {
+                            backgroundColor: 'transparent !important',
+                            background: `linear-gradient(135deg, #1e88e5 0%, #5e35b1 100%) !important`,
+                        },
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     }}
-                    startIcon={<KeyIcon/>}
                 >
                     Change Password
                 </Button>
@@ -467,7 +468,6 @@ const UserProfile = () => {
                                             identityNumber: profile?.identityNumber || "",
                                             avatarUrl: profile?.avatarUrl || "",
                                         };
-                                        console.log('🚀 Opening Edit Form with data:', newFormData);
                                         setFormData(newFormData);
                                         setFormErrors({}); // Clear any previous errors
                                         setEditing(true);
@@ -484,7 +484,6 @@ const UserProfile = () => {
 
                         <CardContent sx={{p: 3}}>
                             <Stack spacing={3}>
-                                {/* First Login Alert */}
                                 {isFirstLogin && (
                                     <Alert severity="warning" sx={{borderRadius: 2}}>
                                         <AlertTitle>First Time Login</AlertTitle>
@@ -676,125 +675,12 @@ const UserProfile = () => {
                     </Card>
                 </Box>
             </Box>
-
-            {/* Password Reset Dialog */}
-            <Dialog
+            {/* Change Password Dialog */}
+            <ChangePassword
                 open={showPasswordReset}
-                onClose={() => !isFirstLogin && setShowPasswordReset(false)}
-                maxWidth="sm"
-                fullWidth
-                slotProps={{
-                    paper: {
-                        sx: {
-                            borderRadius: 3,
-                            boxShadow: '0 24px 48px rgba(0,0,0,0.12)'
-                        }
-                    }
-                }}
-            >
-                <DialogTitle sx={{
-                    pb: 2,
-                    borderBottom: `1px solid ${alpha(brandColor, 0.12)}`,
-                    background: alpha(brandColor, 0.03)
-                }}>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
-                        <KeyIcon sx={{color: brandColor}}/>
-                        <Typography variant="h6" sx={{fontWeight: 700, color: brandColor}}>
-                            Change Password
-                        </Typography>
-                        {!isFirstLogin && (
-                            <IconButton
-                                onClick={() => setShowPasswordReset(false)}
-                                sx={{ml: 'auto'}}
-                            >
-                                <CloseIcon/>
-                            </IconButton>
-                        )}
-                    </Box>
-                </DialogTitle>
-
-                <DialogContent sx={{p: 3}}>
-                    <Stack spacing={3} sx={{mt: 1}}>
-                        <TextField
-                            fullWidth
-                            label="Email"
-                            type="email"
-                            value={passwordData.email}
-                            disabled
-                            variant="outlined"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: 2,
-                                    backgroundColor: 'grey.50'
-                                }
-                            }}
-                        />
-
-                        <TextField
-                            fullWidth
-                            label="New Password"
-                            type="password"
-                            value={passwordData.password}
-                            onChange={(e) =>
-                                setPasswordData((prev) => ({
-                                    ...prev,
-                                    password: e.target.value,
-                                }))
-                            }
-                            variant="outlined"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: 2
-                                }
-                            }}
-                        />
-
-                        <TextField
-                            fullWidth
-                            label="Confirm Password"
-                            type="password"
-                            value={passwordData.confirmPassword}
-                            onChange={(e) =>
-                                setPasswordData((prev) => ({
-                                    ...prev,
-                                    confirmPassword: e.target.value,
-                                }))
-                            }
-                            variant="outlined"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: 2
-                                }
-                            }}
-                        />
-                    </Stack>
-                </DialogContent>
-
-                <DialogActions sx={{p: 3, gap: 2}}>
-                    {!isFirstLogin && (
-                        <Button
-                            variant="outline"
-                            onClick={() => setShowPasswordReset(false)}
-                            sx={{borderRadius: 2, textTransform: 'none'}}
-                        >
-                            Cancel
-                        </Button>
-                    )}
-                    <Button
-                        variant="primary"
-                        onClick={handlePasswordReset}
-                        loading={saving}
-                        sx={{
-                            borderRadius: 2,
-                            textTransform: 'none',
-                            fontWeight: 600,
-                            px: 4
-                        }}
-                    >
-                        Change Password
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                onClose={handlePasswordChangeSuccess}
+                isFirstLogin={isFirstLogin}
+            />
 
             {/* Edit Profile Form */}
             <EditProfileForm
