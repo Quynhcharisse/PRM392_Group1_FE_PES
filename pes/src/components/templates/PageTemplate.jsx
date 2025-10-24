@@ -1,40 +1,40 @@
 import React from 'react';
-import { Box, Typography, Stack, Divider } from '@mui/material';
+import {Box, Divider, Stack, Typography} from '@mui/material';
 
 /**
  * PageTemplate - Simple page wrapper with title and content
- * 
+ *
  * @param {String} title - Page title
  * @param {String} subtitle - Optional subtitle
  * @param {JSX.Element} actions - Optional action buttons
  * @param {ReactNode} children - Page content
  * @param {Object} sx - Additional styles
  */
-export default function PageTemplate({ 
-    title, 
-    subtitle, 
-    actions, 
-    children, 
-    sx = {} 
-}) {
+export default function PageTemplate({
+                                         title,
+                                         subtitle,
+                                         actions,
+                                         children,
+                                         sx = {}
+                                     }) {
     return (
-        <Box sx={{ p: 3, ...sx }}>
+        <Box sx={{p: 3, ...sx}}>
             {/* Header Section */}
             {(title || subtitle || actions) && (
                 <>
-                    <Stack 
-                        direction={{ xs: 'column', sm: 'row' }} 
-                        justifyContent="space-between" 
-                        alignItems={{ xs: 'flex-start', sm: 'center' }}
+                    <Stack
+                        direction={{xs: 'column', sm: 'row'}}
+                        justifyContent="space-between"
+                        alignItems={{xs: 'flex-start', sm: 'center'}}
                         spacing={2}
                         mb={3}
                     >
                         <Box>
                             {title && (
-                                <Typography 
-                                    variant="h4" 
+                                <Typography
+                                    variant="h4"
                                     fontWeight={700}
-                                    sx={{ 
+                                    sx={{
                                         mb: subtitle ? 1 : 0,
                                         background: 'linear-gradient(135deg, #1e88e5 0%, #5e35b1 100%)',
                                         WebkitBackgroundClip: 'text',
@@ -46,9 +46,6 @@ export default function PageTemplate({
                                 </Typography>
                             )}
                             {subtitle && (
-                                // <Typography variant="body1" color="text.secondary">
-                                //
-                                // </Typography>
                                 <>
                                     {subtitle}
                                 </>
@@ -61,7 +58,7 @@ export default function PageTemplate({
                             </Box>
                         )}
                     </Stack>
-                    <Divider sx={{ mb: 3 }} />
+                    <Divider sx={{mb: 3}}/>
                 </>
             )}
 
