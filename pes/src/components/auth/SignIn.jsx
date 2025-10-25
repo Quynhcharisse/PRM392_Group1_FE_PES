@@ -27,7 +27,7 @@ export default function SignIn() {
     // If already logged in -> redirect
     useEffect(() => {
         try {
-            const raw = localStorage.getItem('user')
+            const raw = sessionStorage.getItem('user')
             if (raw) {
                 navigate(redirectTo || '/', {replace: true})
             }

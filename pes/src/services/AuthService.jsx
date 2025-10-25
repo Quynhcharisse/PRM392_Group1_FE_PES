@@ -10,18 +10,18 @@ export const authService = {
         password
       });
 
-      if (response.data && response.data.data.token) {
+      if (response.data && response.data.isSuccess && response.data.data.token) {
         // Store token in sessionStorage (auto-clear when tab closes)
         sessionStorage.setItem('token', response.data.data.token);
         
         // Decode token to get user info
         const decodedToken = jwtDecode(response.data.data.token);
         
-        // Store user data
+        // Store user data - use role from API response first, fallback to JWT token
         const userData = {
           id: decodedToken.sub,
           email: decodedToken.email,
-          role: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || response.data.role,
+          role: response.data.data.role || decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
           token: response.data.data.token,
           tokenExpiry: decodedToken.exp * 1000, // Convert to milliseconds
         };

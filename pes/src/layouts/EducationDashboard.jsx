@@ -162,20 +162,6 @@ function EducationDashboardContent({session}) {
                 }}>
                     {session.user.role || 'User'} Dashboard
                 </Typography>
-                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                    <Typography variant="body1" sx={{color: 'text.secondary', fontSize: '1.1rem'}}>
-                        Manage admission applications and registration approvals
-                    </Typography>
-                    <Stack direction="row" spacing={1}>
-                        <Button startIcon={<ListAltIcon/>} variant="outlined" sx={{
-                            textTransform: 'none', color: colors.primary, borderColor: alpha(colors.primary, 0.3)
-                        }}>All Applications</Button>
-                        <Button startIcon={<AssessmentIcon/>} variant="contained" sx={{
-                            textTransform: 'none', backgroundColor: colors.primary,
-                            '&:hover': {backgroundColor: colors.primaryDark}
-                        }}>Reports</Button>
-                    </Stack>
-                </Stack>
             </Box>
 
             {/* Top metrics */}
@@ -214,37 +200,13 @@ function EducationDashboardContent({session}) {
 
                 {/* Right column */}
                 <Grid item xs={12} md={4}>
-                    <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`, mb: 3}}>
-                        <CardContent>
-                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Status
-                                Overview</Typography>
-                            <Stack spacing={1.5}>
-                                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                    <Typography variant="body2">Pending Review:</Typography>
-                                    <StatusPill label="12" color={colors.warning}/>
-                                </Stack>
-                                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                    <Typography variant="body2">Under Review:</Typography>
-                                    <StatusPill label="8" color={colors.info}/>
-                                </Stack>
-                                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                    <Typography variant="body2">Approved:</Typography>
-                                    <StatusPill label="20" color={colors.success}/>
-                                </Stack>
-                                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                    <Typography variant="body2">Rejected:</Typography>
-                                    <StatusPill label="5" color={colors.error}/>
-                                </Stack>
-                            </Stack>
-                        </CardContent>
-                    </Card>
-
                     <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
                         <CardContent>
                             <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Quick
                                 Actions</Typography>
                             <Stack spacing={1.5}>
-                                <Button fullWidth variant="outlined" startIcon={<AccessTimeFilled/>} sx={{
+                                <Button
+                                    fullWidth variant="outlined" startIcon={<AccessTimeFilled/>} sx={{
                                     justifyContent: 'flex-start',
                                     textTransform: 'none',
                                     borderColor: alpha(colors.primary, 0.2)
@@ -329,16 +291,28 @@ export default function EducationDashboard() {
         setAnchorEl(null);
     };
 
-    const handleLogout = () => {
-        handleMenuClose();
-        // Clear user data from localStorage
-        localStorage.removeItem('user');
-        // Clear cookies if any
-        document.cookie.split(";").forEach(function (c) {
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-        });
-        // Navigate to home page
-        navigate('/');
+    const handleLogout = async () => {
+        try {
+            // Import authService dynamically to avoid circular dependency
+            const { authService } = await import('@services/AuthService.jsx');
+            
+            // Use authService logout method
+            authService.logout();
+            
+            handleMenuClose();
+            
+            // Navigate to home page
+            navigate('/', { replace: true });
+            
+            // Trigger page reload to clear all state
+            setTimeout(() => window.location.reload(), 100);
+        } catch (error) {
+            console.error('Logout error:', error);
+            // Fallback: manual cleanup
+            sessionStorage.clear();
+            localStorage.clear();
+            navigate('/', { replace: true });
+        }
     };
 
     const handleProfileClick = () => {

@@ -74,12 +74,14 @@ export default function ExportParent({open, onClose}) {
                 borderBottom: `1px solid ${alpha(brandColor, 0.12)}`,
                 background: alpha(brandColor, 0.03)
             }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: brandColor }}>
-                    Export Parents
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    Download parent list as Excel file
-                </Typography>
+                <Box>
+                    <Typography variant="h6" component="div" sx={{ fontWeight: 700, color: brandColor }}>
+                        Export Parents
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                        Download parent list as Excel file
+                    </Typography>
+                </Box>
             </DialogTitle>
             
             <DialogContent sx={{ p: 3 }}>

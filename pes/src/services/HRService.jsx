@@ -4,9 +4,13 @@ export const HRService = {
     async getTeacherList() {
         try {
             const response = await axiosClient.get('/auth-api/api/Hr/teacher');
+            
+            // API returns array directly
+            const teachers = response.data;
+            
             return {
                 success: true,
-                data: response.data
+                data: teachers || []
             };
         } catch (error) {
             return {
@@ -25,9 +29,13 @@ export const HRService = {
             };
 
             const response = await axiosClient.post('/auth-api/api/Hr/teacher', payload);
+            
+            // API returns the teacher object directly
+            const createdTeacher = response.data;
+            
             return {
                 success: true,
-                data: response.data,
+                data: createdTeacher,
                 message: 'Teacher created successfully'
             };
         } catch (error) {
@@ -160,9 +168,13 @@ export const HRService = {
     async getParentList() {
         try {
             const response = await axiosClient.get('/auth-api/api/Hr/parent');
+            
+            // API returns array directly
+            const parents = response.data;
+            
             return {
                 success: true,
-                data: response.data
+                data: parents || []
             };
         } catch (error) {
             return {

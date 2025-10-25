@@ -8,7 +8,14 @@ export const accountService = {
 
             // Sync local user (if exists) with latest profile fields
             try {
-                const raw = localStorage.getItem('user');
+                // Try sessionStorage first (new approach)
+                let raw = sessionStorage.getItem('user');
+                
+                // Fallback to localStorage for backward compatibility
+                if (!raw) {
+                    raw = localStorage.getItem('user');
+                }
+                
                 if (raw && response?.data) {
                     const current = JSON.parse(raw);
                     const updated = {
@@ -24,10 +31,14 @@ export const accountService = {
                         identityNumber: response.data.identityNumber ?? null,
                         status: response.data.status ?? null,
                         createAt: response.data.createAt ?? null,
+                        firstLogin: response.data.firstLogin ?? false,
                     };
+                    
+                    // Update both storages for consistency
+                    sessionStorage.setItem('user', JSON.stringify(updated));
                     localStorage.setItem('user', JSON.stringify(updated));
                 }
-            } catch {/* ignore localStorage errors */
+            } catch {
             }
 
             return {

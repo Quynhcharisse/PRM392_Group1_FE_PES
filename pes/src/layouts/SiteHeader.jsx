@@ -174,12 +174,23 @@ export default function SiteHeader() {
 
     const handleLogout = async () => {
         try {
-            localStorage.clear()
+            // Import authService dynamically to avoid circular dependency
+            const { authService } = await import('@services/AuthService.jsx');
+            
+            // Use authService logout method
+            authService.logout();
+            
             enqueueSnackbar('Signed out', {variant: 'success'})
             handleCloseMenu()
             navigate('/', {replace: true})
+            
+            // Trigger page reload to clear all state
             setTimeout(() => window.location.reload(), 300)
         } catch (error) {
+            console.error('Logout error:', error);
+            // Fallback: manual cleanup
+            sessionStorage.clear();
+            localStorage.clear();
             enqueueSnackbar('Sign out failed. Please try again', {variant: 'error'})
         }
     }
@@ -447,27 +458,29 @@ export default function SiteHeader() {
 
                     {/* Right Side - Language & CTA */}
                     <div className="header__right-section">
-                        {/* CTA Button */}
-                        <Button
-                            onClick={() => navigate('/login')}
-                            variant="contained"
-                            sx={{
-                                background: 'linear-gradient(45deg, #FF6B35, #F7931E)',
-                                borderRadius: '25px',
-                                px: 3,
-                                py: 1,
-                                fontWeight: 700,
-                                textTransform: 'none',
-                                fontSize: '14px',
-                                '&:hover': {
-                                    background: 'linear-gradient(45deg, #E55A2B, #E0841A)',
-                                }
-                            }}
-                        >
-                            SIGN IN
-                        </Button>
+                        {/* CTA Button - Only show when user is not logged in */}
+                        {!currentUser && (
+                            <Button
+                                onClick={() => navigate('/login')}
+                                variant="contained"
+                                sx={{
+                                    background: 'linear-gradient(45deg, #FF6B35, #F7931E)',
+                                    borderRadius: '25px',
+                                    px: 3,
+                                    py: 1,
+                                    fontWeight: 700,
+                                    textTransform: 'none',
+                                    fontSize: '14px',
+                                    '&:hover': {
+                                        background: 'linear-gradient(45deg, #E55A2B, #E0841A)',
+                                    }
+                                }}
+                            >
+                                SIGN IN
+                            </Button>
+                        )}
 
-                        {/* User Authentication */}
+                        {/* User Authentication - Only show when user is logged in */}
                         {currentUser && (
                             <Box sx={{display: 'flex', alignItems: 'center', ml: 2}}>
                                 <IconButton
@@ -506,7 +519,6 @@ export default function SiteHeader() {
                                     id="account-menu"
                                     open={menuOpen}
                                     onClose={handleCloseMenu}
-                                    onClick={handleCloseMenu}
                                     slotProps={{paper: {elevation: 3, sx: {mt: 1.5, minWidth: 220}}}}
                                     transformOrigin={{horizontal: 'right', vertical: 'top'}}
                                     anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
@@ -520,11 +532,16 @@ export default function SiteHeader() {
                                     </Box>
                                     <Divider/>
                                     <MenuItem onClick={() => {
+                                        console.log('My Profile clicked, role:', role);
+                                        handleCloseMenu();
                                         if (role === 'EDUCATION') {
+                                            console.log('Navigating to /education/profile');
                                             navigate('/education/profile')
                                         } else if (role === 'HR') {
+                                            console.log('Navigating to /hr/profile');
                                             navigate('/hr/profile')
                                         } else {
+                                            console.log('Navigating to /profile');
                                             navigate('/profile')
                                         }
                                     }}>
@@ -532,13 +549,20 @@ export default function SiteHeader() {
                                         My profile
                                     </MenuItem>
                                     {role === 'EDUCATION' && (
-                                        <MenuItem onClick={() => navigate('/education/dashboard')}>
+                                        <MenuItem onClick={() => {
+                                            handleCloseMenu();
+                                            navigate('/education/dashboard');
+                                        }}>
                                             <ListItemIcon><DashboardIcon fontSize="small"/></ListItemIcon>
                                             Education Portal
                                         </MenuItem>
                                     )}
                                     {role === 'HR' && (
-                                        <MenuItem onClick={() => navigate('/hr/dashboard')}>
+                                        <MenuItem onClick={() => {
+                                            console.log('HR Portal clicked, navigating to /hr/dashboard');
+                                            handleCloseMenu();
+                                            navigate('/hr/dashboard');
+                                        }}>
                                             <ListItemIcon><StorefrontIcon fontSize="small"/></ListItemIcon>
                                             HR Portal
                                         </MenuItem>

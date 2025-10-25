@@ -1,7 +1,7 @@
 import {createBrowserRouter, Navigate, RouterProvider} from 'react-router-dom'
 import {lazy, Suspense} from 'react'
 import {SnackbarProvider} from 'notistack'
-import {createTheme, CssBaseline, Slide, ThemeProvider} from '@mui/material'
+import {createTheme, CssBaseline, Slide, ThemeProvider, Box, Typography} from '@mui/material'
 import HRDashboard from "./layouts/HRDashboard.jsx";
 import EducationDashboard from "./layouts/EducationDashboard.jsx";
 import './styles/global.css'
@@ -267,7 +267,16 @@ const router = createBrowserRouter([{
             },
                 {
                     path: 'dashboard',
-                    element: <h1>Dashboard Pannel</h1>
+                    element: (
+                        <Box sx={{ p: 3 }}>
+                            <Typography variant="h4" sx={{ mb: 2 }}>
+                                HR Dashboard
+                            </Typography>
+                            <Typography variant="body1">
+                                Welcome to the HR Management Dashboard. Use the sidebar to navigate to different sections.
+                            </Typography>
+                        </Box>
+                    )
                 },
                 {
                     path: 'teachers',
@@ -305,7 +314,16 @@ const router = createBrowserRouter([{
             },
                 {
                     path: 'dashboard',
-                    element: <h1>Dashboard Pannel</h1>
+                    element: (
+                        <Box sx={{ p: 3 }}>
+                            <Typography variant="h4" sx={{ mb: 2 }}>
+                                Education Dashboard
+                            </Typography>
+                            <Typography variant="body1">
+                                Welcome to the Education Management Dashboard. Use the sidebar to navigate to different sections.
+                            </Typography>
+                        </Box>
+                    )
                 },
                 {
                     path: 'syllabus',
