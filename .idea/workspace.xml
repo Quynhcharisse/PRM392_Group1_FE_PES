@@ -5,7 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2787666c-687a-4c19-b5bc-67d2411ae2c4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/pes/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/pes/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/account/ChangePassword.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/account/ChangePassword.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/account/UserProfile.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/account/UserProfile.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/auth/SignIn.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/auth/SignIn.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessFormDetail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessFormDetail.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/class/ClassDetail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/class/ClassDetail.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/class/CreateClass.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/class/CreateClass.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/syllabus/Syllabus.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/syllabus/Syllabus.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pes/src/layouts/EducationDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/layouts/EducationDashboard.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +122,7 @@
       <workItem from="1761322481766" duration="2453000" />
       <workItem from="1761362937612" duration="170000" />
       <workItem from="1761389354503" duration="4259000" />
-      <workItem from="1761404790965" duration="2634000" />
+      <workItem from="1761404790965" duration="5904000" />
     </task>
     <servers />
   </component>

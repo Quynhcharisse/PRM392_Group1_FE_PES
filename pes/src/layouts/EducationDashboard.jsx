@@ -160,7 +160,7 @@ function EducationDashboardContent({session}) {
                     WebkitTextFillColor: 'transparent',
                     mb: 1
                 }}>
-                    {session.user.role || 'User'} Dashboard
+                    {session.user.role || 'Education'} Dashboard
                 </Typography>
             </Box>
 
