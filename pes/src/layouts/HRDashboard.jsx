@@ -6,9 +6,7 @@ import {
     Box,
     Card,
     CardContent,
-    Button,
     Chip,
-    Divider,
     Drawer,
     Grid,
     IconButton,
@@ -22,23 +20,17 @@ import {
     Stack,
     Toolbar,
     Typography,
-    useMediaQuery,
     useTheme,
 } from '@mui/material';
 import {
+    AccountCircle as AccountCircleIcon,
     Dashboard as DashboardIcon,
+    FamilyRestroom as FamilyRestroomIcon,
     Logout as LogoutIcon,
     Menu as MenuIcon,
+    Notifications as NotificationsIcon,
     People as PeopleIcon,
     School as SchoolIcon,
-    MenuBook as MenuBookIcon,
-    FamilyRestroom as FamilyRestroomIcon,
-    Event as EventIcon,
-    ListAlt as ListAltIcon,
-    Timeline as TimelineIcon,
-    AccountCircle as AccountCircleIcon,
-    Notifications as NotificationsIcon,
-    CalendarToday as CalendarTodayIcon,
     WorkOutline as WorkOutlineIcon
 } from '@mui/icons-material';
 import {Outlet, useLocation, useNavigate} from 'react-router-dom';
@@ -86,8 +78,14 @@ function MetricCard({title, value, icon, note}) {
                         {note && <Typography variant="caption" color="text.secondary">{note}</Typography>}
                     </Box>
                     <Box sx={{
-                        width: 46, height: 46, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        background: alpha(colors.primary, 0.1), color: colors.primary
+                        width: 46,
+                        height: 46,
+                        borderRadius: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: alpha(colors.primary, 0.1),
+                        color: colors.primary
                     }}>
                         {icon}
                     </Box>
@@ -123,24 +121,7 @@ function ActivityItem({title, time, color}) {
     );
 }
 
-function CalendarItem({title, datetime, tag}) {
-    return (
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Stack direction="row" spacing={2} alignItems="center">
-                <Box sx={{width: 36, height: 36, borderRadius: 1, backgroundColor: alpha(colors.primary, 0.1), display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                    <CalendarTodayIcon fontSize="small"/>
-                </Box>
-                <Box>
-                    <Typography variant="subtitle2" sx={{fontWeight: 600}}>{title}</Typography>
-                    <Typography variant="caption" color="text.secondary">{datetime}</Typography>
-                </Box>
-            </Stack>
-            {tag && <Chip size="small" label={tag.text} sx={{backgroundColor: alpha(tag.color, 0.12), color: tag.color}}/>}
-        </Stack>
-    );
-}
-
-function HRDashboardContent({session}) {
+function HRDashboardContent({}) {
     return (
         <Box sx={{px: 4, py: 5}}>
             {/* Header */}
@@ -161,10 +142,12 @@ function HRDashboardContent({session}) {
             </Box>
             {/* Top metrics */}
             <Grid container spacing={3} sx={{mb: 3}}>
-                <Grid item xs={12} md={3}><MetricCard title="Total Teachers" value="45" note="+3 this month" icon={<PeopleIcon/>}/></Grid>
-                <Grid item xs={12} md={3}><MetricCard title="Total Parents" value="123" note="+8 this month" icon={<FamilyRestroomIcon/>}/></Grid>
-                <Grid item xs={12} md={3}><MetricCard title="Leave Requests" value="8" note="Pending Approval" icon={<EventIcon/>}/></Grid>
-                <Grid item xs={12} md={3}><MetricCard title="Open Positions" value="3" note="Currently Hiring" icon={<WorkOutlineIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Total Teachers" value="45" note="+3 this month"
+                                                      icon={<PeopleIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Total Parents" value="123" note="+8 this month"
+                                                      icon={<FamilyRestroomIcon/>}/></Grid>
+                <Grid item xs={12} md={3}><MetricCard title="Open Positions" value="3" note="Currently Hiring"
+                                                      icon={<WorkOutlineIcon/>}/></Grid>
             </Grid>
 
             <Grid container spacing={3}>
@@ -173,28 +156,14 @@ function HRDashboardContent({session}) {
                     <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`, mb: 3}}>
                         <CardContent>
                             <Stack direction="row" alignItems="center" spacing={1} sx={{mb: 2}}>
-                                <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary}}>Quick Actions</Typography>
+                                <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary}}>Quick
+                                    Actions</Typography>
                             </Stack>
                             <Stack spacing={1.5}>
-                                <QuickActionItem title="Teacher Management" subtitle="View and manage teacher records" color={colors.info}/>
-                                <QuickActionItem title="Parent Management" subtitle="View and export parent information" color={colors.success}/>
-                                <QuickActionItem title="Recruitment" subtitle="Post job openings and review applications" color={colors.primary}/>
-                                <QuickActionItem title="HR Reports" subtitle="Generate HR statistics and reports" color={colors.warning}/>
-                            </Stack>
-                </CardContent>
-            </Card>
-
-                    <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
-                        <CardContent>
-                            <Stack direction="row" alignItems="center" spacing={1} sx={{mb: 2}}>
-                                <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary}}>Calendar Overview</Typography>
-                            </Stack>
-                            <Stack spacing={2}>
-                                <CalendarItem title="Họp đánh giá hiệu suất" datetime="Thứ 2, 10:00 AM - Phòng họp A" tag={{text: 'Quan trọng', color: colors.info}}/>
-                                <Divider/>
-                                <CalendarItem title="Phỏng vấn ứng viên" datetime="Thứ 4, 2:00 PM - Phòng HR" tag={{text: 'Lên lịch', color: colors.success}}/>
-                                <Divider/>
-                                <CalendarItem title="Đào tạo kỹ năng mềm" datetime="Thứ 6, 9:00 AM - Hội trường" tag={{text: 'Sắp tới', color: colors.warning}}/>
+                                <QuickActionItem title="Teacher Management" subtitle="View and manage teacher records"
+                                                 color={colors.info}/>
+                                <QuickActionItem title="Parent Management" subtitle="View and export parent information"
+                                                 color={colors.success}/>
                             </Stack>
                         </CardContent>
                     </Card>
@@ -204,12 +173,17 @@ function HRDashboardContent({session}) {
                 <Grid item xs={12} md={4.5} lg={4}>
                     <Card sx={{borderRadius: 3, border: `1px solid ${alpha(colors.primary, 0.1)}`}}>
                         <CardContent>
-                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Recent Activities</Typography>
+                            <Typography variant="h6" sx={{fontWeight: 700, color: colors.primary, mb: 2}}>Recent
+                                Activities</Typography>
                             <Stack spacing={1.6}>
-                                <ActivityItem title="Nguyen Van A submitted leave request" time="2 hours ago" color={colors.info}/>
-                                <ActivityItem title="Tran Thi B completed training course" time="5 hours ago" color={colors.success}/>
-                                <ActivityItem title="Updated salary and bonus policy" time="1 day ago" color={colors.warning}/>
-                                <ActivityItem title="Preschool teacher recruitment" time="2 days ago" color={colors.error}/>
+                                <ActivityItem title="Nguyen Van A submitted leave request" time="2 hours ago"
+                                              color={colors.info}/>
+                                <ActivityItem title="Tran Thi B completed training course" time="5 hours ago"
+                                              color={colors.success}/>
+                                <ActivityItem title="Updated salary and bonus policy" time="1 day ago"
+                                              color={colors.warning}/>
+                                <ActivityItem title="Preschool teacher recruitment" time="2 days ago"
+                                              color={colors.error}/>
                             </Stack>
                         </CardContent>
                     </Card>
@@ -221,7 +195,6 @@ function HRDashboardContent({session}) {
 
 export default function HRDashboard() {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -239,9 +212,15 @@ export default function HRDashboard() {
     useEffect(() => {
         document.title = 'HR Portal | HR Dashboard';
 
-        // Lấy thông tin user từ localStorage
+        // Lấy thông tin user từ sessionStorage (new approach)
         try {
-            const userData = localStorage.getItem('user');
+            // Try sessionStorage first (new approach)
+            let userData = sessionStorage.getItem('user');
+
+            // Fallback to localStorage for backward compatibility
+            if (!userData) {
+                userData = localStorage.getItem('user');
+            }
 
             if (userData) {
                 const parsedUser = JSON.parse(userData);
@@ -257,7 +236,7 @@ export default function HRDashboard() {
 
                 setSession(sessionData);
             } else {
-                console.warn('⚠️ No user data found in localStorage');
+                console.warn('⚠️ No user data found in storage');
             }
         } catch (error) {
             console.error('❌ Error parsing user data:', error);
@@ -276,22 +255,28 @@ export default function HRDashboard() {
         setAnchorEl(null);
     };
 
-    const handleLogout = () => {
-        // Implement logout logic
-        handleMenuClose();
-        // Clear user data from localStorage
-        localStorage.removeItem('user');
-        // Clear cookies if any
-        document.cookie.split(";").forEach(function (c) {
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-        });
-        // Navigate to home page
-        navigate('/');
-    };
+    const handleLogout = async () => {
+        try {
+            // Import authService dynamically to avoid circular dependency
+            const {authService} = await import('@services/AuthService.jsx');
 
-    const handleProfileClick = () => {
-        handleMenuClose();
-        navigate('/hr/profile');
+            // Use authService logout method
+            authService.logout();
+
+            handleMenuClose();
+
+            // Navigate to home page
+            navigate('/', {replace: true});
+
+            // Trigger page reload to clear all state
+            setTimeout(() => window.location.reload(), 100);
+        } catch (error) {
+            console.error('Logout error:', error);
+            // Fallback: manual cleanup
+            sessionStorage.clear();
+            localStorage.clear();
+            navigate('/', {replace: true});
+        }
     };
 
     const isActiveRoute = (path) => {
@@ -335,7 +320,7 @@ export default function HRDashboard() {
                     }}>
                         <img
                             src="/logo.png"
-                               alt="Marry Star Kindergarten logo"
+                            alt="Marry Star Kindergarten logo"
                             style={{
                                 width: '100%',
                                 height: '100%',
@@ -368,7 +353,7 @@ export default function HRDashboard() {
                     HR Staff Navigation
                 </Typography>
                 <List sx={{mt: 1}}>
-                    {NAVIGATION.map((item, index) => (
+                    {NAVIGATION.map((item) => (
                         <ListItem key={item.segment} disablePadding sx={{mb: 0.5}}>
                             <ListItemButton
                                 selected={isActiveRoute(item.path)}

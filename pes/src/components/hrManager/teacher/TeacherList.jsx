@@ -143,12 +143,6 @@ export default function TeacherList() {
     // Define table columns
     const columns = [
         {
-            id: 'id',
-            label: 'ID',
-            minWidth: 70,
-            sortable: true
-        },
-        {
             id: 'name',
             label: 'Teacher Name',
             minWidth: 200,
@@ -201,21 +195,27 @@ export default function TeacherList() {
             minWidth: 120,
             align: 'center',
             sortable: true,
-            render: (value) => (
-                <Chip
-                    label={getStatusLabel(value)}
-                    color={getStatusColor(value)}
-                    size="small"
-                    variant="outlined"
-                    sx={{ fontWeight: 600 }}
-                />
-            )
+            render: (value, row) => {
+                // Default to ACTIVE if no status field
+                const status = value || 'ACCOUNT_ACTIVE';
+                return (
+                    <Chip
+                        label={getStatusLabel(status)}
+                        color={getStatusColor(status)}
+                        size="small"
+                        variant="outlined"
+                        sx={{ fontWeight: 600 }}
+                    />
+                );
+            }
         }
     ];
 
     // Render action buttons
     const renderActions = (row) => {
-        const isBanned = row.status === 'ACCOUNT_INACTIVE';
+        // Default to ACTIVE if no status field
+        const status = row.status || 'ACCOUNT_ACTIVE';
+        const isBanned = status === 'ACCOUNT_INACTIVE';
 
         return (
             <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>

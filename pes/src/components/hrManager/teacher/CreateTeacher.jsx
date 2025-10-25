@@ -87,7 +87,8 @@ export default function CreateTeacher({open, onClose}) {
             const response = await HRService.createTeacher(form)
             
             if (response.success) {
-                setSuccess(response.message || 'Teacher created successfully!')
+                const teacher = response.data;
+                setSuccess(`${response.message || 'Teacher created successfully!'} - ${teacher.name} (${teacher.email})`)
                 setForm({name: '', email: '', password: ''})
                 setFormErrors({})
                 
@@ -95,7 +96,7 @@ export default function CreateTeacher({open, onClose}) {
                 setTimeout(() => {
                     setSuccess('')
                     onClose?.()
-                }, 1500)
+                }, 2000) // Increased delay to show teacher info
             } else {
                 setError(response.error || 'Failed to create teacher')
             }
@@ -137,12 +138,14 @@ export default function CreateTeacher({open, onClose}) {
                 borderBottom: `1px solid ${alpha(brandColor, 0.12)}`,
                 background: alpha(brandColor, 0.03)
             }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: brandColor }}>
-                    Add New Teacher
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    Create a new teacher account
-                </Typography>
+                <Box>
+                    <Typography variant="h6" component="div" sx={{ fontWeight: 700, color: brandColor }}>
+                        Add New Teacher
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                        Create a new teacher account
+                    </Typography>
+                </Box>
             </DialogTitle>
             
             <DialogContent sx={{ p: 3 }}>

@@ -9,7 +9,15 @@ export default function ProtectedRoute({children, allowRoles = []}) {
     useEffect(() => {
         try {
             setChecking(true)
-            const raw = localStorage.getItem('user')
+            
+            // Try sessionStorage first (new approach)
+            let raw = sessionStorage.getItem('user');
+            
+            // Fallback to localStorage for backward compatibility
+            if (!raw) {
+                raw = localStorage.getItem('user');
+            }
+            
             if (!raw) {
                 setAuthorized(false)
                 return
