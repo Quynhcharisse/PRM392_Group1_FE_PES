@@ -18,8 +18,7 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Paper,
-    Grid
+    Paper
 } from '@mui/material';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import SchoolIcon from '@mui/icons-material/School';
@@ -217,7 +216,16 @@ export default function ClassDetail({ classData: propClassData }) {
             {/* Page Header */}
             <PageHeader
                 title={classData.name || "Class Details"}
-                subtitle={`Academic Year: ${classData.academicYear} • ${classData.numberStudent || 0} Students`}
+                subtitle={
+                    <Box>
+                        <Typography variant="body1" sx={{ mb: 0.5 }}>
+                            Academic Year: {classData.academicYear}
+                        </Typography>
+                        <Typography variant="body1">
+                            {classData.numberStudent || 0} Students
+                        </Typography>
+                    </Box>
+                }
                 icon={<SchoolIcon sx={{ fontSize: 32, color: 'white' }} />}
                 breadcrumbs={[
                     { label: 'Home', href: '/' },
@@ -244,68 +252,90 @@ export default function ClassDetail({ classData: propClassData }) {
 
             {/* Content */}
             <Box px={3}>
-                <Grid container spacing={3}>
+                <Paper sx={{
+                    p: 4,
+                    background: '#ffffff',
+                    borderRadius: 2,
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid #e0e0e0'
+                }}>
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 3
+                }}>
                     {/* Class Information Cards */}
-                    <Grid item xs={12} md={6}>
-                        <Card sx={{ p: 3, height: '100%', boxShadow: 3, borderRadius: 2 }}>
-                            <Stack spacing={2}>
-                                <Stack direction="row" alignItems="center" spacing={1}>
-                                    <CalendarMonthIcon color="primary" />
-                                    <Typography variant="h6" fontWeight={600} color="primary">
-                                        Class Information
-                                    </Typography>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        gap: 3
+                    }}>
+                        <Box sx={{ flex: 1 }}>
+                            <Card sx={{ p: 3, height: '100%', boxShadow: 3, borderRadius: 2 }}>
+                                <Stack spacing={2}>
+                                    <Stack direction="row" alignItems="center" spacing={1}>
+                                        <CalendarMonthIcon color="primary" />
+                                        <Typography variant="h6" fontWeight={600} color="primary">
+                                            Class Information
+                                        </Typography>
+                                    </Stack>
+                                    
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+                                        <Typography variant="body2" color="text.secondary">Start Date:</Typography>
+                                        <Typography variant="body1" fontWeight={600}>{formatDate(classData.startDate)}</Typography>
+                                    </Box>
+                                    
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+                                        <Typography variant="body2" color="text.secondary">Number of Weeks:</Typography>
+                                        <Chip label={classData.numberOfWeeks || 0} color="info" size="small" />
+                                    </Box>
+                                    
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+                                        <Typography variant="body2" color="text.secondary">Cost:</Typography>
+                                        <Typography variant="body1" fontWeight={700} color="error">
+                                            {classData.cost ? new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(classData.cost) : 'N/A'}
+                                        </Typography>
+                                    </Box>
                                 </Stack>
-                                
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
-                                    <Typography variant="body2" color="text.secondary">Start Date:</Typography>
-                                    <Typography variant="body1" fontWeight={600}>{formatDate(classData.startDate)}</Typography>
-                                </Box>
-                                
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
-                                    <Typography variant="body2" color="text.secondary">Number of Weeks:</Typography>
-                                    <Chip label={classData.numberOfWeeks || 0} color="info" size="small" />
-                                </Box>
-                                
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
-                                    <Typography variant="body2" color="text.secondary">Cost:</Typography>
-                                    <Typography variant="body1" fontWeight={700} color="error">
-                                        {classData.cost ? new Intl.NumberFormat('vi-VN', {
-                                            style: 'currency',
-                                            currency: 'VND'
-                                        }).format(classData.cost) : 'N/A'}
-                                    </Typography>
-                                </Box>
-                            </Stack>
-                        </Card>
-                    </Grid>
+                            </Card>
+                        </Box>
 
-                    <Grid item xs={12} md={6}>
-                        <Card sx={{ p: 3, height: '100%', boxShadow: 3, borderRadius: 2 }}>
-                            <Stack spacing={2}>
-                                <Stack direction="row" alignItems="center" spacing={1}>
-                                    <PeopleIcon color="primary" />
-                                    <Typography variant="h6" fontWeight={600} color="primary">
-                                        Teacher Information
-                                    </Typography>
+                        <Box sx={{ flex: 1 }}>
+                            <Card sx={{ p: 3, height: '100%', boxShadow: 3, borderRadius: 2 }}>
+                                <Stack spacing={2}>
+                                    <Stack direction="row" alignItems="center" spacing={1}>
+                                        <PeopleIcon color="primary" />
+                                        <Typography variant="h6" fontWeight={600} color="primary">
+                                            Teacher Information
+                                        </Typography>
+                                    </Stack>
+                                    
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+                                        <Typography variant="body2" color="text.secondary">Name:</Typography>
+                                        <Typography variant="body1" fontWeight={600}>{classData.teacherName || 'N/A'}</Typography>
+                                    </Box>
+                                    
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+                                        <Typography variant="body2" color="text.secondary">Email:</Typography>
+                                        <Typography variant="body1">{classData.teacherEmail || 'N/A'}</Typography>
+                                    </Box>
                                 </Stack>
-                                
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
-                                    <Typography variant="body2" color="text.secondary">Name:</Typography>
-                                    <Typography variant="body1" fontWeight={600}>{classData.teacherName || 'N/A'}</Typography>
-                                </Box>
-                                
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1.5, borderBottom: '1px solid #e0e0e0' }}>
-                                    <Typography variant="body2" color="text.secondary">Email:</Typography>
-                                    <Typography variant="body1">{classData.teacherEmail || 'N/A'}</Typography>
-                                </Box>
-                            </Stack>
-                        </Card>
-                    </Grid>
+                            </Card>
+                        </Box>
+                    </Box>
 
-                    {/* Week Selector */}
-                    <Grid item xs={12}>
-                        <Card sx={{ p: 3, boxShadow: 3, borderRadius: 2 }}>
-                            <FormControl fullWidth>
+                    {/* Weekly Schedule with Week Selector */}
+                    <Box>
+                        <Card sx={{ p: 3, boxShadow: 3, borderRadius: 2, width: '100%'}}>
+                            <Typography variant="h6" fontWeight={600} color="primary" sx={{ mb: 3 }}>
+                                Weekly Schedule
+                            </Typography>
+                            
+                            {/* Week Selector */}
+                            <FormControl fullWidth sx={{ mb: 3 }}>
                                 <InputLabel>Select Week</InputLabel>
                                 <Select
                                     value={selectedWeek || ""}
@@ -329,23 +359,16 @@ export default function ClassDetail({ classData: propClassData }) {
                                     )}
                                 </Select>
                             </FormControl>
-                        </Card>
-                    </Grid>
-
-                    {/* Schedule Table */}
-                    {selectedWeek && (
-                        <Grid item xs={12}>
-                            <Card sx={{ p: 3, boxShadow: 3, borderRadius: 2 }}>
-                                <Typography variant="h6" fontWeight={600} color="primary" sx={{ mb: 3 }}>
-                                    Weekly Schedule
-                                </Typography>
-                                
-                                {activityLoading ? (
-                                    <Box display="flex" justifyContent="center" p={3}>
-                                        <CircularProgress />
-                                        <Typography variant="body2" sx={{ ml: 2 }}>Loading schedule...</Typography>
-                                    </Box>
-                                ) : (
+                            
+                            {/* Schedule Table */}
+                            {selectedWeek && (
+                                <>
+                                    {activityLoading ? (
+                                        <Box display="flex" justifyContent="center" p={3}>
+                                            <CircularProgress />
+                                            <Typography variant="body2" sx={{ ml: 2 }}>Loading schedule...</Typography>
+                                        </Box>
+                                    ) : (
                                     <TableContainer component={Paper} sx={{ 
                                         bgcolor: '#e8f5e8',
                                         border: '2px solid #000',
@@ -445,11 +468,13 @@ export default function ClassDetail({ classData: propClassData }) {
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
-                                )}
-                            </Card>
-                        </Grid>
-                    )}
-                </Grid>
+                                    )}
+                                </>
+                            )}
+                        </Card>
+                    </Box>
+                </Box>
+                </Paper>
             </Box>
         </Box>
     );

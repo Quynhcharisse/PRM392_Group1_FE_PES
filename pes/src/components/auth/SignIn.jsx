@@ -155,43 +155,6 @@ export default function SignIn() {
             >
                 {/* Logo Section */}
                 <Box sx={{mb: 4, position: "relative"}}>
-                    <Box
-                        sx={{
-                            position: "relative",
-                            display: "inline-block",
-                            mb: 2
-                        }}
-                    >
-                        <Box
-                            component="img"
-                            src="/logo.png"
-                            alt="MerryStar Kindergarten"
-                            sx={{
-                                height: 80,
-                                width: 80,
-                                borderRadius: "50%",
-                                boxShadow: "0 8px 25px rgba(255, 107, 53, 0.4)",
-                                border: "3px solid rgba(255, 255, 255, 0.8)",
-                                transition: "all 0.3s ease",
-                                "&:hover": {
-                                    transform: "scale(1.05)",
-                                    boxShadow: "0 12px 35px rgba(255, 107, 53, 0.6)"
-                                }
-                            }}
-                        />
-                        <Box
-                            sx={{
-                                position: "absolute",
-                                top: -5,
-                                right: -5,
-                                width: 20,
-                                height: 20,
-                                background: "linear-gradient(45deg, #FF6B35, #FF8A65)",
-                                borderRadius: "50%",
-                                animation: "pulse 2s infinite"
-                            }}
-                        />
-                    </Box>
                     <Typography
                         variant="h4"
                         sx={{

@@ -5,7 +5,6 @@ import {getCurrentTokenData} from "@services/JWTService";
 import {PageTemplate} from "@templates";
 import {
     Alert,
-    AlertTitle,
     alpha,
     Avatar,
     Box,
@@ -118,8 +117,11 @@ const UserProfile = () => {
             const profileData = response.data || response;
             setProfile(profileData);
 
-            const needsPasswordReset =
-                profileData.firstLogin || profileData.tempPassword;
+
+            // Disable first login dialog completely - let users change password when they want
+            const needsPasswordReset = false;
+            
+            
             setIsFirstLogin(needsPasswordReset);
             setShowPasswordReset(needsPasswordReset);
 
@@ -221,9 +223,8 @@ const UserProfile = () => {
         }
     };
 
-    const handlePasswordChangeSuccess = (success) => {
+    const handlePasswordChangeSuccess = async (success) => {
         if (success) {
-            setIsFirstLogin(false);
             setSuccess("Password changed successfully!");
             // Clear success message after 3 seconds
             setTimeout(() => setSuccess(""), 3000);
@@ -316,11 +317,7 @@ const UserProfile = () => {
     return (
         <PageTemplate
             title="Personal Information"
-            subtitle={
-                isFirstLogin
-                    ? "Please update your information and change your password"
-                    : "Manage your account information"
-            }
+            subtitle="Manage your account information"
             actions={
                 <Button
                     onClick={() => setShowPasswordReset(true)}
@@ -441,13 +438,6 @@ const UserProfile = () => {
 
                         <CardContent sx={{p: 3}}>
                             <Stack spacing={3}>
-                                {isFirstLogin && (
-                                    <Alert severity="warning" sx={{borderRadius: 2}}>
-                                        <AlertTitle>First Time Login</AlertTitle>
-                                        Please update your personal information and change your password to complete
-                                        account setup.
-                                    </Alert>
-                                )}
 
                                 {/* Success/Error Messages */}
                                 {success && (

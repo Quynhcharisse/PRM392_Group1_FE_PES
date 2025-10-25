@@ -3,6 +3,9 @@ import {useEffect, useMemo, useState} from "react";
 import syllabusService from "@services/EducationService.jsx";
 import {HRService} from "@services/HRService.jsx";
 import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import SyllabusSelectorDialog from './SyllabusSelectorDialog.jsx';
 import ButtonCreate from '../../customButton/ButtonCreate.jsx';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
@@ -191,46 +194,105 @@ export default function CreateClass() {
         );
 
     return (
-        <div style={{padding: 24}}>
-            <Button onClick={() => navigate('/education/classes')} startIcon={<ArrowBackIcon />} variant="contained" sx={{ mb: 2 }}>
+        <Box sx={{ padding: 3 }}>
+            <Button onClick={() => navigate('/education/classes')} startIcon={<ArrowBackIcon />} variant="contained" sx={{ mb: 3 }}>
                 Back
             </Button>
-            <h2 style={{fontWeight: 700, textAlign: "center", marginBottom: 16}}>CREATE CLASS</h2>
-            <form onSubmit={handleSubmit} style={{maxWidth: 1000, margin: "0 auto"}}>
-                <div style={{display: "flex", gap: 24, justifyContent: "space-between", marginBottom: 16}}>
-                    <div style={{display: "flex", flexDirection: "column", gap: 6}}>
-                        <label>Start Date</label>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                label="Start Date"
-                                value={startDateObj}
-                                onChange={setStartDateObj}
-                                format="DD/MM/YYYY"
-                                slotProps={{textField: {fullWidth: true, size: 'small', variant: 'outlined'}}}
-                            />
-                        </LocalizationProvider>
-                    </div>
-                    <div style={{display: "flex", flexDirection: "column", gap: 6}}>
-                        <label>Syllabus</label>
-                        <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
-                            <Button variant="outlined" size="small" onClick={handleOpenSyllabusDialog}>Choose Syllabus</Button>
-                            {selectedSyllabusName && <span style={{marginLeft: 8, color: '#1976d2', fontWeight: 600}}>{selectedSyllabusName}</span>}
-                        </div>
-                    </div>
-                    <div style={{display: "flex", flexDirection: "column", gap: 6}}>
-                        <label>Teacher</label>
-                        <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
-                            <Button variant="outlined" size="small" onClick={() => setTeacherDialogOpen(true)}>Choose Teacher</Button>
-                        </div>
-                        {selectedTeacher && <div style={{marginTop: 4, color: '#1976d2', fontWeight: 600}}>{selectedTeacher.name}</div>}
-                    </div>
-                </div>
+            
+            <Paper sx={{
+                p: 4,
+                maxWidth: 1000,
+                margin: "0 auto",
+                background: '#ffffff',
+                borderRadius: 2,
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #e0e0e0'
+            }}>
+                <Typography variant="h4" fontWeight={700} sx={{
+                    textAlign: "center",
+                    mb: 4,
+                    color: '#1976d2',
+                    borderBottom: '2px solid #e3f2fd',
+                    pb: 2
+                }}>
+                    CREATE CLASS
+                </Typography>
+                
+                <form onSubmit={handleSubmit}>
+                    <Box sx={{
+                        display: "flex",
+                        gap: 3,
+                        justifyContent: "space-between",
+                        mb: 3,
+                        flexDirection: { xs: 'column', md: 'row' }
+                    }}>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
+                            <Typography variant="body2" fontWeight={600} sx={{ color: '#333' }}>
+                                Start Date
+                            </Typography>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Start Date"
+                                    value={startDateObj}
+                                    onChange={setStartDateObj}
+                                    format="DD/MM/YYYY"
+                                    slotProps={{textField: {fullWidth: true, size: 'small', variant: 'outlined'}}}
+                                />
+                            </LocalizationProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
+                            <Typography variant="body2" fontWeight={600} sx={{ color: '#333' }}>
+                                Syllabus
+                            </Typography>
+                            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                                <Button variant="outlined" size="small" onClick={handleOpenSyllabusDialog} sx={{ flex: 1 }}>
+                                    Choose Syllabus
+                                </Button>
+                                {selectedSyllabusName && (
+                                    <Typography variant="body2" sx={{ color: '#1976d2', fontWeight: 600, ml: 1 }}>
+                                        {selectedSyllabusName}
+                                    </Typography>
+                                )}
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1 }}>
+                            <Typography variant="body2" fontWeight={600} sx={{ color: '#333' }}>
+                                Teacher
+                            </Typography>
+                            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                                <Button variant="outlined" size="small" onClick={() => setTeacherDialogOpen(true)} sx={{ flex: 1 }}>
+                                    Choose Teacher
+                                </Button>
+                                {selectedTeacher && (
+                                    <Typography variant="body2" sx={{ color: '#1976d2', fontWeight: 600, ml: 1 }}>
+                                        {selectedTeacher.name}
+                                    </Typography>
+                                )}
+                            </Box>
+                        </Box>
+                    </Box>
 
-                {ruleMessage && (
-                    <div style={{ color: '#c62828', marginBottom: 12, fontWeight: 500 }}>{ruleMessage}</div>
-                )}
+                    {ruleMessage && (
+                        <Box sx={{ 
+                            color: '#c62828', 
+                            mb: 2, 
+                            fontWeight: 500,
+                            p: 2,
+                            background: '#ffebee',
+                            borderRadius: 1,
+                            border: '1px solid #ffcdd2'
+                        }}>
+                            {ruleMessage}
+                        </Box>
+                    )}
 
-                <div style={{overflowX: "auto", background: "#e7f5b0", padding: 12, borderRadius: 8}}>
+                    <Box sx={{
+                        overflowX: "auto", 
+                        background: "#e7f5b0", 
+                        p: 2, 
+                        borderRadius: 2,
+                        mb: 3
+                    }}>
                     <table style={{width: "100%", borderCollapse: "collapse"}}>
                         <thead>
                         <tr>
@@ -277,23 +339,38 @@ export default function CreateClass() {
                         ))}
                         </tbody>
                     </table>
-                </div>
+                    </Box>
 
-                <div style={{display: "flex", justifyContent: "space-between", marginTop: 16, alignItems: "center"}}>
-                    <div>
-                        <span>Total activities: {totalActivities}/4</span>
-                    </div>
-                    <ButtonCreate type="submit" disabled={submitting}>
-                        {submitting ? "Creating..." : "Create Class"}
-                    </ButtonCreate>
-                </div>
-                {message && (
-                    <div style={{
-                        marginTop: 12,
-                        color: message.includes("success") ? "#2e7d32" : "#c62828"
-                    }}>{message}</div>
-                )}
-            </form>
+                    <Box sx={{
+                        display: "flex", 
+                        justifyContent: "space-between", 
+                        alignItems: "center",
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        gap: 2
+                    }}>
+                        <Typography variant="body1" fontWeight={500} sx={{ color: '#333' }}>
+                            Total activities: {totalActivities}/4
+                        </Typography>
+                        <ButtonCreate type="submit" disabled={submitting}>
+                            {submitting ? "Creating..." : "Create Class"}
+                        </ButtonCreate>
+                    </Box>
+                    
+                    {message && (
+                        <Box sx={{
+                            mt: 2,
+                            p: 2,
+                            borderRadius: 1,
+                            color: message.includes("success") ? "#2e7d32" : "#c62828",
+                            background: message.includes("success") ? "#e8f5e8" : "#ffebee",
+                            border: `1px solid ${message.includes("success") ? "#c8e6c9" : "#ffcdd2"}`
+                        }}>
+                            {message}
+                        </Box>
+                    )}
+                </form>
+            </Paper>
+            
             <SyllabusSelectorDialog
                 open={syllabusDialogOpen}
                 onClose={() => setSyllabusDialogOpen(false)}
@@ -308,6 +385,6 @@ export default function CreateClass() {
                 onClose={() => setTeacherDialogOpen(false)}
                 onSelect={handleChooseTeacher}
             />
-        </div>
+        </Box>
     );
 }

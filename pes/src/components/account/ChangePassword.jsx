@@ -116,7 +116,7 @@ export default function ChangePassword({ open, onClose, isFirstLogin = false }) 
                 setTimeout(() => {
                     setSuccess("");
                     onClose?.(true); // Pass true to indicate success
-                }, 2000);
+                }, 1500); // Reduced timeout for better UX
             } else {
                 setError(result.error || "Failed to change password");
             }

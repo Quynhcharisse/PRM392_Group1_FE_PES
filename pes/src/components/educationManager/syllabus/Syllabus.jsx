@@ -290,11 +290,6 @@ function ViewSyllabusDialog({ open, syllabus, onClose }) {
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
                     <Box sx={{ display: 'flex', p: 2, borderRadius: 2, bgcolor: '#f5f5f5' }}>
-                        <Box sx={{ fontWeight: 600, minWidth: 120, color: 'text.secondary' }}>ID:</Box>
-                        <Box sx={{ fontWeight: 500 }}>{syllabus?.id}</Box>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', p: 2, borderRadius: 2, bgcolor: '#f5f5f5' }}>
                         <Box sx={{ fontWeight: 600, minWidth: 120, color: 'text.secondary' }}>Name:</Box>
                         <Box sx={{ fontWeight: 600, color: '#1976d2' }}>{syllabus?.name}</Box>
                     </Box>
