@@ -48,3 +48,22 @@ a {
 input, textarea, select, button {
     font-family: "Mali", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Global Logo Styling */
+.logo {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.logo img {
+    transition: all 0.3s ease;
+    object-fit: contain;
+}
+
+.logo img:hover {
+    filter: brightness(1.1);
+}
