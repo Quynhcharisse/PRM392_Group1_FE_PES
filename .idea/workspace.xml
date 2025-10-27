@@ -6,14 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2787666c-687a-4c19-b5bc-67d2411ae2c4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/components/account/ChangePassword.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/account/ChangePassword.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/components/account/UserProfile.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/account/UserProfile.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/components/auth/SignIn.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/auth/SignIn.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessFormDetail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/admissionForm/ProcessFormDetail.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/class/ClassDetail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/class/ClassDetail.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/class/CreateClass.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/class/CreateClass.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/components/educationManager/syllabus/Syllabus.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/educationManager/syllabus/Syllabus.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/layouts/EducationDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/layouts/EducationDashboard.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,24 +42,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature-design-component-ui",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Semester 8/EXE201/personalized-succulent-gifting-platform_fe",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.dev.executor": "Run",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.2.6\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature-design-component-ui&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Semester 8/EXE201/personalized-succulent-gifting-platform_fe&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.2.6\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Semester 8\PRM392\Preschool Enrollment System\Project\pes" />
@@ -122,7 +114,9 @@
       <workItem from="1761322481766" duration="2453000" />
       <workItem from="1761362937612" duration="170000" />
       <workItem from="1761389354503" duration="4259000" />
-      <workItem from="1761404790965" duration="5904000" />
+      <workItem from="1761404790965" duration="6915000" />
+      <workItem from="1761456610841" duration="607000" />
+      <workItem from="1761484029793" duration="1168000" />
     </task>
     <servers />
   </component>
