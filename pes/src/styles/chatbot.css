@@ -4,6 +4,13 @@
   border-radius: 50% !important;
   box-shadow: 0 4px 12px rgba(28, 100, 242, 0.3) !important;
   transition: all 0.3s ease !important;
+  z-index: 10000 !important;
+  cursor: pointer !important;
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  top: auto !important;
+  left: auto !important;
 }
 
 #dify-chatbot-bubble-button:hover {
@@ -19,6 +26,14 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
   border: 1px solid #e5e7eb !important;
   overflow: hidden !important;
+  z-index: 10001 !important;
+  position: fixed !important;
+  bottom: 80px !important;
+  right: 20px !important;
+  top: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+  transform: none !important;
 }
 
 /* Ẩn container bao bọc xấu */
@@ -208,10 +223,19 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+  #dify-chatbot-bubble-button {
+    bottom: 15px !important;
+    right: 15px !important;
+  }
+  
   #dify-chatbot-bubble-window {
     width: calc(100vw - 32px) !important;
     height: calc(100vh - 100px) !important;
     max-width: 24rem !important;
+    position: fixed !important;
+    bottom: 70px !important;
+    right: 16px !important;
+    left: auto !important;
   }
 }
 
