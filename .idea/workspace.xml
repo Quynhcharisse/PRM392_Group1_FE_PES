@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2787666c-687a-4c19-b5bc-67d2411ae2c4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/components/auth/Home.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/auth/Home.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/components/chatbot/DifyChatbot.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/components/chatbot/DifyChatbot.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/layouts/WebApplicationLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/layouts/WebApplicationLayout.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pes/src/styles/chatbot.css" beforeDir="false" afterPath="$PROJECT_DIR$/pes/src/styles/chatbot.css" afterDir="false" />
-    </list>
+    <list default="true" id="2787666c-687a-4c19-b5bc-67d2411ae2c4" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -124,7 +118,7 @@
       <workItem from="1761553272923" duration="1481000" />
       <workItem from="1761559870459" duration="188000" />
       <workItem from="1761565891367" duration="363000" />
-      <workItem from="1763442232048" duration="1000000" />
+      <workItem from="1763442232048" duration="2003000" />
     </task>
     <servers />
   </component>
