@@ -7,7 +7,8 @@ export default function IntroNavigationTabs({activeTab, setActiveTab}) {
         {id: 1, label: "Principal's message"},
         {id: 2, label: 'Student profile'},
         {id: 3, label: 'Facilities'},
-        {id: 4, label: 'Why choose MerryStar Kindergarten?'}
+        {id: 4, label: 'Why choose MerryStar Kindergarten?'},
+        {id: 5, label: 'Our Teachers'}
     ]
 
     return (

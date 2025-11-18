@@ -1,13 +1,17 @@
 import React, {useEffect, useState} from 'react'
-import {Box, Container, Typography} from '@mui/material'
+import {Box, Container, Typography, Avatar, CircularProgress, Chip, alpha} from '@mui/material'
 import IntroNavigationTabs from './IntroNavigationTabs'
 import ImageZoom from './ImageZoom'
 import WhyChooseMerryStarContent from './WhyChooseMerryStarContent'
 import StudentProfileContent from './StudentProfileContent'
 import FacilitiesContent from './FacilitiesContent'
+import { HRService } from '@services/HRService.jsx'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 
 export default function IntroContentSections() {
     const [activeTab, setActiveTab] = useState(0)
+    const [teachers, setTeachers] = useState([])
+    const [loadingTeachers, setLoadingTeachers] = useState(false)
 
     useEffect(() => {
         const handleIntroTabChange = (event) => {
@@ -18,6 +22,28 @@ export default function IntroContentSections() {
         window.addEventListener('changeIntroTab', handleIntroTabChange)
         return () => window.removeEventListener('changeIntroTab', handleIntroTabChange)
     }, [])
+
+    useEffect(() => {
+        loadTeachers()
+    }, [])
+
+    const loadTeachers = async () => {
+        try {
+            setLoadingTeachers(true)
+            const response = await HRService.getTeacherList()
+            if (response.success) {
+                // Chỉ lấy teachers có status ACTIVE
+                const activeTeachers = (response.data || []).filter(
+                    teacher => !teacher.status || teacher.status === 'ACCOUNT_ACTIVE'
+                )
+                setTeachers(activeTeachers)
+            }
+        } catch (error) {
+            console.error('Failed to load teachers:', error)
+        } finally {
+            setLoadingTeachers(false)
+        }
+    }
 
     const sections = {
         0: {
@@ -222,7 +248,149 @@ export default function IntroContentSections() {
         1: { title: "Principal's message", content: (<Box sx={{py:4}}><ImageZoom/></Box>) },
         2: { title: 'Student profile', content: (<Box sx={{py:4}}><StudentProfileContent/></Box>) },
         3: { title: 'Facilities', content: (<Box sx={{py:4}}><FacilitiesContent/></Box>) },
-        4: { title: 'Why choose MerryStar Kindergarten?', content: (<WhyChooseMerryStarContent/>) }
+        4: { title: 'Why choose MerryStar Kindergarten?', content: (<WhyChooseMerryStarContent/>) },
+        5: {
+            title: 'Our Teachers',
+            content: (
+                <Box sx={{py: 6}}>
+                    {/* Title Section */}
+                    <Box sx={{textAlign: 'center', mb: 6}}>
+                        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2}}>
+                            <Typography variant="h3" fontWeight={800} color="#2C3E50"
+                                        sx={{textTransform: 'uppercase', letterSpacing: '2px'}}>
+                                OUR TEACHERS
+                            </Typography>
+                            <Box sx={{ml: 2, fontSize: '32px'}}>👩‍🏫</Box>
+                        </Box>
+                        <Box sx={{
+                            width: 60,
+                            height: 4,
+                            backgroundColor: '#3498DB',
+                            mx: 'auto',
+                            borderRadius: 2
+                        }}/>
+                    </Box>
+
+                    {/* Introduction Text */}
+                    <Box sx={{mb: 6}}>
+                        <Typography variant="body1" sx={{
+                            fontSize: '18px',
+                            lineHeight: 1.8,
+                            mb: 4,
+                            color: '#2C3E50',
+                            textAlign: 'center'
+                        }}>
+                            Meet our dedicated team of professional educators who are passionate about nurturing young minds
+                            and creating a loving learning environment for every child.
+                        </Typography>
+                    </Box>
+
+                    {/* Teachers Grid */}
+                    {loadingTeachers ? (
+                        <Box sx={{display: 'flex', justifyContent: 'center', py: 8}}>
+                            <CircularProgress size={60} sx={{color: '#FF6B35'}}/>
+                        </Box>
+                    ) : teachers.length === 0 ? (
+                        <Box sx={{textAlign: 'center', py: 8}}>
+                            <Typography variant="h6" color="#666">
+                                No teachers available at the moment.
+                            </Typography>
+                        </Box>
+                    ) : (
+                        <Box sx={{
+                            display: 'grid',
+                            gridTemplateColumns: {
+                                xs: '1fr',
+                                sm: 'repeat(2, 1fr)',
+                                md: 'repeat(3, 1fr)',
+                                lg: 'repeat(4, 1fr)'
+                            },
+                            gap: 4
+                        }}>
+                            {teachers.map((teacher) => (
+                                <Box
+                                    key={teacher.id}
+                                    sx={{
+                                        p: 3,
+                                        border: '1px solid #E0E0E0',
+                                        borderRadius: 3,
+                                        textAlign: 'center',
+                                        backgroundColor: '#fff',
+                                        transition: 'all 0.3s ease',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        '&:hover': {
+                                            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                                            transform: 'translateY(-4px)',
+                                            borderColor: '#FF6B35'
+                                        }
+                                    }}
+                                >
+                                    <Avatar
+                                        src={teacher.avatarUrl}
+                                        sx={{
+                                            width: 100,
+                                            height: 100,
+                                            mx: 'auto',
+                                            mb: 2,
+                                            background: 'linear-gradient(135deg, #FF6B35 0%, #FF6B35CC 100%)',
+                                            fontSize: '2.5rem',
+                                            fontWeight: 600,
+                                            boxShadow: '0 4px 12px rgba(255, 107, 53, 0.3)',
+                                            border: '3px solid #fff'
+                                        }}
+                                    >
+                                        {teacher.name ? teacher.name.charAt(0).toUpperCase() : 
+                                            <AccountCircleIcon sx={{fontSize: '3rem'}}/>}
+                                    </Avatar>
+                                    
+                                    <Typography 
+                                        variant="h6" 
+                                        fontWeight={700} 
+                                        color="#2C3E50" 
+                                        sx={{
+                                            mb: 1,
+                                            fontSize: '1.1rem',
+                                            lineHeight: 1.3
+                                        }}
+                                    >
+                                        {teacher.name || 'N/A'}
+                                    </Typography>
+                                    
+                                    <Chip
+                                        label={teacher.role || 'TEACHER'}
+                                        size="small"
+                                        color="info"
+                                        variant="outlined"
+                                        sx={{
+                                            mb: 2,
+                                            fontWeight: 600,
+                                            borderColor: '#2196F3',
+                                            color: '#2196F3'
+                                        }}
+                                    />
+                                    
+                                    {teacher.email && (
+                                        <Typography 
+                                            variant="body2" 
+                                            sx={{
+                                                color: '#666',
+                                                fontSize: '0.875rem',
+                                                wordBreak: 'break-word',
+                                                maxWidth: '100%'
+                                            }}
+                                        >
+                                            {teacher.email}
+                                        </Typography>
+                                    )}
+                                </Box>
+                            ))}
+                        </Box>
+                    )}
+                </Box>
+            )
+        }
     }
 
     return (
